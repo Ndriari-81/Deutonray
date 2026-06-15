@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Университетское расписание</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f0e8; margin: 20px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .tabs { display: flex; gap: 10px; }
+        .tab-btn { padding: 8px 16px; background: #2c6e2f; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { background: #1e4a21; }
+        .export-import button { background: #4a6f8f; margin-left: 8px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tree { background: white; padding: 15px; border-radius: 12px; width: 320px; float: left; margin-right: 20px; overflow-y: auto; height: 70vh; }
+        .schedule-panel { background: white; padding: 15px; border-radius: 12px; overflow-y: auto; height: 70vh; }
+        .tree ul { list-style: none; padding-left: 0; margin: 0; }
+        .tree li { margin: 5px 0; }
+        .faculty-header, .dept-header { cursor: pointer; font-weight: bold; background: #e9e9e0; padding: 5px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .faculty-header:hover, .dept-header:hover { background: #d0d0c0; }
+        .course-item { cursor: pointer; margin-left: 20px; padding: 4px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .course-item:hover { background: #e0f0e0; }
+        .children { padding-left: 20px; }
+        .btn { background: #4a6f8f; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; margin: 2px; font-size: 0.8rem; }
+        .btn-danger { background: #b34e4e; }
+        .schedule-table { width: 100%; border-collapse: collapse; }
+        .schedule-table th, .schedule-table td { border: 1px solid #ccc; padding: 6px; vertical-align: middle; }
+        .schedule-table input, .schedule-table select { width: 100%; padding: 4px; box-sizing: border-box; }
+        .lesson-lecture { background-color: #d9e6c3; }
+        .lesson-seminar { background-color: #fce5cd; }
+        .lesson-lab { background-color: #fff2cc; }
+        .lesson-practice { background-color: #cfe2f3; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+        .teacher-schedule-item { margin-bottom: 10px; border-left: 4px solid #4a6f8f; padding-left: 8px; }
+    </style>
+</head>
+<body>
+<h2>📚 Управление расписанием университета (с чёт/нечёт неделями)</h2>
+<div class="top-bar">
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="structure">Структура и расписание</button>
+        <button class="tab-btn" data-tab="teachers">Преподаватели</button>
+    </div>
+    <div class="export-import">
+        <button id="exportBtn" class="btn">💾 Экспорт</button>
+        <button id="importBtn" class="btn">📂 Импорт</button>
+    </div>
+</div>
+
+<div id="structure-tab" class="tab-content active">
+    <div class="clearfix">
+        <div class="tree" id="treeContainer"></div>
+        <div class="schedule-panel" id="schedulePanel">
+            <p>Выберите курс, чтобы увидеть расписание</p>
+        </div>
+    </div>
+</div>
+
+<div id="teachers-tab" class="tab-content">
+    <div>
+        <button id="addTeacherBtn" class="btn">👨‍🏫 Добавить преподавателя</button>
+        <div id="teachersList" style="margin-top: 15px;"></div>
+    </div>
+</div>
+
+<script>
+    let appData = { faculties: [], teachers: [] };
+    const STORAGE_KEY = "uniScheduleData";
+    let currentSelectedCourse = null;
+
+    const lessonTypes = [
+        { value: "lecture", label: "Лекция", className: "lesson-lecture" },
+        { value: "seminar", label: "Семинар", className: "lesson-seminar" },
+        { value: "lab", label: "Лабораторная", className: "lesson-lab" },
+        { value: "practice", label: "Практика", className: "lesson-practice" }
+    ];
+
+    function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            appData = JSON.parse(saved);
+            convertOldData();       // конвертация старых строк в объекты
+            ensureWeekTypeField();  // добавить weekType = "both" для старых записей
+        } else {
+            // Пример для теста
+            appData = {
+                faculties: [
+                    { id: "fac1", name: "Физико-математический", departments: [
+                        { id: "dep1", name: "Кафедра математики", courses: [
+                            { id: "course1", name: "1 курс", schedule: [
+                                { day: "Пн", time: "9:00-10:30", subject: "Матанализ", type: "lecture", teacherId: "t1", room: "101", weekType: "both" },
+                                { day: "Ср", time: "11:00-12:30", subject: "Алгебра", type: "seminar", teacherId: "t2", room: "202", weekType: "even" }
+                            ] },
+                            { id: "course2", name: "2 курс", schedule: [
+                                { day: "Вт", time: "10:00-11:30", subject: "Диффуры", type: "practice", teacherId: "t3", room: "303", weekType: "odd" }
+                            ] }
+                        ] },
+                        { id: "dep2", name: "Кафедра физики", courses: [
+                            { id: "course3", name: "1 курс", schedule: [
+                                { day: "Пт", time: "9:00-10:30", subject: "Механика", type: "lab", teacherId: "t4", room: "105", weekType: "both" }
+                            ] }
+                        ] }
+                    ] }
+                ],
+                teachers: [
+                    { id: "t1", name: "Иванов И.И." },
+                    { id: "t2", name: "Петров П.П." },
+                    { id: "t3", name: "Сидоров С.С." },
+                    { id: "t4", name: "Кузнецов К.К." }
+                ]
+            };
+        }
+        saveData();
+    }
+
+    // Конвертация старых строковых расписаний в объекты (если вдруг остались строки)
+    function convertOldData() {
+        let changed = false;
+        for (let f of appData.faculties) {
+            for (let d of f.departments || []) {
+                for (let c of d.courses || []) {
+                    if (c.schedule && c.schedule.length > 0 && typeof c.schedule[0] === 'string') {
+                        let newSchedule = [];
+                        for (let str of c.schedule) {
+                            let parts = str.split(' ');
+                            newSchedule.push({
+                                day: parts[0] || "Пн",
+                                time: parts[1] || "9:00",
+                                subject: str.replace(/\(.*?\)/g, '').trim(),
+                                type: "lecture",
+                                teacherId: "",
+                                room: "",
+                                weekType: "both"
+                            });
+                        }
+                        c.schedule = newSchedule;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) saveData();
+    }
+
+    // Добавляет поле weekType = "both", если его нет
+    function ensureWeekTypeField() {
+        let changed = false;
+        for (let f of appData.faculties) {
+            for (let d of f.departments || []) {
+                for (let c of d.courses || []) {
+                    if (c.schedule) {
+                        for (let item of c.schedule) {
+                            if (item && !item.weekType) {
+                                item.weekType = "both";
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (changed) saveData();
+    }
+
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+    }
+
+    function generateId(prefix) { return prefix + Date.now() + Math.random().toString(36).substr(2, 6); }
+
+    function renderTree() {
+        const container = document.getElementById('treeContainer');
+        let html = '<ul>';
+        for (let f of appData.faculties) {
+            html += `<li>
+                        <div class="faculty-header" data-faculty-id="${f.id}">
+                            <span>🎓 ${f.name}</span>
+                            <span>
+                                <button class="btn" onclick="editFaculty('${f.id}')">✏️</button>
+                                <button class="btn btn-danger" onclick="deleteFaculty('${f.id}')">🗑️</button>
+                            </span>
+                        </div>
+                        <div class="children" id="fac-${f.id}" style="display: none;">
+                            <ul>`;
+            for (let d of f.departments || []) {
+                html += `<li>
+                            <div class="dept-header" data-faculty-id="${f.id}" data-dept-id="${d.id}">
+                                <span>📚 ${d.name}</span>
+                                <span>
+                                    <button class="btn" onclick="editDepartment('${f.id}','${d.id}')">✏️</button>
+                                    <button class="btn btn-danger" onclick="deleteDepartment('${f.id}','${d.id}')">🗑️</button>
+                                </span>
+                            </div>
+                            <div class="children" id="dept-${f.id}-${d.id}" style="display: none;">
+                                <ul>`;
+                for (let c of d.courses || []) {
+                    html += `<li class="course-item" data-faculty-id="${f.id}" data-dept-id="${d.id}" data-course-id="${c.id}">
+                                <span>📖 ${c.name}</span>
+                                <span>
+                                    <button class="btn" onclick="editCourse('${f.id}','${d.id}','${c.id}')">✏️</button>
+                                    <button class="btn btn-danger" onclick="deleteCourse('${f.id}','${d.id}','${c.id}')">🗑️</button>
+                                </span>
+                             </li>`;
+                }
+                html += `<li><button class="btn" onclick="addCourse('${f.id}','${d.id}')">+ курс</button></li>`;
+                html += `</ul></div></li>`;
+            }
+            html += `<li><button class="btn" onclick="addDepartment('${f.id}')">+ кафедра</button></li>`;
+            html += `</ul></div></li>`;
+        }
+        html += `<li><button class="btn" onclick="addFaculty()">+ факультет</button></li>`;
+        html += '</ul>';
+        container.innerHTML = html;
+
+        document.querySelectorAll('.faculty-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                const facId = header.dataset.facultyId;
+                const childrenDiv = document.getElementById(`fac-${facId}`);
+                if (childrenDiv) childrenDiv.style.display = childrenDiv.style.display !== 'none' ? 'none' : 'block';
+            });
+        });
+        document.querySelectorAll('.dept-header').forEach(header => {
+            header.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                const facId = header.dataset.facultyId;
+                const deptId = header.dataset.deptId;
+                const childrenDiv = document.getElementById(`dept-${facId}-${deptId}`);
+                if (childrenDiv) childrenDiv.style.display = childrenDiv.style.display !== 'none' ? 'none' : 'block';
+            });
+        });
+        document.querySelectorAll('.course-item').forEach(courseDiv => {
+            courseDiv.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                const facId = courseDiv.dataset.facultyId;
+                const deptId = courseDiv.dataset.deptId;
+                const courseId = courseDiv.dataset.courseId;
+                selectCourse(facId, deptId, courseId);
+            });
+        });
+    }
+
+    // === РАСПИСАНИЕ КУРСА С РАЗДЕЛЕНИЕМ НА ЧЁТНУЮ/НЕЧЁТНУЮ НЕДЕЛЮ ===
+    function selectCourse(facultyId, departmentId, courseId) {
+        currentSelectedCourse = { facultyId, departmentId, courseId };
+        const faculty = appData.faculties.find(f => f.id === facultyId);
+        const dep = faculty.departments.find(d => d.id === departmentId);
+        const course = dep.courses.find(c => c.id === courseId);
+        const schedule = course.schedule || [];
+
+        const evenItems = schedule.filter(item => item.weekType === 'even' || item.weekType === 'both');
+        const oddItems = schedule.filter(item => item.weekType === 'odd' || item.weekType === 'both');
+
+        function renderTable(items, title) {
+            let html = `<h4>${title}</h4><table class="schedule-table"><thead><tr>
+                <th>День</th><th>Время</th><th>Предмет</th><th>Тип</th><th>Преподаватель</th><th>Аудитория</th><th>Неделя</th><th></th>
+            </tr></thead><tbody>`;
+            items.forEach((item, idx) => {
+                const originalIndex = schedule.findIndex(s => s === item);
+                html += `<tr class="${lessonTypes.find(t => t.value === item.type)?.className || ''}">
+                    <td><input type="text" value="${item.day}" class="sch-day-${originalIndex}"></td>
+                    <td><input type="text" value="${item.time}" class="sch-time-${originalIndex}"></td>
+                    <td><input type="text" value="${item.subject}" class="sch-subj-${originalIndex}"></td>
+                    <td><select class="sch-type-${originalIndex}">${lessonTypes.map(t => `<option value="${t.value}" ${t.value === item.type ? 'selected' : ''}>${t.label}</option>`).join('')}</select></td>
+                    <td><select class="sch-teacher-${originalIndex}"><option value="">—</option>${appData.teachers.map(t => `<option value="${t.id}" ${t.id === item.teacherId ? 'selected' : ''}>${t.name}</option>`).join('')}</select></td>
+                    <td><input type="text" value="${item.room}" class="sch-room-${originalIndex}"></td>
+                    <td><select class="sch-week-${originalIndex}">
+                        <option value="both" ${item.weekType === 'both' ? 'selected' : ''}>Обе</option>
+                        <option value="even" ${item.weekType === 'even' ? 'selected' : ''}>Чётная</option>
+                        <option value="odd" ${item.weekType === 'odd' ? 'selected' : ''}>Нечётная</option>
+                    </select></td>
+                    <td>
+                        <button class="btn" onclick="updateScheduleItem('${facultyId}','${departmentId}','${courseId}',${originalIndex})">💾</button>
+                        <button class="btn btn-danger" onclick="deleteScheduleItem('${facultyId}','${departmentId}','${courseId}',${originalIndex})">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+            html += `<tr><td colspan="8"><button class="btn" onclick="addScheduleItem('${facultyId}','${departmentId}','${courseId}')">+ Добавить пару</button></td></tr>`;
+            html += `</tbody></table>`;
+            return html;
+        }
+
+        const html = `<h3>Расписание курса: ${course.name} (${dep.name}, ${faculty.name})</h3>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">${renderTable(evenItems, "📘 Чётная неделя")}</div>
+                <div style="flex: 1;">${renderTable(oddItems, "📙 Нечётная неделя")}</div>
+            </div>`;
+        document.getElementById('schedulePanel').innerHTML = html;
+    }
+
+    function addScheduleItem(facultyId, departmentId, courseId) {
+        const faculty = appData.faculties.find(f => f.id === facultyId);
+        const dep = faculty.departments.find(d => d.id === departmentId);
+        const course = dep.courses.find(c => c.id === courseId);
+        if (!course.schedule) course.schedule = [];
+        course.schedule.push({
+            day: "Пн", time: "9:00-10:30", subject: "Новый предмет", type: "lecture",
+            teacherId: "", room: "", weekType: "both"
+        });
+        saveData();
+        selectCourse(facultyId, departmentId, courseId);
+    }
+
+    function updateScheduleItem(facultyId, departmentId, courseId, index) {
+        const faculty = appData.faculties.find(f => f.id === facultyId);
+        const dep = faculty.departments.find(d => d.id === departmentId);
+        const course = dep.courses.find(c => c.id === courseId);
+        const newDay = document.querySelector(`.sch-day-${index}`).value;
+        const newTime = document.querySelector(`.sch-time-${index}`).value;
+        const newSubject = document.querySelector(`.sch-subj-${index}`).value;
+        const newType = document.querySelector(`.sch-type-${index}`).value;
+        const newTeacherId = document.querySelector(`.sch-teacher-${index}`).value;
+        const newRoom = document.querySelector(`.sch-room-${index}`).value;
+        const newWeekType = document.querySelector(`.sch-week-${index}`).value;
+        course.schedule[index] = {
+            day: newDay, time: newTime, subject: newSubject, type: newType,
+            teacherId: newTeacherId, room: newRoom, weekType: newWeekType
+        };
+        saveData();
+        selectCourse(facultyId, departmentId, courseId);
+    }
+
+    function deleteScheduleItem(facultyId, departmentId, courseId, index) {
+        if (confirm("Удалить эту пару?")) {
+            const faculty = appData.faculties.find(f => f.id === facultyId);
+            const dep = faculty.departments.find(d => d.id === departmentId);
+            const course = dep.courses.find(c => c.id === courseId);
+            course.schedule.splice(index, 1);
+            saveData();
+            selectCourse(facultyId, departmentId, courseId);
+        }
+    }
+
+    // === РЕДАКТИРОВАНИЕ ФАКУЛЬТЕТОВ, КАФЕДР, КУРСОВ ===
+    function addFaculty() { let name = prompt("Название факультета:"); if(name){ appData.faculties.push({ id: generateId("fac"), name, departments: [] }); saveData(); renderTree(); } }
+    function editFaculty(id) { let f = appData.faculties.find(f=>f.id===id); let n=prompt("Новое название:", f.name); if(n){ f.name=n; saveData(); renderTree(); } }
+    function deleteFaculty(id) { if(confirm("Удалить факультет?")){ appData.faculties=appData.faculties.filter(f=>f.id!==id); saveData(); renderTree(); if(currentSelectedCourse?.facultyId===id) document.getElementById('schedulePanel').innerHTML='<p>Выберите курс</p>'; } }
+    function addDepartment(facId) { let name = prompt("Название кафедры:"); if(name){ let f=appData.faculties.find(f=>f.id===facId); f.departments.push({ id: generateId("dep"), name, courses: [] }); saveData(); renderTree(); } }
+    function editDepartment(facId, depId) { let f=appData.faculties.find(f=>f.id===facId); let d=f.departments.find(d=>d.id===depId); let n=prompt("Новое название:", d.name); if(n){ d.name=n; saveData(); renderTree(); } }
+    function deleteDepartment(facId, depId) { if(confirm("Удалить кафедру?")){ let f=appData.faculties.find(f=>f.id===facId); f.departments=f.departments.filter(d=>d.id!==depId); saveData(); renderTree(); if(currentSelectedCourse?.departmentId===depId) document.getElementById('schedulePanel').innerHTML='<p>Выберите курс</p>'; } }
+    function addCourse(facId, depId) { let name = prompt("Название курса:"); if(name){ let f=appData.faculties.find(f=>f.id===facId); let d=f.departments.find(d=>d.id===depId); d.courses.push({ id: generateId("course"), name, schedule: [] }); saveData(); renderTree(); } }
+    function editCourse(facId, depId, courseId) { let f=appData.faculties.find(f=>f.id===facId); let d=f.departments.find(d=>d.id===depId); let c=d.courses.find(c=>c.id===courseId); let n=prompt("Новое название:", c.name); if(n){ c.name=n; saveData(); renderTree(); } }
+    function deleteCourse(facId, depId, courseId) { if(confirm("Удалить курс?")){ let f=appData.faculties.find(f=>f.id===facId); let d=f.departments.find(d=>d.id===depId); d.courses=d.courses.filter(c=>c.id!==courseId); saveData(); renderTree(); if(currentSelectedCourse?.courseId===courseId) document.getElementById('schedulePanel').innerHTML='<p>Выберите курс</p>'; } }
+
+    // === ПРЕПОДАВАТЕЛИ ===
+    function renderTeachers() {
+        let container = document.getElementById('teachersList');
+        let html = '';
+        for (let t of appData.teachers) {
+            html += `<div style="border:1px solid #ccc; margin-bottom:8px; padding:8px; border-radius:8px;">
+                        <strong>${t.name}</strong>
+                        <button class="btn" onclick="editTeacher('${t.id}')">✏️</button>
+                        <button class="btn btn-danger" onclick="deleteTeacher('${t.id}')">🗑️</button>
+                        <div><button class="btn" onclick="showTeacherSchedule('${t.id}')">📅 Расписание</button></div>
+                     </div>`;
+        }
+        if (appData.teachers.length === 0) html = '<p>Нет преподавателей. Добавьте.</p>';
+        container.innerHTML = html;
+    }
+
+    function addTeacher() {
+        let name = prompt("ФИО преподавателя:");
+        if (name) {
+            appData.teachers.push({ id: generateId("t"), name });
+            saveData();
+            renderTeachers();
+        }
+    }
+    function editTeacher(id) {
+        let teacher = appData.teachers.find(t => t.id === id);
+        let newName = prompt("Изменить ФИО:", teacher.name);
+        if (newName) { teacher.name = newName; saveData(); renderTeachers(); }
+    }
+    function deleteTeacher(id) {
+        if (confirm("Удалить преподавателя? Это не удалит занятия из курсов, но связь потеряется.")) {
+            appData.teachers = appData.teachers.filter(t => t.id !== id);
+            saveData();
+            renderTeachers();
+        }
+    }
+
+    function showTeacherSchedule(teacherId) {
+        let teacher = appData.teachers.find(t => t.id === teacherId);
+        let lessons = [];
+        for (let f of appData.faculties) {
+            for (let d of f.departments || []) {
+                for (let c of d.courses || []) {
+                    for (let item of c.schedule || []) {
+                        if (item.teacherId === teacherId) {
+                            lessons.push({
+                                faculty: f.name, department: d.name, course: c.name,
+                                day: item.day, time: item.time, subject: item.subject,
+                                type: item.type, room: item.room
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        if (lessons.length === 0) {
+            document.getElementById('schedulePanel').innerHTML = `<h3>Расписание преподавателя: ${teacher.name}</h3><p>Нет назначенных пар. Добавьте занятия в расписании курсов.</p>`;
+            return;
+        }
+        let html = `<h3>Расписание преподавателя: ${teacher.name}</h3><table class="schedule-table"><thead><tr><th>День</th><th>Время</th><th>Предмет</th><th>Тип</th><th>Курс</th><th>Аудитория</th></tr></thead><tbody>`;
+        for (let l of lessons) {
+            const typeInfo = lessonTypes.find(t => t.value === l.type) || lessonTypes[0];
+            html += `<tr class="${typeInfo.className}"><td>${l.day}</td><td>${l.time}</td><td>${l.subject}</td><td>${typeInfo.label}</td><td>${l.faculty} / ${l.department} / ${l.course}</td><td>${l.room}</td></tr>`;
+        }
+        html += `</tbody></table>`;
+        document.getElementById('schedulePanel').innerHTML = html;
+    }
+
+    // === ЭКСПОРТ / ИМПОРТ ===
+    async function exportData() {
+        const dataStr = JSON.stringify(appData, null, 2);
+        if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file) {
+            const savedPath = await window.pywebview.api.save_file(dataStr);
+            alert(savedPath ? "Сохранено" : "Отменено");
+        } else {
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "uni_schedule.json";
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+    }
+
+    async function importData() {
+        if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file) {
+            const content = await window.pywebview.api.load_file();
+            if (content) {
+                try {
+                    const imported = JSON.parse(content);
+                    if (confirm("Импорт заменит текущие данные. Продолжить?")) {
+                        appData = imported;
+                        convertOldData();
+                        ensureWeekTypeField();
+                        saveData();
+                        renderTree();
+                        renderTeachers();
+                        document.getElementById('schedulePanel').innerHTML = "<p>Данные импортированы. Выберите курс.</p>";
+                    }
+                } catch(e) { alert("Ошибка файла"); }
+            }
+        } else {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                let file = e.target.files[0];
+                let reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const imported = JSON.parse(ev.target.result);
+                        if (confirm("Заменить данные?")) {
+                            appData = imported;
+                            convertOldData();
+                            ensureWeekTypeField();
+                            saveData();
+                            renderTree();
+                            renderTeachers();
+                            document.getElementById('schedulePanel').innerHTML = "<p>Импорт завершён</p>";
+                        }
+                    } catch(e) { alert("Ошибка"); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+    }
+
+    function initTabs() {
+        const btns = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                btns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                contents.forEach(c => c.classList.remove('active'));
+                document.getElementById(tabId + '-tab').classList.add('active');
+                if (tabId === 'teachers') renderTeachers();
+                else if (tabId === 'structure') renderTree();
+            });
+        });
+    }
+
+    loadData();
+    renderTree();
+    renderTeachers();
+    initTabs();
+    document.getElementById('addTeacherBtn').addEventListener('click', addTeacher);
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('importBtn').addEventListener('click', importData);
+</script>
+</body>
+</html>
