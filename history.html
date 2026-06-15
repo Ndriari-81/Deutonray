@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Хроники Дьётонрея — персональная историческая вики</title>
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --surface2: #16213e;
+    --text: #e0e0e0;
+    --text-secondary: #a0a0b0;
+    --accent: #7b5ea7;
+    --accent-glow: #a37ecc;
+    --border: #2a2a40;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --warning: #f39c12;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+  /* Боковая панель */
+  .sidebar {
+    width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 20px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sidebar h2 {
+    font-size: 1.6rem;
+    background: linear-gradient(135deg, var(--accent-glow), #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 5px;
+  }
+  .sidebar h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+  .epoch-list, .cat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .badge.active { border-color: var(--accent); background: rgba(123,94,167,0.2); color: white; }
+  .badge.epoch-badge { border-left: 4px solid var(--epoch-color, #888); }
+  .search-box {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+    transition: 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .btn:hover { background: var(--accent-glow); }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 5px;
+  }
+  .btn-outline:hover { background: var(--surface2); }
+  .btn-small {
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    width: auto;
+  }
+  /* Основная область */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    overflow-y: auto;
+    gap: 20px;
+  }
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .event-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  /* События */
+  .event-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--accent);
+    border-radius: 10px;
+    padding: 15px 20px;
+    transition: 0.2s;
+    position: relative;
+  }
+  .event-card:hover { border-color: var(--accent-glow); }
+  .event-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .event-date {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--accent-glow);
+    white-space: nowrap;
+  }
+  .event-epoch {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--epoch-bg, #333);
+    color: white;
+  }
+  .event-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+  }
+  .event-category {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: var(--text-secondary);
+  }
+  .event-desc {
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+  }
+  .event-actions {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    display: flex;
+    gap: 5px;
+    opacity: 0;
+    transition: 0.2s;
+  }
+  .event-card:hover .event-actions { opacity: 1; }
+  .action-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .action-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+  .action-btn.delete:hover { color: var(--danger); }
+
+  /* Модальное окно */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top:0;left:0;width:100%;height:100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  .modal {
+    background: var(--surface);
+    padding: 25px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .modal h2 { color: var(--accent-glow); }
+  .form-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .form-group label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+    resize: vertical;
+  }
+  textarea { min-height: 80px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  .flex-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+  .empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: 60px;
+  }
+  .epoch-manager {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  .epoch-manager input { flex: 1; }
+  .color-picker { width: 40px; height: 30px; padding: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Боковая панель -->
+<div class="sidebar">
+  <h2>📜 Хроники Пенаты</h2>
+  <div>
+    <h3>🔍 Поиск</h3>
+    <input type="text" class="search-box" id="searchInput" placeholder="Событие, дата, описание...">
+  </div>
+  <div>
+    <h3>🌌 Эпохи</h3>
+    <div class="epoch-list" id="epochFilters"></div>
+    <div class="epoch-manager">
+      <input type="text" id="newEpochName" placeholder="Новая эпоха">
+      <input type="color" id="newEpochColor" class="color-picker" value="#7b5ea7">
+      <button class="btn btn-small" id="addEpochBtn">+</button>
+    </div>
+  </div>
+  <div>
+    <h3>🏷️ Категории</h3>
+    <div class="cat-list" id="categoryFilters"></div>
+    <div style="display:flex; gap:5px;">
+      <input type="text" id="newCategoryName" placeholder="Новая категория">
+      <button class="btn btn-small" id="addCategoryBtn">+</button>
+    </div>
+  </div>
+  <button class="btn" id="addEventBtn">➕ Добавить событие</button>
+  <button class="btn btn-outline" id="exportBtn">📤 Экспорт (JSON)</button>
+  <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
+  <input type="file" id="importFile" accept=".json" style="display:none">
+  <div style="font-size:0.7rem; color:var(--text-secondary); margin-top:10px;">
+    Данные хранятся локально в браузере. Регулярно делайте экспорт!
+  </div>
+</div>
+
+<!-- Основная область -->
+<div class="main">
+  <div class="timeline-header">
+    <h2 style="font-weight:400;">📅 Историческая лента</h2>
+    <span class="event-count" id="eventCount"></span>
+  </div>
+  <div id="timelineContainer"></div>
+</div>
+
+<!-- Модальное окно добавления/редактирования -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Новое событие</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Дата / год</label>
+        <input type="text" id="eventDate" placeholder="например, 245 Эпохи Единства">
+      </div>
+      <div class="form-group">
+        <label>Порядок сортировки</label>
+        <input type="number" id="eventOrder" placeholder="Число для хронологии" value="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Эпоха</label>
+        <select id="eventEpoch"></select>
+      </div>
+      <div class="form-group">
+        <label>Категория</label>
+        <select id="eventCategory"></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Название события</label>
+      <input type="text" id="eventTitle" placeholder="Краткое название">
+    </div>
+    <div class="form-group">
+      <label>Описание</label>
+      <textarea id="eventDesc" placeholder="Подробности, участники, последствия..."></textarea>
+    </div>
+    <div class="flex-buttons">
+      <button class="btn btn-outline" id="cancelModalBtn">Отмена</button>
+      <button class="btn" id="saveEventBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // --- Хранилище ---
+    const STORAGE_KEY = 'penata_chronicles';
+    let events = [];
+    let epochs = ['Эпоха Туманов', 'Эра Единства', 'Век Раскола', 'Звёздная Эра'];
+    let epochColors = ['#9b59b6', '#3498db', '#e74c3c', '#f1c40f'];
+    let categories = ['Политика', 'Война', 'Эволюция', 'Катаклизм', 'Культура', 'Наука', 'Религия'];
+
+    // Текущие фильтры
+    let activeEpoch = null;
+    let activeCategory = null;
+    let searchQuery = '';
+    let editingId = null; // id редактируемого события
+
+    // --- Загрузка из localStorage ---
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const data = JSON.parse(raw);
+          events = data.events || [];
+          epochs = data.epochs || epochs;
+          epochColors = data.epochColors || epochColors;
+          categories = data.categories || categories;
+        } catch(e) { console.warn('Ошибка загрузки данных'); }
+      }
+      // Миграция: убедимся, что у всех событий есть id и order
+      events.forEach((e, idx) => {
+        if (!e.id) e.id = Date.now() + idx + Math.random();
+        if (e.order === undefined) e.order = 0;
+      });
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        events, epochs, epochColors, categories
+      }));
+    }
+
+    // --- Отображение фильтров ---
+    function renderFilters() {
+      const epochContainer = document.getElementById('epochFilters');
+      epochContainer.innerHTML = '';
+      epochs.forEach((name, i) => {
+        const badge = document.createElement('span');
+        badge.className = `badge epoch-badge ${activeEpoch === name ? 'active' : ''}`;
+        badge.style.setProperty('--epoch-color', epochColors[i] || '#888');
+        badge.style.borderLeftColor = epochColors[i] || '#888';
+        badge.textContent = name;
+        badge.onclick = () => {
+          activeEpoch = activeEpoch === name ? null : name;
+          renderFilters();
+          renderTimeline();
+        };
+        epochContainer.appendChild(badge);
+      });
+
+      const catContainer = document.getElementById('categoryFilters');
+      catContainer.innerHTML = '';
+      categories.forEach(cat => {
+        const badge = document.createElement('span');
+        badge.className = `badge ${activeCategory === cat ? 'active' : ''}`;
+        badge.textContent = cat;
+        badge.onclick = () => {
+          activeCategory = activeCategory === cat ? null : cat;
+          renderFilters();
+          renderTimeline();
+        };
+        catContainer.appendChild(badge);
+      });
+    }
+
+    // --- Обновление списка эпох/категорий в модальном окне ---
+    function updateModalSelects() {
+      const epochSelect = document.getElementById('eventEpoch');
+      const catSelect = document.getElementById('eventCategory');
+      if (!epochSelect || !catSelect) return;
+      epochSelect.innerHTML = epochs.map(e => `<option value="${e}">${e}</option>`).join('');
+      catSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    // --- Фильтрация и отображение событий ---
+    function getFilteredEvents() {
+      return events.filter(ev => {
+        if (activeEpoch && ev.epoch !== activeEpoch) return false;
+        if (activeCategory && ev.category !== activeCategory) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          return (ev.dateString.toLowerCase().includes(q) ||
+                  ev.title.toLowerCase().includes(q) ||
+                  ev.desc.toLowerCase().includes(q) ||
+                  ev.epoch.toLowerCase().includes(q) ||
+                  ev.category.toLowerCase().includes(q));
+        }
+        return true;
+      }).sort((a, b) => {
+        // Сначала по order, потом по id (для стабильности)
+        if (a.order !== b.order) return a.order - b.order;
+        return a.id - b.id;
+      });
+    }
+
+    function renderTimeline() {
+      const container = document.getElementById('timelineContainer');
+      const filtered = getFilteredEvents();
+      document.getElementById('eventCount').textContent = `Показано: ${filtered.length} из ${events.length}`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state">🕳️ Пока нет событий, соответствующих фильтрам.<br>Добавьте первое событие, нажав кнопку слева.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(ev => {
+        const epochIndex = epochs.indexOf(ev.epoch);
+        const color = epochColors[epochIndex] || '#888';
+        return `
+          <div class="event-card" style="border-left-color: ${color}">
+            <div class="event-header">
+              <span class="event-date">${escapeHtml(ev.dateString)}</span>
+              <span class="event-epoch" style="background:${color}">${escapeHtml(ev.epoch)}</span>
+              <span class="event-title">${escapeHtml(ev.title)}</span>
+              <span class="event-category">${escapeHtml(ev.category)}</span>
+            </div>
+            <div class="event-desc">${escapeHtml(ev.desc).replace(/\n/g, '<br>')}</div>
+            <div class="event-actions">
+              <button class="action-btn edit" data-id="${ev.id}">✏️</button>
+              <button class="action-btn delete" data-id="${ev.id}">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Навешиваем обработчики на кнопки
+      container.querySelectorAll('.edit').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = Number(btn.dataset.id);
+          openEditor(id);
+        });
+      });
+      container.querySelectorAll('.delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = Number(btn.dataset.id);
+          if (confirm('Удалить это событие навсегда?')) {
+            events = events.filter(ev => ev.id !== id);
+            saveData();
+            renderTimeline();
+          }
+        });
+      });
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // --- Модальное окно ---
+    const modal = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const eventDateInp = document.getElementById('eventDate');
+    const eventOrderInp = document.getElementById('eventOrder');
+    const eventEpochSel = document.getElementById('eventEpoch');
+    const eventCatSel = document.getElementById('eventCategory');
+    const eventTitleInp = document.getElementById('eventTitle');
+    const eventDescInp = document.getElementById('eventDesc');
+
+    function openEditor(id = null) {
+      editingId = id;
+      updateModalSelects();
+      if (id) {
+        const ev = events.find(e => e.id === id);
+        if (!ev) return;
+        modalTitle.textContent = 'Редактировать событие';
+        eventDateInp.value = ev.dateString;
+        eventOrderInp.value = ev.order;
+        eventEpochSel.value = ev.epoch;
+        eventCatSel.value = ev.category;
+        eventTitleInp.value = ev.title;
+        eventDescInp.value = ev.desc;
+      } else {
+        modalTitle.textContent = 'Новое событие';
+        eventDateInp.value = '';
+        eventOrderInp.value = events.length ? Math.max(...events.map(e=>e.order), 0) + 1 : 0;
+        eventEpochSel.value = epochs[0] || '';
+        eventCatSel.value = categories[0] || '';
+        eventTitleInp.value = '';
+        eventDescInp.value = '';
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+      editingId = null;
+    }
+
+    function saveEventFromModal() {
+      const dateString = eventDateInp.value.trim();
+      const order = parseInt(eventOrderInp.value) || 0;
+      const epoch = eventEpochSel.value;
+      const category = eventCatSel.value;
+      const title = eventTitleInp.value.trim();
+      const desc = eventDescInp.value.trim();
+
+      if (!dateString || !title) {
+        alert('Дата и название обязательны!');
+        return;
+      }
+
+      if (editingId) {
+        const ev = events.find(e => e.id === editingId);
+        if (ev) {
+          ev.dateString = dateString;
+          ev.order = order;
+          ev.epoch = epoch;
+          ev.category = category;
+          ev.title = title;
+          ev.desc = desc;
+        }
+      } else {
+        events.push({
+          id: Date.now(),
+          dateString,
+          order,
+          epoch,
+          category,
+          title,
+          desc
+        });
+      }
+      saveData();
+      closeModal();
+      renderTimeline();
+      renderFilters(); // на случай если эпоха/категория новые (но они уже в списке)
+    }
+
+    // Обработчики модального окна
+    document.getElementById('addEventBtn').addEventListener('click', () => openEditor(null));
+    document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+    document.getElementById('saveEventBtn').addEventListener('click', saveEventFromModal);
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // --- Поиск ---
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderTimeline();
+    });
+
+    // --- Добавление эпохи ---
+    document.getElementById('addEpochBtn').addEventListener('click', () => {
+      const nameInput = document.getElementById('newEpochName');
+      const colorInput = document.getElementById('newEpochColor');
+      const name = nameInput.value.trim();
+      if (!name) return;
+      if (epochs.includes(name)) { alert('Такая эпоха уже есть'); return; }
+      epochs.push(name);
+      epochColors.push(colorInput.value);
+      saveData();
+      nameInput.value = '';
+      renderFilters();
+      updateModalSelects();
+    });
+
+    // --- Добавление категории ---
+    document.getElementById('addCategoryBtn').addEventListener('click', () => {
+      const nameInput = document.getElementById('newCategoryName');
+      const name = nameInput.value.trim();
+      if (!name) return;
+      if (categories.includes(name)) { alert('Такая категория уже есть'); return; }
+      categories.push(name);
+      saveData();
+      nameInput.value = '';
+      renderFilters();
+      updateModalSelects();
+    });
+
+    // --- Экспорт ---
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const data = { events, epochs, epochColors, categories };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `penata_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // --- Импорт ---
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('importFile').click();
+    });
+    document.getElementById('importFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (data.events && data.epochs && data.categories) {
+            if (confirm('Импорт заменит все текущие данные. Продолжить?')) {
+              events = data.events;
+              epochs = data.epochs;
+              epochColors = data.epochColors;
+              categories = data.categories;
+              // нормализация id
+              events.forEach((e, idx) => { if (!e.id) e.id = Date.now() + idx; });
+              saveData();
+              renderFilters();
+              renderTimeline();
+              updateModalSelects();
+              alert('Импорт завершён!');
+            }
+          } else {
+            alert('Неверный формат файла.');
+          }
+        } catch(ex) { alert('Ошибка чтения JSON.'); }
+      };
+      reader.readAsText(file);
+      e.target.value = ''; // сброс
+    });
+
+    // --- Инициализация ---
+    loadData();
+    renderFilters();
+    updateModalSelects();
+    renderTimeline();
+
+    // Закрытие модального по Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
+    });
+
+  })();
+</script>
+</body>
+</html>
