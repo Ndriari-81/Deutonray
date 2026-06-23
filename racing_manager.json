@@ -1,0 +1,837 @@
+{
+  "mainPageText": "Здесь будет описание гоночной серии, правил, форматов и истории.",
+  "tracks": [
+    {
+      "id": "track1",
+      "name": "Рэллон",
+      "country": "Альбания / Рэллон",
+      "type": "Кольцевая (постоянная)",
+      "distance": 274,
+      "lapLength": 5.28,
+      "laps": 52,
+      "corners": 14,
+      "maxSpeed": 320,
+      "drsZones": 2,
+      "difficulty": 3,
+      "description": "Классический европейский автодром. Сочетание скоростных прямых и связок поворотов. Ключевая особенность — элемент «двойной апекс», часто становящийся местом решающего обгона."
+    },
+    {
+      "id": "track2",
+      "name": "Аквилон",
+      "country": "Нордхейм / Аквилон (портовый город)",
+      "type": "Городская (портовая)",
+      "distance": 290,
+      "lapLength": 4.92,
+      "laps": 59,
+      "corners": 18,
+      "maxSpeed": 305,
+      "drsZones": 1,
+      "difficulty": 4,
+      "description": "Штормовые условия: сильный боковой ветер, проливной дождь, молнии. Длинные прямые — смертельная ловушка. Зигзаг с крутыми поворотами. Цитата: «Дождь отделил тех, кто верит данным, от тех, кто чувствует дорогу»."
+    },
+    {
+      "id": "track3",
+      "name": "Каэлдор",
+      "country": "Дракония / Каэлдор (высокогорный город)",
+      "type": "Горная (высокогорная)",
+      "distance": 338,
+      "lapLength": 6.15,
+      "laps": 55,
+      "corners": 21,
+      "maxSpeed": 335,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Разреженный воздух требует перенастройки болидов. Трасса между горными пиками. Оценка: «Не самая сложная». Цитата: «Иногда величайшая победа — признать, что сегодня ты не можешь выиграть»."
+    },
+    {
+      "id": "track4",
+      "name": "Сильвана",
+      "country": "Аш-Шамаль / Оазис Сильвана",
+      "type": "Пустынная (постоянная)",
+      "distance": 334,
+      "lapLength": 5.47,
+      "laps": 61,
+      "corners": 15,
+      "maxSpeed": 330,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Опасна песком, проникающим повсюду как наждачка. Жара — испытание, но не критичное. Песок ускоряет износ техники."
+    },
+    {
+      "id": "track5",
+      "name": "Архипелаг Вердия",
+      "country": "Вердийская Республика",
+      "type": "Городская (островная)",
+      "distance": 312,
+      "lapLength": 5.89,
+      "laps": 53,
+      "corners": 23,
+      "maxSpeed": 310,
+      "drsZones": 1,
+      "difficulty": 5,
+      "description": "Серпантин по узким дамбам и мостам между островами. Крупные гравийные ловушки на некоторых поворотах."
+    },
+    {
+      "id": "track6",
+      "name": "Тар-Мариал",
+      "country": "Кастелия / Тар-Мариал",
+      "type": "Городская",
+      "distance": 248,
+      "lapLength": 4.35,
+      "laps": 57,
+      "corners": 26,
+      "maxSpeed": 270,
+      "drsZones": 1,
+      "difficulty": 5,
+      "description": "Узкие мощёные булыжником улицы. 90-градусные повороты, слепые апексы. Ошибка в сантиметр — стена. Тест на интеллект и точность."
+    },
+    {
+      "id": "track7",
+      "name": "Берег Согласия (Санрайз-Бэй)",
+      "country": "Авроралия / Санрайз-Бэй",
+      "type": "Прибрежная (постоянная)",
+      "distance": 308,
+      "lapLength": 5.41,
+      "laps": 57,
+      "corners": 13,
+      "maxSpeed": 345,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Коварная трасса. Длинная прямая вдоль набережной. Поворот «Поцелуй Сирены»: быстрый, слепой, с уменьшающимся радиусом. Ошибка — барьер и океан."
+    },
+    {
+      "id": "track8",
+      "name": "Кальдера (Остров Игнис)",
+      "country": "Игнисия / Остров Игнис",
+      "type": "Кольцевая (вулканическая)",
+      "distance": 355,
+      "lapLength": 5.72,
+      "laps": 62,
+      "corners": 17,
+      "maxSpeed": 315,
+      "drsZones": 2,
+      "difficulty": 5,
+      "description": "«Преддверие ада». Трасса по краю вулкана. Раскалённый асфальт пожирает резину. Выбросы пара создают слепящие завесы."
+    },
+    {
+      "id": "track9",
+      "name": "Кристаллические Шахты Просперо",
+      "country": "Просперит / Просперо-Глубокий",
+      "type": "Подземная (постоянная)",
+      "distance": 282,
+      "lapLength": 5.13,
+      "laps": 55,
+      "corners": 16,
+      "maxSpeed": 310,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Гигантская пещера со светящимися кристаллами. Калейдоскоп света дезориентирует. Низкий кислород снижает мощность. Стратегия — экономить ресурсы."
+    },
+    {
+      "id": "track10",
+      "name": "Руины Астра-Прайм",
+      "country": "Новый Вавилон / Астра-Прайм",
+      "type": "Кольцевая (историческая)",
+      "distance": 301,
+      "lapLength": 5.68,
+      "laps": 53,
+      "corners": 20,
+      "maxSpeed": 305,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Руины цивилизации кхааров. Повороты неестественно плавных форм обманывают вестибулярный аппарат. Локальные гравитационные аномалии."
+    },
+    {
+      "id": "track11",
+      "name": "Песчаный Бурец (Ороклан)",
+      "country": "Туманец / Ороклан",
+      "type": "Пустынная (временная)",
+      "distance": 310,
+      "lapLength": 5.34,
+      "laps": 58,
+      "corners": 14,
+      "maxSpeed": 320,
+      "drsZones": 2,
+      "difficulty": 5,
+      "description": "Внезапные песчаные бури с нулевой видимостью. Песок засыпает трассу. Стратегия — спрятаться за соперником как за щитом."
+    },
+    {
+      "id": "track12",
+      "name": "Метрополис (Нео-Токио)",
+      "country": "Пан-Океания / Нео-Токио",
+      "type": "Городская (ночная)",
+      "distance": 293,
+      "lapLength": 4.88,
+      "laps": 60,
+      "corners": 19,
+      "maxSpeed": 330,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Бесконечные эстакады, туннели со стробоскопическим эффектом, резкие перепады высот. Длинные прямые, заканчивающиеся тесными шиканами. Требует безупречной реакции в калейдоскопе огней."
+    },
+    {
+      "id": "track13",
+      "name": "Гленгарри",
+      "country": "Кельдия / Гленгарри",
+      "type": "Лесная",
+      "distance": 330,
+      "lapLength": 7.02,
+      "laps": 47,
+      "corners": 33,
+      "maxSpeed": 290,
+      "drsZones": 1,
+      "difficulty": 5,
+      "description": "Классика старой школы: быстрая, безжалостная. Старый потрескавшийся асфальт, слепые повороты. Нет обочин — вместо них деревья и гравий. Требует смелости и абсолютного доверия к машине."
+    },
+    {
+      "id": "track14",
+      "name": "Изумрудный Капкан (Ксанаду)",
+      "country": "Амазония (тропическая республика) / Порт-Виридиан",
+      "type": "Тропическая / джунгли",
+      "distance": 314,
+      "lapLength": 5.23,
+      "laps": 60,
+      "corners": 19,
+      "maxSpeed": 305,
+      "drsZones": 2,
+      "difficulty": 5,
+      "description": "Трасса прорублена в джунглях, стена зелени вплотную. Влажность под 90%, пилоты теряют до 3 кг за гонку. Внезапные тропические ливни вызывают аквапланирование. Дикие животные иногда выбегают на трассу. Знаменитый поворот «Клык Ягуара» — слепой, с резким понижением, машина на миг теряет контакт с асфальтом."
+    },
+    {
+      "id": "track15",
+      "name": "Ледяной Щит (Валхейм)",
+      "country": "Гренландская Конфедерация / Валхейм",
+      "type": "Арктическая (лед/каньон)",
+      "distance": 285,
+      "lapLength": 5.94,
+      "laps": 48,
+      "corners": 12,
+      "maxSpeed": 295,
+      "drsZones": 1,
+      "difficulty": 5,
+      "description": "Две части: лёд озера и узкий каньон. Погода меняется мгновенно (метель). Ключевая проблема — сцепление, тактика пит-стопов для шиповок. Пилот должен уметь «танцевать на льду»."
+    },
+    {
+      "id": "track16",
+      "name": "Отражение (Озеро Серенити)",
+      "country": "Серенити / Озеро Серенити",
+      "type": "Озёрная (дамбы)",
+      "distance": 288,
+      "lapLength": 4.12,
+      "laps": 70,
+      "corners": 22,
+      "maxSpeed": 265,
+      "drsZones": 1,
+      "difficulty": 4,
+      "description": "Короткая, с плотностью поворотов. Узкие дамбы посреди зеркального озера. Гладкий асфальт, отсутствие ориентиров (вода и небо сливаются). Царят ритм и плавность. Вызов разуму."
+    },
+    {
+      "id": "track17",
+      "name": "Гром Воды (Карракас)",
+      "country": "Андина (горная страна) / Карракас-дель-Агуа",
+      "type": "Горная + инженерная (плотина)",
+      "distance": 314,
+      "lapLength": 5.61,
+      "laps": 56,
+      "corners": 16,
+      "maxSpeed": 325,
+      "drsZones": 2,
+      "difficulty": 4,
+      "description": "Трасса проходит по гребню гигантской плотины (высота 300 м), затем вдоль водохранилища. Водяная пыль от водосбросов делает асфальт влажным даже в солнце. Вибрация от турбин расшатывает подвеску и утомляет пилотов. Поворот «Мокрое горло» — длинный левый над обрывом, сцепление меняется каждую секунду."
+    },
+    {
+      "id": "track18",
+      "name": "Стальной Каньон (Ноксвилл)",
+      "country": "Рустбелт / Ноксвилл",
+      "type": "Индустриальная (промышленная зона)",
+      "distance": 280,
+      "lapLength": 4.67,
+      "laps": 60,
+      "corners": 18,
+      "maxSpeed": 280,
+      "drsZones": 1,
+      "difficulty": 4,
+      "description": "Лабиринт заводов и терминалов. Воздух с запахом серы. Покрытие с низким трением. Узкие проезды, 90-градусные повороты за углами. Разливы жидкостей. Гул заводов и дым сбивают концентрацию."
+    },
+    {
+      "id": "track19",
+      "name": "Небесный Путь (Скайбридж)",
+      "country": "Нова Аркадия / Столица",
+      "type": "Футуристичная (парящая)",
+      "distance": 293,
+      "lapLength": 5.05,
+      "laps": 58,
+      "corners": 16,
+      "maxSpeed": 340,
+      "drsZones": 3,
+      "difficulty": 5,
+      "description": "Трасса-нить между небоскребами. Главная фишка — «джамп-секции» (трамплины) с прыжками между платформами. Критична настройка подвески и аэродинамики для контроля в полёте. Самая зрелищная гонка."
+    }
+  ],
+  "teams": [
+    {
+      "id": "team1",
+      "name": "Apex Predators Racing",
+      "philosophy": "Агрессия, доминирование, атака",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#ffbdcd"
+    },
+    {
+      "id": "team2",
+      "name": "Quantum Velocity",
+      "philosophy": "Футуризм, высокие технологии, скорость",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#199375"
+    },
+    {
+      "id": "team3",
+      "name": "Vortex Engineering",
+      "philosophy": "Хаос, нестабильность, скорость в поворотах",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "hsl(323, 70%, 70%)"
+    },
+    {
+      "id": "team4",
+      "name": "Neon Pulse Racing",
+      "philosophy": "Зрелищность, эпатаж, яркость",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": true,
+      "driverSeasons": [],
+      "color": "#89ffb7"
+    },
+    {
+      "id": "team5",
+      "name": "Ironclad Motorsport",
+      "philosophy": "Надёжность, прочность, выносливость",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#ffb54d"
+    },
+    {
+      "id": "team6",
+      "name": "Shadow Syndicate",
+      "philosophy": "Загадочность, элитарность, тактические интриги",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#ffffff"
+    },
+    {
+      "id": "team7",
+      "name": "Horizon Chargers",
+      "philosophy": "Стремление вперёд, динамика, атака с ходу",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#0f2bff"
+    },
+    {
+      "id": "team8",
+      "name": "Crimson Falcon Racing",
+      "philosophy": "Элегантность, смертоносность, точность",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#f50505"
+    },
+    {
+      "id": "team9",
+      "name": "Titan Forge Competition",
+      "philosophy": "Мощь, несгибаемость, инженерная мощь",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#c7c7c7"
+    },
+    {
+      "id": "team10",
+      "name": "Aurora Speedworks",
+      "philosophy": "Грация, чистая скорость, гармония",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "hsl(184, 70%, 70%)"
+    },
+    {
+      "id": "1779823110626-p26d5qu3",
+      "name": "Hazel Indastr",
+      "philosophy": "",
+      "history": "",
+      "titleSponsor": "",
+      "otherSponsors": "",
+      "constructorCup": false,
+      "driverSeasons": [],
+      "color": "#fff71b"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "drv1",
+      "name": "Кеннет Вальтер",
+      "number": 3,
+      "nickname": "Апекс",
+      "bio": "Король консистенции, многократный чемпион, холодный расчёт.",
+      "titles": 6,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 6,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv2",
+      "name": "Винсент Мур",
+      "number": 12,
+      "nickname": "Ураган",
+      "bio": "Агрессивный новичок из ралли-кросса, жёсткий в борьбе.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv3",
+      "name": "Конг Ли",
+      "number": 11,
+      "nickname": "Прямая",
+      "bio": "Специалист по прямым и обгонам с пиковой скоростью.",
+      "titles": 3,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 3,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv4",
+      "name": "Рената Силва",
+      "number": 27,
+      "nickname": "Алгоритм",
+      "bio": "Вундеркинд из симуляторов, безупречно точна, нехватка опыта.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv5",
+      "name": "Марко Ринальди",
+      "number": 8,
+      "nickname": "Вихрь",
+      "bio": "Мастер обгонов и сложных траекторий.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv6",
+      "name": "Маркус ван Дейк",
+      "number": 47,
+      "nickname": "Импульс",
+      "bio": "Харизматичный мастер стартов и атак в первом повороте.",
+      "titles": 1,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 1,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv7",
+      "name": "Брант Стоун",
+      "number": 7,
+      "nickname": "Призрак",
+      "bio": "Бывший король дрифта, после аварии стал мудрее и тактичнее.",
+      "titles": 4,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 4,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv8",
+      "name": "Эйден Фрост",
+      "number": 55,
+      "nickname": "Спарк",
+      "bio": "Молодая звезда, выдает вспышки гениальности.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv9",
+      "name": "Роберт Касто",
+      "number": 5,
+      "nickname": "Бастион",
+      "bio": "Надёжный и несгибаемый преемник Жданова, быстр на круге.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv10",
+      "name": "Гейдж О'Мэлли",
+      "number": 42,
+      "nickname": "Вангард",
+      "bio": "Сильный и бесстрашный гонщик, атакующий вангард команды.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv11",
+      "name": "Доминик Рейес",
+      "number": 66,
+      "nickname": "Фантом",
+      "bio": "Мастер психологических игр и побед в хаосе.",
+      "titles": 3,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 3,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv12",
+      "name": "Артур Вальтер",
+      "number": 39,
+      "nickname": "Сфинкс",
+      "bio": "Молчаливый тактик, его планы невозможно разгадать.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv13",
+      "name": "Оуэн Доссет",
+      "number": 17,
+      "nickname": "Скаут",
+      "bio": "Стратег, смотрящий далеко вперёд по гонке.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv14",
+      "name": "Пол Франклин",
+      "number": 44,
+      "nickname": "",
+      "bio": "Король стартов и быстрых кругов.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv15",
+      "name": "Алессандро Россо",
+      "number": 34,
+      "nickname": "Скарлет",
+      "bio": "Страстный ветеран, король стиля и рискованных обгонов.",
+      "titles": 4,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 4,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv16",
+      "name": "Майлз Аль-Джассим",
+      "number": 21,
+      "nickname": "Блиц",
+      "bio": "",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv17",
+      "name": "Лиам Шмидт",
+      "number": 4,
+      "nickname": "Ковач",
+      "bio": "Жёсткий инженер-гонщик новой школы, ценит мощь выше тонкой настройки.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv18",
+      "name": "Митчел Картер",
+      "number": 58,
+      "nickname": "Булава",
+      "bio": "Мощный гонщик, подавляет соперников силой и волей.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv19",
+      "name": "Оксар Кэмпбелл",
+      "number": 3,
+      "nickname": "Заря",
+      "bio": "Подающий надежды, быстрый и амбициозный пилот.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv20",
+      "name": "Фрейр Нильссон",
+      "number": 22,
+      "nickname": "Сияние",
+      "bio": "Хладнокровный скандинав, невероятно быстр в холодных условиях.",
+      "titles": 0,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 0,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv21",
+      "name": "Натан Левис",
+      "number": 19,
+      "nickname": "Процессор",
+      "bio": "Молодой, дерзкий, с аналитическим умом.",
+      "titles": 1,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 1,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    },
+    {
+      "id": "drv22",
+      "name": "Джеймс Тайлер",
+      "number": 10,
+      "nickname": "Король",
+      "bio": "Инженер, чувствует машину и трассу.",
+      "titles": 1,
+      "stats": {
+        "totalPoints": 0,
+        "titles": 1,
+        "grandsPrix": 0,
+        "fastestLaps": 0,
+        "poles": 0,
+        "podiums": {
+          "first": 0,
+          "second": 0,
+          "third": 0
+        }
+      }
+    }
+  ],
+  "seasons": []
+}

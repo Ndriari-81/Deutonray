@@ -1,0 +1,1030 @@
+{
+  "faculties": [
+    {
+      "id": "fac_des",
+      "name": "Двигательные и энергетические системы (ДЭС)",
+      "departments": [
+        {
+          "id": "dep_des_1",
+          "name": "Химические ракетные двигатели (ХРД)",
+          "courses": [
+            { "id": "course_des_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_2",
+          "name": "Электроракетные двигателы (ЭРД)",
+          "courses": [
+            { "id": "course_des_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_3",
+          "name": "Термоядерные энергодвигательные установки (ТЯУ)",
+          "courses": [
+            { "id": "course_des_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_4",
+          "name": "Гравитационные и аномальные физические принципы (ГАФП)",
+          "courses": [
+            { "id": "course_des_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_5",
+          "name": "Бортовые энергосистемы и накопители (БЭН)",
+          "courses": [
+            { "id": "course_des_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_6",
+          "name": "Испытания и диагностика двигательных установок (ИДДУ)",
+          "courses": [
+            { "id": "course_des_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_des_7",
+          "name": "Системы управления двигателями (СУД)",
+          "courses": [
+            { "id": "course_des_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_des_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_des_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_des_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_des_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_des_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_szho",
+      "name": "Системы жизнеобеспечения и обитаемости (СЖО)",
+      "departments": [
+        {
+          "id": "dep_szho_1",
+          "name": "Регенеративные системы воздуха и воды (РСВВ)",
+          "courses": [
+            { "id": "course_szho_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_2",
+          "name": "Замкнутые биологические системы (ЗБС)",
+          "courses": [
+            { "id": "course_szho_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_3",
+          "name": "Утилизация и переработка отходов (УПО)",
+          "courses": [
+            { "id": "course_szho_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_4",
+          "name": "Радиационная безопасность и защита (РБЗ)",
+          "courses": [
+            { "id": "course_szho_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_5",
+          "name": "Гравитационная физиология и искусственная гравитация (ГФИГ)",
+          "courses": [
+            { "id": "course_szho_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_6",
+          "name": "Обитаемость и эргономика замкнутых пространств (ОЭЗП)",
+          "courses": [
+            { "id": "course_szho_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_7",
+          "name": "Аварийные системы и спасение (АСС)",
+          "courses": [
+            { "id": "course_szho_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_8",
+          "name": "Биосинтез и пищевые технологии (БПТ)",
+          "courses": [
+            { "id": "course_szho_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_szho_9",
+          "name": "Криогеника и анабиоз (КрА)",
+          "courses": [
+            { "id": "course_szho_9_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_szho_9_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_szho_9_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_szho_9_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_szho_9_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_szho_9_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_ns",
+      "name": "Космическая навигация и связь (НС)",
+      "departments": [
+        {
+          "id": "dep_ns_1",
+          "name": "Небесная механика и баллистика (НМБ)",
+          "courses": [
+            { "id": "course_ns_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_2",
+          "name": "Релятивистская навигация (РН)",
+          "courses": [
+            { "id": "course_ns_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_3",
+          "name": "Гравитационное маневрирование и поля (ГМП)",
+          "courses": [
+            { "id": "course_ns_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_4",
+          "name": "Квантовая связь и навигация (КСН)",
+          "courses": [
+            { "id": "course_ns_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_5",
+          "name": "Дальние космические коммуникации (ДКК)",
+          "courses": [
+            { "id": "course_ns_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_6",
+          "name": "Лазерная и оптическая связь (ЛОС)",
+          "courses": [
+            { "id": "course_ns_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_7",
+          "name": "Обработка сигналов и помехозащита (ОСП)",
+          "courses": [
+            { "id": "course_ns_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_ns_8",
+          "name": "Навигационные системы и приборы (НСП)",
+          "courses": [
+            { "id": "course_ns_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_ns_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_ns_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_ns_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_ns_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_ns_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_pil",
+      "name": "Подготовка пилотов и операторов (ПИЛ)",
+      "departments": [
+        {
+          "id": "dep_pil_1",
+          "name": "Подготовка пилотов малых кораблей (МК)",
+          "courses": [
+            { "id": "course_pil_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pil_2",
+          "name": "Подготовка пилотов больших кораблей (БК)",
+          "courses": [
+            { "id": "course_pil_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pil_3",
+          "name": "Операторы беспилотных систем (ОБС)",
+          "courses": [
+            { "id": "course_pil_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pil_4",
+          "name": "Операторы специальных систем (ОСС)",
+          "courses": [
+            { "id": "course_pil_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pil_5",
+          "name": "Боевое применение (БП)",
+          "courses": [
+            { "id": "course_pil_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pil_6",
+          "name": "Психология и физиология лётного состава (ПФЛС)",
+          "courses": [
+            { "id": "course_pil_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pil_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pil_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pil_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pil_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pil_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_kk",
+      "name": "Космическое кораблестроение и конструирование (КК)",
+      "departments": [
+        {
+          "id": "dep_kk_1",
+          "name": "Общее проектирование и компоновка (ОПК)",
+          "courses": [
+            { "id": "course_kk_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_2",
+          "name": "Прочность и конструкция корпуса (ПКК)",
+          "courses": [
+            { "id": "course_kk_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_3",
+          "name": "Материаловедение и новые материалы (МНМ)",
+          "courses": [
+            { "id": "course_kk_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_4",
+          "name": "Аэрокосмическая гидро- и газодинамики (АГД)",
+          "courses": [
+            { "id": "course_kk_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_5",
+          "name": "Технологии производства и сборки (ТПС)",
+          "courses": [
+            { "id": "course_kk_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_6",
+          "name": "Испытания и сертификация (КИС)",
+          "courses": [
+            { "id": "course_kk_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_7",
+          "name": "Системы автоматизированного проектирования (САПР)",
+          "courses": [
+            { "id": "course_kk_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kk_8",
+          "name": "Проектирование космических станций и баз (ПКСБ)",
+          "courses": [
+            { "id": "course_kk_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kk_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kk_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kk_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kk_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kk_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_tes",
+      "name": "Техническая эксплуатация и сервис (ТЭС)",
+      "departments": [
+        {
+          "id": "dep_tes_1",
+          "name": "Техническая диагностика и мониторинг (ТДМ)",
+          "courses": [
+            { "id": "course_tes_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_2",
+          "name": "Эксплуатация и ремонт двигательных установок (ЭРДУ)",
+          "courses": [
+            { "id": "course_tes_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_3",
+          "name": "Эксплуатация систем жизнеобеспечения (ЭСЖО)",
+          "courses": [
+            { "id": "course_tes_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_4",
+          "name": "Эксплуатация навигационных систем и связи (ЭНСС)",
+          "courses": [
+            { "id": "course_tes_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_5",
+          "name": "Робототехника и автоматизированные системы (РАС)",
+          "courses": [
+            { "id": "course_tes_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_6",
+          "name": "Аварийно-спасательные работы и выживание (АСРВ)",
+          "courses": [
+            { "id": "course_tes_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_7",
+          "name": "Материально-техническое обеспечение и логистика запчастей (МТО)",
+          "courses": [
+            { "id": "course_tes_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_tes_8",
+          "name": "Продление ресурса и утилизация (ПРУ)",
+          "courses": [
+            { "id": "course_tes_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_tes_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_tes_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_tes_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_tes_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_tes_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_kmp",
+      "name": "Космическая медицина и психология (КМП)",
+      "departments": [
+        {
+          "id": "dep_kmp_1",
+          "name": "Гравитационная физиология и реабилитация (ГФР)",
+          "courses": [
+            { "id": "course_kmp_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_2",
+          "name": "Радиационная медицина (РМ)",
+          "courses": [
+            { "id": "course_kmp_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_3",
+          "name": "Психология малых групп и изоляции (ПМГ)",
+          "courses": [
+            { "id": "course_kmp_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_4",
+          "name": "Ксеномедицина и экзобиология (КМЭБ)",
+          "courses": [
+            { "id": "course_kmp_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_5",
+          "name": "Кибернетическая медицина и протезирование (КМП)",
+          "courses": [
+            { "id": "course_kmp_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_6",
+          "name": "Фармакология и биохимия адаптогенов (ФБА)",
+          "courses": [
+            { "id": "course_kmp_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_7",
+          "name": "Медицина катастроф и экстремальная медицина (МКЭМ)",
+          "courses": [
+            { "id": "course_kmp_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kmp_8",
+          "name": "Психологический отбор и профпригодность (ПОП)",
+          "courses": [
+            { "id": "course_kmp_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kmp_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kmp_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kmp_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kmp_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kmp_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_akbs",
+      "name": "Автоматика, кибернетика и бортовые системы (АКБС)",
+      "departments": [
+        {
+          "id": "dep_akbs_1",
+          "name": "Бортовые вычислительные комплексы (БВК)",
+          "courses": [
+            { "id": "course_akbs_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_2",
+          "name": "Системное ПО и операционные системы (СПО)",
+          "courses": [
+            { "id": "course_akbs_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_3",
+          "name": "Интерфейсы и систем отображения (ИСО)",
+          "courses": [
+            { "id": "course_akbs_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_4",
+          "name": "Искусственный интеллект и автономные системы (ИИАС)",
+          "courses": [
+            { "id": "course_akbs_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_5",
+          "name": "Кибербезопасность космических систем (КБКС)",
+          "courses": [
+            { "id": "course_akbs_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_6",
+          "name": "Сенсорика и системы сбора данных (ССД)",
+          "courses": [
+            { "id": "course_akbs_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_akbs_7",
+          "name": "Автоматическое управление и регуляторы (АУР)",
+          "courses": [
+            { "id": "course_akbs_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_akbs_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_akbs_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_akbs_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_akbs_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_akbs_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_kpl",
+      "name": "Космическое право и логистика (КПЛ)",
+      "departments": [
+        {
+          "id": "dep_kpl_1",
+          "name": "Международное космическое право (МКП)",
+          "courses": [
+            { "id": "course_kpl_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_2",
+          "name": "Межпланетное торговое право (МТП)",
+          "courses": [
+            { "id": "course_kpl_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_3",
+          "name": "Космическое страхование и управление рисками (КСУР)",
+          "courses": [
+            { "id": "course_kpl_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_4",
+          "name": "Диспетчерская служба и управление трафиком (ДСУТ)",
+          "courses": [
+            { "id": "course_kpl_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_5",
+          "name": "Логистика межпланетных перевозок (ЛМП)",
+          "courses": [
+            { "id": "course_kpl_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_6",
+          "name": "Менеджмент космических колоний и баз (МККБ)",
+          "courses": [
+            { "id": "course_kpl_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_7",
+          "name": "Таможенный контроль и экспортные ограничения (ТКЭО)",
+          "courses": [
+            { "id": "course_kpl_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_8",
+          "name": "Экономика и финансирование космических проектов (ЭФКП)",
+          "courses": [
+            { "id": "course_kpl_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_kpl_9",
+          "name": "Этика и философия космической экспансии (ЭФКЭ)",
+          "courses": [
+            { "id": "course_kpl_9_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_kpl_9_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_kpl_9_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_kpl_9_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_kpl_9_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_kpl_9_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fac_pmr",
+      "name": "Перспективные материалы и ресурсодобыча (ПМР)",
+      "departments": [
+        {
+          "id": "dep_pmr_1",
+          "name": "Физика и химия перспективных материалов (ФХПМ)",
+          "courses": [
+            { "id": "course_pmr_1_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_1_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_1_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_1_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_1_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_1_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_2",
+          "name": "Металлургия и обработка материалов в космосе (МОМК)",
+          "courses": [
+            { "id": "course_pmr_2_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_2_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_2_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_2_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_2_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_2_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_3",
+          "name": "Композиционные и полимерные материалы (КПМ)",
+          "courses": [
+            { "id": "course_pmr_3_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_3_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_3_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_3_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_3_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_3_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_4",
+          "name": "Космическая геология и минералогия (КГМ)",
+          "courses": [
+            { "id": "course_pmr_4_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_4_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_4_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_4_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_4_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_4_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_5",
+          "name": "Горное дело и добыча ресурсов (ГДР)",
+          "courses": [
+            { "id": "course_pmr_5_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_5_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_5_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_5_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_5_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_5_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_6",
+          "name": "Переработка и обогащение минерального сырья (ПОМС)",
+          "courses": [
+            { "id": "course_pmr_6_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_6_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_6_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_6_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_6_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_6_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_7",
+          "name": "Рециклинг и безотходные технологии (РБТ)",
+          "courses": [
+            { "id": "course_pmr_7_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_7_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_7_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_7_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_7_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_7_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_8",
+          "name": "Строительные материалы и конструкции для колоний (СМКК)",
+          "courses": [
+            { "id": "course_pmr_8_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_8_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_8_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_8_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_8_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_8_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_9",
+          "name": "Экономика и разведка месторождений (ЭРМ)",
+          "courses": [
+            { "id": "course_pmr_9_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_9_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_9_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_9_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_9_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_9_6", "name": "6 курс", "schedule": [] }
+          ]
+        },
+        {
+          "id": "dep_pmr_10",
+          "name": "История горного дела и материаловедения (ИГДМ)",
+          "courses": [
+            { "id": "course_pmr_10_1", "name": "1 курс", "schedule": [] },
+            { "id": "course_pmr_10_2", "name": "2 курс", "schedule": [] },
+            { "id": "course_pmr_10_3", "name": "3 курс", "schedule": [] },
+            { "id": "course_pmr_10_4", "name": "4 курс", "schedule": [] },
+            { "id": "course_pmr_10_5", "name": "5 курс", "schedule": [] },
+            { "id": "course_pmr_10_6", "name": "6 курс", "schedule": [] }
+          ]
+        }
+      ]
+    }
+  ],
+  "teachers": [
+    { "id": "t1", "name": "Иванов И.И." },
+    { "id": "t2", "name": "Петров П.П." },
+    { "id": "t3", "name": "Сидоров С.С." },
+    { "id": "t4", "name": "Кузнецов К.К." }
+  ]
+}
