@@ -3,34 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дьётонрей — главная</title>
+    <title>Дьётонрей — мир рыжей земли и серебряных лесов</title>
+    <!-- Подключаем общий стиль для колонки и каркаса -->
     <link rel="stylesheet" href="style.css">
+    <!-- Дополнительные стили только для главной страницы -->
+    <style>
+        /* Переопределяем фон и текст для main-content */
+        .main-content {
+            background: #2b1e12; /* тёмный рыжевато-коричневый, как почва */
+            color: #e8e0d0;
+            max-width: 100%;
+            padding: 40px 50px;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Декоративный фон: имитация руды и кристаллов */
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(192, 120, 60, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(200, 200, 210, 0.05) 0%, transparent 40%),
+                        repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(160, 100, 50, 0.02) 100px, rgba(160, 100, 50, 0.02) 102px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Все содержимое поверх фона */
+        .main-content > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Заголовок с серебряным свечением */
+        .main-content h1 {
+            font-size: 3.2rem;
+            font-weight: 300;
+            color: #e8e0d0;
+            text-shadow: 0 0 20px rgba(192, 192, 200, 0.3), 0 4px 8px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(192, 192, 200, 0.4);
+            padding-bottom: 15px;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+        .main-content h1 span {
+            color: #d4b48c; /* рыжий оттенок */
+        }
+
+        /* Основной блок с описанием */
+        .welcome-card {
+            background: rgba(60, 40, 25, 0.7);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(192, 192, 200, 0.2);
+            border-radius: 24px;
+            padding: 35px 40px;
+            margin: 30px 0 40px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #ddd6c8;
+        }
+        .welcome-card strong {
+            color: #e8c9a0; /* светлый рыжий */
+        }
+        .welcome-card .silver {
+            color: #c8c8d0;
+            font-weight: 500;
+        }
+
+        /* Сетка карточек разделов */
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .section-card {
+            background: rgba(40, 30, 20, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(192, 192, 200, 0.15);
+            border-radius: 16px;
+            padding: 20px 18px;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #ddd6c8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .section-card:hover {
+            transform: translateY(-6px);
+            border-color: #d4b48c;
+            background: rgba(60, 40, 25, 0.8);
+            box-shadow: 0 8px 24px rgba(192, 120, 60, 0.3);
+        }
+        .section-card .icon {
+            font-size: 2.6rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .section-card h3 {
+            font-weight: 400;
+            font-size: 1.2rem;
+            margin: 8px 0 4px;
+            color: #e8dcc8;
+        }
+        .section-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Серебряная линия-разделитель */
+        .silver-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b0b0b8, transparent);
+            margin: 30px 0 20px;
+            opacity: 0.5;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 25px 20px;
+            }
+            .main-content h1 {
+                font-size: 2.2rem;
+            }
+            .welcome-card {
+                padding: 20px;
+                font-size: 1rem;
+            }
+            .section-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+        }
+        @media (max-width: 500px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Левая панель навигации -->
+    <!-- ===== ЛЕВАЯ КОЛОНКА (оставляем без изменений) ===== -->
     <nav class="sidebar">
         <h2>📜 Дьётонрей</h2>
         <ul>
-            <li><a href="history.html">📖 История Дьётонрея</a></li>
             <li><a href="index.html">🏠 Главная</a></li>
+            <li><a href="history.html">📖 История Дьётонрея</a></li>
             <li><a href="calendar-events.html">📅 Календарь событий</a></li>
             <li><a href="racing_manager.html">🏁 Глобл Тэк Рэйс</a></li>
             <li><a href="uni_schedule.html">🎓 Расписание Национального Космического</a></li>
         </ul>
     </nav>
 
-    <!-- Основная часть -->
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ (обновлённая главная) ===== -->
     <main class="main-content">
-        <h1>Добро пожаловать на Дьётонрей</h1>
 
-        <div class="welcome-text">
-            <!-- Здесь вы вставите своё описание мира -->
-            <p><strong>Дьётонрей</strong> — это мир, где магия переплетается с технологиями, а древние боги всё ещё шепчут свои тайны смертным.</p>
-            <p>Этот сайт — ваш путеводитель по главным событиям, историям и загадкам этого удивительного измерения.</p>
-            <p class="placeholder">✍️ <em>Здесь вы можете написать развёрнутое описание Дьётонрея — его географию, народы, ключевые конфликты или легенды. Просто замените этот текст.</em></p>
-            <p>Используйте левую панель, чтобы перейти к интересующему разделу.</p>
+        <h1>Добро пожаловать на <span>Дьётонрей</span></h1>
+
+        <div class="welcome-card">
+            <p>
+                <strong>Дьётонрей</strong> — мир, где сама земля дышит рыжим огнём <span class="silver">ванадия</span>, 
+                а леса искрятся серебром <span class="silver">кварцевых кристаллов</span>. 
+                В каждом камне — след древней магии, в каждой травинке — отблеск звёзд. 
+                Высокие горы, подобные <strong>Гималаям</strong>, хранят вечные снега и тайны, 
+                которые ещё не разгаданы.
+            </p>
+            <p style="margin-top: 12px;">
+                Это место, где технологии сплетаются с природой, а боги всё ещё шепчут с ветром. 
+                Используйте левую панель, чтобы исследовать мир через его события, гонки, 
+                академию и историю.
+            </p>
         </div>
+
+        <div class="silver-line"></div>
+
+        <!-- Карточки-ссылки на разделы -->
+        <div class="section-grid">
+            <a href="calendar-events.html" class="section-card">
+                <span class="icon">📅</span>
+                <h3>Календарь событий</h3>
+                <p>Что происходит в мире прямо сейчас</p>
+            </a>
+            <a href="racing_manager.html" class="section-card">
+                <span class="icon">🏁</span>
+                <h3>Глобл Тэк Рэйс</h3>
+                <p>Технологии и скорость на ванадиевых трассах</p>
+            </a>
+            <a href="uni_schedule.html" class="section-card">
+                <span class="icon">🎓</span>
+                <h3>Расписание Национального Космического</h3>
+                <p>Академия знаний и будущих открытий</p>
+            </a>
+            <a href="history.html" class="section-card">
+                <span class="icon">📖</span>
+                <h3>История Дьётонрея</h3>
+                <p>Легенды, эпохи и герои</p>
+            </a>
+        </div>
+
+        <div style="margin-top: 40px; font-size: 0.9rem; opacity: 0.5; text-align: center; border-top: 1px solid rgba(192,192,200,0.1); padding-top: 20px;">
+            ✦ Вдохновлено рыжей землёй и серебряной листвой ✦
+        </div>
+
     </main>
 
 </body>
