@@ -2,16 +2,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гоночный менеджер</title>
+    <!-- Общий стиль для всего сайта (левая колонка, main-content) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Специфичные стили для гоночного менеджера -->
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Переопределяем фон и отступы для основного блока (чтобы он был светлым) */
+        .main-content {
             background: #eef2f5;
-            margin: 20px;
+            padding: 20px 30px;
+            max-width: 100%;
         }
+
         .tabs {
             display: flex;
             gap: 8px;
@@ -213,985 +216,989 @@
             justify-content: space-between;
             align-items: center;
         }
+        /* Адаптивность для маленьких экранов */
+        @media (max-width: 768px) {
+            .two-columns {
+                flex-direction: column;
+            }
+            .list-panel {
+                width: 100%;
+                max-height: 200px;
+            }
+            .form-row label {
+                width: 100%;
+            }
+            .form-row input, .form-row textarea, .form-row select {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-<h2>🏁 Гоночный менеджер</h2>
-<div class="toolbar">
-    <button id="exportBtn">💾 Экспорт</button>
-    <button id="importBtn">📂 Импорт</button>
-</div>
-<div class="tabs">
-    <div class="tab active" data-tab="main">📄 Главная</div>
-    <div class="tab" data-tab="tracks">🏁 Трассы</div>
-    <div class="tab" data-tab="teams">🏎️ Команды</div>
-    <div class="tab" data-tab="drivers">👨‍✈️ Пилоты</div>
-    <div class="tab" data-tab="seasons">🏆 Сезоны</div>
-</div>
 
-<div id="main-tab" class="tab-content active">
-    <h3>О гонках, форматах, истории</h3>
-    <textarea id="mainText" rows="15" style="width:100%"></textarea>
-    <button id="saveMainBtn" class="primary">Сохранить</button>
-</div>
+    <!-- ===== ЛЕВАЯ КОЛОНКА (навигация по сайту) ===== -->
+    <nav class="sidebar">
+        <h2>📜 Дьётонрей</h2>
+        <ul>
+            <li><a href="index.html">🏠 Главная</a></li>
+            <li><a href="calendar-events.html">📅 Календарь событий</a></li>
+            <li><a href="racing_manager.html">🏁 Глобл Тэк Рэйс</a></li>
+            <li><a href="uni_schedule.html">🎓 Расписание Национального Космического</a></li>
+            <li><a href="history.html">📖 История Дьётонрея</a></li>
+        </ul>
+    </nav>
 
-<div id="tracks-tab" class="tab-content">
-    <div class="two-columns">
-        <div class="list-panel" id="tracksListPanel"></div>
-        <div class="detail-panel" id="trackDetail"></div>
-    </div>
-    <div class="button-bar" style="margin-top:15px;">
-        <button id="addTrackBtn" class="primary">➕ Новая трасса</button>
-    </div>
-</div>
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ (гоночный менеджер) ===== -->
+    <main class="main-content">
 
-<div id="teams-tab" class="tab-content">
-    <div class="two-columns">
-        <div class="list-panel" id="teamsListPanel"></div>
-        <div class="detail-panel" id="teamDetail"></div>
-    </div>
-    <div class="button-bar">
-        <button id="addTeamBtn" class="primary">➕ Новая команда</button>
-    </div>
-</div>
+        <h2>🏁 Гоночный менеджер</h2>
 
-<div id="drivers-tab" class="tab-content">
-    <div class="two-columns">
-        <div class="list-panel" id="driversListPanel"></div>
-        <div class="detail-panel" id="driverDetail"></div>
-    </div>
-    <div class="button-bar">
-        <button id="addDriverBtn" class="primary">➕ Новый пилот</button>
-    </div>
-</div>
+        <div class="toolbar">
+            <button id="exportBtn">💾 Экспорт</button>
+            <button id="importBtn">📂 Импорт</button>
+        </div>
 
-<div id="seasons-tab" class="tab-content">
-    <div class="two-columns">
-        <div class="list-panel" id="seasonsListPanel"></div>
-        <div class="detail-panel" id="seasonDetail"></div>
-    </div>
-    <div class="button-bar">
-        <button id="addSeasonBtn" class="primary">➕ Новый сезон</button>
-    </div>
-</div>
+        <div class="tabs">
+            <div class="tab active" data-tab="main">📄 Главная</div>
+            <div class="tab" data-tab="tracks">🏁 Трассы</div>
+            <div class="tab" data-tab="teams">🏎️ Команды</div>
+            <div class="tab" data-tab="drivers">👨‍✈️ Пилоты</div>
+            <div class="tab" data-tab="seasons">🏆 Сезоны</div>
+        </div>
 
-<script>
-    // ------------------- DATA -------------------
-    let appData = {
-        mainPageText: "",
-        tracks: [],
-        teams: [],
-        drivers: [],
-        seasons: []
-    };
-    const JSON_FILE = "racing_manager.json";
+        <!-- Вкладки -->
+        <div id="main-tab" class="tab-content active">
+            <h3>О гонках, форматах, истории</h3>
+            <textarea id="mainText" rows="15" style="width:100%"></textarea>
+            <button id="saveMainBtn" class="primary">Сохранить</button>
+        </div>
 
-    function generateId() {
-        return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
-    }
+        <div id="tracks-tab" class="tab-content">
+            <div class="two-columns">
+                <div class="list-panel" id="tracksListPanel"></div>
+                <div class="detail-panel" id="trackDetail"></div>
+            </div>
+            <div class="button-bar" style="margin-top:15px;">
+                <button id="addTrackBtn" class="primary">➕ Новая трасса</button>
+            </div>
+        </div>
 
-    function getRandomPastel() {
-        const hue = Math.floor(Math.random() * 360);
-        return `hsl(${hue}, 70%, 70%)`;
-    }
+        <div id="teams-tab" class="tab-content">
+            <div class="two-columns">
+                <div class="list-panel" id="teamsListPanel"></div>
+                <div class="detail-panel" id="teamDetail"></div>
+            </div>
+            <div class="button-bar">
+                <button id="addTeamBtn" class="primary">➕ Новая команда</button>
+            </div>
+        </div>
 
-    async function loadDataFromJson() {
-        try {
-            const response = await fetch(JSON_FILE);
-            if (!response.ok) throw new Error("Файл не найден");
-            const data = await response.json();
-            appData = data;
-            if (!appData.tracks) appData.tracks = [];
-            if (!appData.teams) appData.teams = [];
-            if (!appData.drivers) appData.drivers = [];
-            if (!appData.seasons) appData.seasons = [];
-            if (appData.mainPageText === undefined) appData.mainPageText = "";
-            for (let team of appData.teams) {
-                if (!team.color) team.color = getRandomPastel();
-            }
-        } catch (error) {
-            console.warn("Не удалось загрузить JSON, используются пустые данные", error);
-            appData = {
-                mainPageText: "Здесь будет описание гоночной серии, правил, форматов и истории.",
-                tracks: [],
-                teams: [],
-                drivers: [],
-                seasons: []
-            };
+        <div id="drivers-tab" class="tab-content">
+            <div class="two-columns">
+                <div class="list-panel" id="driversListPanel"></div>
+                <div class="detail-panel" id="driverDetail"></div>
+            </div>
+            <div class="button-bar">
+                <button id="addDriverBtn" class="primary">➕ Новый пилот</button>
+            </div>
+        </div>
+
+        <div id="seasons-tab" class="tab-content">
+            <div class="two-columns">
+                <div class="list-panel" id="seasonsListPanel"></div>
+                <div class="detail-panel" id="seasonDetail"></div>
+            </div>
+            <div class="button-bar">
+                <button id="addSeasonBtn" class="primary">➕ Новый сезон</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ===== СКРИПТЫ (без изменений) ===== -->
+    <script>
+        // ------------------- DATA -------------------
+        let appData = {
+            mainPageText: "",
+            tracks: [],
+            teams: [],
+            drivers: [],
+            seasons: []
+        };
+        const JSON_FILE = "racing_manager.json";
+
+        function generateId() {
+            return Date.now() + '-' + Math.random().toString(36).substr(2, 8);
         }
-        renderMain();
-        renderTracksList();
-        if (appData.tracks[0]) currentTrackId = appData.tracks[0].id;
-        renderTeamsList();
-        if (appData.teams[0]) currentTeamId = appData.teams[0].id;
-        renderDriversList();
-        if (appData.drivers[0]) currentDriverId = appData.drivers[0].id;
-        renderSeasonsList();
-        if (appData.seasons[0]) currentSeasonId = appData.seasons[0].id;
-    }
 
-    let currentTrackId = null;
-    let currentTeamId = null;
-    let currentDriverId = null;
-    let currentSeasonId = null;
+        function getRandomPastel() {
+            const hue = Math.floor(Math.random() * 360);
+            return `hsl(${hue}, 70%, 70%)`;
+        }
 
-    // --- Функции для трасс, команд, пилотов (без изменений) ---
-    function renderTracksList() {
-        const container = document.getElementById('tracksListPanel');
-        if (!container) return;
-        let html = '';
-        appData.tracks.forEach(track => {
-            html += `<div class="list-item ${currentTrackId === track.id ? 'selected' : ''}" data-id="${track.id}">${escapeHtml(track.name)}</div>`;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll('#tracksListPanel .list-item').forEach(el => {
-            el.addEventListener('click', () => {
-                currentTrackId = el.dataset.id;
+        async function loadDataFromJson() {
+            try {
+                const response = await fetch(JSON_FILE);
+                if (!response.ok) throw new Error("Файл не найден");
+                const data = await response.json();
+                appData = data;
+                if (!appData.tracks) appData.tracks = [];
+                if (!appData.teams) appData.teams = [];
+                if (!appData.drivers) appData.drivers = [];
+                if (!appData.seasons) appData.seasons = [];
+                if (appData.mainPageText === undefined) appData.mainPageText = "";
+                for (let team of appData.teams) {
+                    if (!team.color) team.color = getRandomPastel();
+                }
+            } catch (error) {
+                console.warn("Не удалось загрузить JSON, используются пустые данные", error);
+                appData = {
+                    mainPageText: "Здесь будет описание гоночной серии, правил, форматов и истории.",
+                    tracks: [],
+                    teams: [],
+                    drivers: [],
+                    seasons: []
+                };
+            }
+            renderMain();
+            renderTracksList();
+            if (appData.tracks[0]) currentTrackId = appData.tracks[0].id;
+            renderTeamsList();
+            if (appData.teams[0]) currentTeamId = appData.teams[0].id;
+            renderDriversList();
+            if (appData.drivers[0]) currentDriverId = appData.drivers[0].id;
+            renderSeasonsList();
+            if (appData.seasons[0]) currentSeasonId = appData.seasons[0].id;
+        }
+
+        let currentTrackId = null;
+        let currentTeamId = null;
+        let currentDriverId = null;
+        let currentSeasonId = null;
+
+        // --- Функции для трасс, команд, пилотов (без изменений) ---
+        function renderTracksList() {
+            const container = document.getElementById('tracksListPanel');
+            if (!container) return;
+            let html = '';
+            appData.tracks.forEach(track => {
+                html += `<div class="list-item ${currentTrackId === track.id ? 'selected' : ''}" data-id="${track.id}">${escapeHtml(track.name)}</div>`;
+            });
+            container.innerHTML = html;
+            document.querySelectorAll('#tracksListPanel .list-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentTrackId = el.dataset.id;
+                    renderTracksList();
+                    renderTrackDetail();
+                });
+            });
+        }
+
+        function renderTrackDetail() {
+            const container = document.getElementById('trackDetail');
+            const track = appData.tracks.find(t => t.id === currentTrackId);
+            if (!track) {
+                container.innerHTML = '<p>Выберите трассу из списка</p>';
+                return;
+            }
+            let html = `
+                <h3>Редактирование трассы</h3>
+                <div class="form-row"><label>Название:</label><input type="text" id="trackName" value="${escapeHtml(track.name)}"></div>
+                <div class="form-row"><label>Страна / Город:</label><input type="text" id="trackCountry" value="${escapeHtml(track.country)}"></div>
+                <div class="form-row"><label>Тип трассы:</label><input type="text" id="trackType" value="${escapeHtml(track.type)}"></div>
+                <div class="form-row"><label>Дистанция (км):</label><input type="number" id="trackDistance" value="${track.distance}"></div>
+                <div class="form-row"><label>Длина круга (км):</label><input type="number" step="0.01" id="trackLapLength" value="${track.lapLength}"></div>
+                <div class="form-row"><label>Круги:</label><input type="number" id="trackLaps" value="${track.laps}"></div>
+                <div class="form-row"><label>Поворотов:</label><input type="number" id="trackCorners" value="${track.corners}"></div>
+                <div class="form-row"><label>Макс. скорость (км/ч):</label><input type="number" id="trackMaxSpeed" value="${track.maxSpeed}"></div>
+                <div class="form-row"><label>Зоны DRS:</label><input type="number" id="trackDrsZones" value="${track.drsZones}"></div>
+                <div class="form-row"><label>Сложность (1-5):</label><input type="number" id="trackDifficulty" min="1" max="5" value="${track.difficulty}"></div>
+                <div class="form-row"><label>Описание:</label><textarea id="trackDescription" rows="4">${escapeHtml(track.description)}</textarea></div>
+                <div class="button-bar">
+                    <button id="saveTrackBtn" class="primary">Сохранить</button>
+                    <button id="deleteTrackBtn" class="danger">Удалить трассу</button>
+                </div>
+            `;
+            container.innerHTML = html;
+            document.getElementById('saveTrackBtn')?.addEventListener('click', () => {
+                track.name = document.getElementById('trackName').value;
+                track.country = document.getElementById('trackCountry').value;
+                track.type = document.getElementById('trackType').value;
+                track.distance = parseFloat(document.getElementById('trackDistance').value);
+                track.lapLength = parseFloat(document.getElementById('trackLapLength').value);
+                track.laps = parseInt(document.getElementById('trackLaps').value);
+                track.corners = parseInt(document.getElementById('trackCorners').value);
+                track.maxSpeed = parseInt(document.getElementById('trackMaxSpeed').value);
+                track.drsZones = parseInt(document.getElementById('trackDrsZones').value);
+                track.difficulty = parseInt(document.getElementById('trackDifficulty').value);
+                track.description = document.getElementById('trackDescription').value;
                 renderTracksList();
                 renderTrackDetail();
             });
-        });
-    }
-
-    function renderTrackDetail() {
-        const container = document.getElementById('trackDetail');
-        const track = appData.tracks.find(t => t.id === currentTrackId);
-        if (!track) {
-            container.innerHTML = '<p>Выберите трассу из списка</p>';
-            return;
+            document.getElementById('deleteTrackBtn')?.addEventListener('click', () => {
+                if (confirm('Удалить трассу?')) {
+                    appData.tracks = appData.tracks.filter(t => t.id !== track.id);
+                    currentTrackId = appData.tracks[0]?.id || null;
+                    renderTracksList();
+                    renderTrackDetail();
+                }
+            });
         }
-        let html = `
-            <h3>Редактирование трассы</h3>
-            <div class="form-row"><label>Название:</label><input type="text" id="trackName" value="${escapeHtml(track.name)}"></div>
-            <div class="form-row"><label>Страна / Город:</label><input type="text" id="trackCountry" value="${escapeHtml(track.country)}"></div>
-            <div class="form-row"><label>Тип трассы:</label><input type="text" id="trackType" value="${escapeHtml(track.type)}"></div>
-            <div class="form-row"><label>Дистанция (км):</label><input type="number" id="trackDistance" value="${track.distance}"></div>
-            <div class="form-row"><label>Длина круга (км):</label><input type="number" step="0.01" id="trackLapLength" value="${track.lapLength}"></div>
-            <div class="form-row"><label>Круги:</label><input type="number" id="trackLaps" value="${track.laps}"></div>
-            <div class="form-row"><label>Поворотов:</label><input type="number" id="trackCorners" value="${track.corners}"></div>
-            <div class="form-row"><label>Макс. скорость (км/ч):</label><input type="number" id="trackMaxSpeed" value="${track.maxSpeed}"></div>
-            <div class="form-row"><label>Зоны DRS:</label><input type="number" id="trackDrsZones" value="${track.drsZones}"></div>
-            <div class="form-row"><label>Сложность (1-5):</label><input type="number" id="trackDifficulty" min="1" max="5" value="${track.difficulty}"></div>
-            <div class="form-row"><label>Описание:</label><textarea id="trackDescription" rows="4">${escapeHtml(track.description)}</textarea></div>
-            <div class="button-bar">
-                <button id="saveTrackBtn" class="primary">Сохранить</button>
-                <button id="deleteTrackBtn" class="danger">Удалить трассу</button>
-            </div>
-        `;
-        container.innerHTML = html;
-        document.getElementById('saveTrackBtn')?.addEventListener('click', () => {
-            track.name = document.getElementById('trackName').value;
-            track.country = document.getElementById('trackCountry').value;
-            track.type = document.getElementById('trackType').value;
-            track.distance = parseFloat(document.getElementById('trackDistance').value);
-            track.lapLength = parseFloat(document.getElementById('trackLapLength').value);
-            track.laps = parseInt(document.getElementById('trackLaps').value);
-            track.corners = parseInt(document.getElementById('trackCorners').value);
-            track.maxSpeed = parseInt(document.getElementById('trackMaxSpeed').value);
-            track.drsZones = parseInt(document.getElementById('trackDrsZones').value);
-            track.difficulty = parseInt(document.getElementById('trackDifficulty').value);
-            track.description = document.getElementById('trackDescription').value;
+
+        function addTrack() {
+            const newTrack = {
+                id: generateId(),
+                name: "Новая трасса",
+                country: "", type: "", distance: 0, lapLength: 0, laps: 0, corners: 0, maxSpeed: 0, drsZones: 0, difficulty: 1, description: ""
+            };
+            appData.tracks.push(newTrack);
+            currentTrackId = newTrack.id;
             renderTracksList();
             renderTrackDetail();
-        });
-        document.getElementById('deleteTrackBtn')?.addEventListener('click', () => {
-            if (confirm('Удалить трассу?')) {
-                appData.tracks = appData.tracks.filter(t => t.id !== track.id);
-                currentTrackId = appData.tracks[0]?.id || null;
-                renderTracksList();
-                renderTrackDetail();
-            }
-        });
-    }
-
-    function addTrack() {
-        const newTrack = {
-            id: generateId(),
-            name: "Новая трасса",
-            country: "", type: "", distance: 0, lapLength: 0, laps: 0, corners: 0, maxSpeed: 0, drsZones: 0, difficulty: 1, description: ""
-        };
-        appData.tracks.push(newTrack);
-        currentTrackId = newTrack.id;
-        renderTracksList();
-        renderTrackDetail();
-    }
-
-    function renderTeamsList() {
-        const container = document.getElementById('teamsListPanel');
-        let html = '';
-        appData.teams.forEach(team => {
-            html += `<div class="list-item ${currentTeamId === team.id ? 'selected' : ''}" data-id="${team.id}">
-                        <span class="team-color-preview" style="background: ${team.color || '#ccc'};"></span>
-                        ${escapeHtml(team.name)}
-                    </div>`;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll('#teamsListPanel .list-item').forEach(el => {
-            el.addEventListener('click', () => {
-                currentTeamId = el.dataset.id;
-                renderTeamsList();
-                renderTeamDetail();
-            });
-        });
-    }
-
-    function renderTeamDetail() {
-        const container = document.getElementById('teamDetail');
-        const team = appData.teams.find(t => t.id === currentTeamId);
-        if (!team) {
-            container.innerHTML = '<p>Выберите команду из списка</p>';
-            return;
         }
-        let html = `
-            <h3>Редактирование команды</h3>
-            <div class="form-row"><label>Название:</label><input type="text" id="teamName" value="${escapeHtml(team.name)}"></div>
-            <div class="form-row"><label>Цвет команды:</label><input type="color" id="teamColor" value="${team.color || '#88b0d1'}"></div>
-            <div class="form-row"><label>Философия:</label><input type="text" id="teamPhilosophy" value="${escapeHtml(team.philosophy || '')}"></div>
-            <div class="form-row"><label>Титульный спонсор:</label><input type="text" id="teamTitleSponsor" value="${escapeHtml(team.titleSponsor || '')}"></div>
-            <div class="form-row"><label>Другие спонсоры:</label><textarea id="teamOtherSponsors" rows="2">${escapeHtml(team.otherSponsors || '')}</textarea></div>
-            <div class="form-row"><label>История:</label><textarea id="teamHistory" rows="4">${escapeHtml(team.history || '')}</textarea></div>
-            <div class="form-row"><label>Кубок конструкторов:</label><input type="checkbox" id="teamConstructorCup" ${team.constructorCup ? 'checked' : ''}></div>
-            <div class="sub-section"><strong>Выступления пилотов (команда-год-очки)</strong>
-                <div id="driverSeasonsList"></div>
-                <button id="addDriverSeasonBtn" class="primary">+ Добавить выступление</button>
-            </div>
-            <div class="button-bar">
-                <button id="saveTeamBtn" class="primary">Сохранить</button>
-                <button id="deleteTeamBtn" class="danger">Удалить команду</button>
-            </div>
-        `;
-        container.innerHTML = html;
-        const dsContainer = document.getElementById('driverSeasonsList');
-        function renderDriverSeasons() {
-            dsContainer.innerHTML = '';
-            (team.driverSeasons || []).forEach((ds, idx) => {
-                const driver = appData.drivers.find(d => d.id === ds.driverId);
-                dsContainer.innerHTML += `
-                    <div class="entry-item" data-idx="${idx}" style="border-left-color: ${team.color || '#ccc'}">
-                        <div>Пилот: <select class="ds-driver">${appData.drivers.map(d => `<option value="${d.id}" ${d.id === ds.driverId ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('')}</select></div>
-                        <div>Год начала: <input type="number" class="ds-yearStart" value="${ds.yearStart || ''}"></div>
-                        <div>Год окончания: <input type="number" class="ds-yearEnd" value="${ds.yearEnd || ''}"></div>
-                        <div>Очки за период: <input type="number" class="ds-points" value="${ds.points || 0}"></div>
-                        <button class="remove-ds-btn danger" data-idx="${idx}">Удалить</button>
-                    </div>
-                `;
+
+        function renderTeamsList() {
+            const container = document.getElementById('teamsListPanel');
+            let html = '';
+            appData.teams.forEach(team => {
+                html += `<div class="list-item ${currentTeamId === team.id ? 'selected' : ''}" data-id="${team.id}">
+                            <span class="team-color-preview" style="background: ${team.color || '#ccc'};"></span>
+                            ${escapeHtml(team.name)}
+                        </div>`;
             });
-            dsContainer.querySelectorAll('.remove-ds-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    team.driverSeasons.splice(idx, 1);
+            container.innerHTML = html;
+            document.querySelectorAll('#teamsListPanel .list-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentTeamId = el.dataset.id;
+                    renderTeamsList();
                     renderTeamDetail();
                 });
             });
         }
-        renderDriverSeasons();
-        document.getElementById('addDriverSeasonBtn').addEventListener('click', () => {
-            if (!team.driverSeasons) team.driverSeasons = [];
-            team.driverSeasons.push({ driverId: appData.drivers[0]?.id || '', yearStart: '', yearEnd: '', points: 0 });
-            renderTeamDetail();
-        });
-        document.getElementById('saveTeamBtn').addEventListener('click', () => {
-            team.name = document.getElementById('teamName').value;
-            team.color = document.getElementById('teamColor').value;
-            team.philosophy = document.getElementById('teamPhilosophy').value;
-            team.titleSponsor = document.getElementById('teamTitleSponsor').value;
-            team.otherSponsors = document.getElementById('teamOtherSponsors').value;
-            team.history = document.getElementById('teamHistory').value;
-            team.constructorCup = document.getElementById('teamConstructorCup').checked;
-            const dsDivs = dsContainer.querySelectorAll('.entry-item');
-            const newSeasons = [];
-            dsDivs.forEach(div => {
-                const driverId = div.querySelector('.ds-driver').value;
-                const yearStart = parseInt(div.querySelector('.ds-yearStart').value) || null;
-                const yearEnd = parseInt(div.querySelector('.ds-yearEnd').value) || null;
-                const points = parseInt(div.querySelector('.ds-points').value) || 0;
-                if (driverId) newSeasons.push({ driverId, yearStart, yearEnd, points });
+
+        function renderTeamDetail() {
+            const container = document.getElementById('teamDetail');
+            const team = appData.teams.find(t => t.id === currentTeamId);
+            if (!team) {
+                container.innerHTML = '<p>Выберите команду из списка</p>';
+                return;
+            }
+            let html = `
+                <h3>Редактирование команды</h3>
+                <div class="form-row"><label>Название:</label><input type="text" id="teamName" value="${escapeHtml(team.name)}"></div>
+                <div class="form-row"><label>Цвет команды:</label><input type="color" id="teamColor" value="${team.color || '#88b0d1'}"></div>
+                <div class="form-row"><label>Философия:</label><input type="text" id="teamPhilosophy" value="${escapeHtml(team.philosophy || '')}"></div>
+                <div class="form-row"><label>Титульный спонсор:</label><input type="text" id="teamTitleSponsor" value="${escapeHtml(team.titleSponsor || '')}"></div>
+                <div class="form-row"><label>Другие спонсоры:</label><textarea id="teamOtherSponsors" rows="2">${escapeHtml(team.otherSponsors || '')}</textarea></div>
+                <div class="form-row"><label>История:</label><textarea id="teamHistory" rows="4">${escapeHtml(team.history || '')}</textarea></div>
+                <div class="form-row"><label>Кубок конструкторов:</label><input type="checkbox" id="teamConstructorCup" ${team.constructorCup ? 'checked' : ''}></div>
+                <div class="sub-section"><strong>Выступления пилотов (команда-год-очки)</strong>
+                    <div id="driverSeasonsList"></div>
+                    <button id="addDriverSeasonBtn" class="primary">+ Добавить выступление</button>
+                </div>
+                <div class="button-bar">
+                    <button id="saveTeamBtn" class="primary">Сохранить</button>
+                    <button id="deleteTeamBtn" class="danger">Удалить команду</button>
+                </div>
+            `;
+            container.innerHTML = html;
+            const dsContainer = document.getElementById('driverSeasonsList');
+            function renderDriverSeasons() {
+                dsContainer.innerHTML = '';
+                (team.driverSeasons || []).forEach((ds, idx) => {
+                    const driver = appData.drivers.find(d => d.id === ds.driverId);
+                    dsContainer.innerHTML += `
+                        <div class="entry-item" data-idx="${idx}" style="border-left-color: ${team.color || '#ccc'}">
+                            <div>Пилот: <select class="ds-driver">${appData.drivers.map(d => `<option value="${d.id}" ${d.id === ds.driverId ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('')}</select></div>
+                            <div>Год начала: <input type="number" class="ds-yearStart" value="${ds.yearStart || ''}"></div>
+                            <div>Год окончания: <input type="number" class="ds-yearEnd" value="${ds.yearEnd || ''}"></div>
+                            <div>Очки за период: <input type="number" class="ds-points" value="${ds.points || 0}"></div>
+                            <button class="remove-ds-btn danger" data-idx="${idx}">Удалить</button>
+                        </div>
+                    `;
+                });
+                dsContainer.querySelectorAll('.remove-ds-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        team.driverSeasons.splice(idx, 1);
+                        renderTeamDetail();
+                    });
+                });
+            }
+            renderDriverSeasons();
+            document.getElementById('addDriverSeasonBtn').addEventListener('click', () => {
+                if (!team.driverSeasons) team.driverSeasons = [];
+                team.driverSeasons.push({ driverId: appData.drivers[0]?.id || '', yearStart: '', yearEnd: '', points: 0 });
+                renderTeamDetail();
             });
-            team.driverSeasons = newSeasons;
-            renderTeamsList();
-            renderTeamDetail();
-        });
-        document.getElementById('deleteTeamBtn').addEventListener('click', () => {
-            if (confirm('Удалить команду?')) {
-                appData.teams = appData.teams.filter(t => t.id !== team.id);
-                currentTeamId = appData.teams[0]?.id || null;
+            document.getElementById('saveTeamBtn').addEventListener('click', () => {
+                team.name = document.getElementById('teamName').value;
+                team.color = document.getElementById('teamColor').value;
+                team.philosophy = document.getElementById('teamPhilosophy').value;
+                team.titleSponsor = document.getElementById('teamTitleSponsor').value;
+                team.otherSponsors = document.getElementById('teamOtherSponsors').value;
+                team.history = document.getElementById('teamHistory').value;
+                team.constructorCup = document.getElementById('teamConstructorCup').checked;
+                const dsDivs = dsContainer.querySelectorAll('.entry-item');
+                const newSeasons = [];
+                dsDivs.forEach(div => {
+                    const driverId = div.querySelector('.ds-driver').value;
+                    const yearStart = parseInt(div.querySelector('.ds-yearStart').value) || null;
+                    const yearEnd = parseInt(div.querySelector('.ds-yearEnd').value) || null;
+                    const points = parseInt(div.querySelector('.ds-points').value) || 0;
+                    if (driverId) newSeasons.push({ driverId, yearStart, yearEnd, points });
+                });
+                team.driverSeasons = newSeasons;
                 renderTeamsList();
                 renderTeamDetail();
+            });
+            document.getElementById('deleteTeamBtn').addEventListener('click', () => {
+                if (confirm('Удалить команду?')) {
+                    appData.teams = appData.teams.filter(t => t.id !== team.id);
+                    currentTeamId = appData.teams[0]?.id || null;
+                    renderTeamsList();
+                    renderTeamDetail();
+                }
+            });
+        }
+
+        function addTeam() {
+            const newTeam = { id: generateId(), name: "Новая команда", color: getRandomPastel(), philosophy: "", history: "", titleSponsor: "", otherSponsors: "", constructorCup: false, driverSeasons: [] };
+            appData.teams.push(newTeam);
+            currentTeamId = newTeam.id;
+            renderTeamsList();
+            renderTeamDetail();
+        }
+
+        function renderDriversList() {
+            const container = document.getElementById('driversListPanel');
+            let html = '';
+            appData.drivers.forEach(driver => {
+                html += `<div class="list-item ${currentDriverId === driver.id ? 'selected' : ''}" data-id="${driver.id}">${escapeHtml(driver.name)}</div>`;
+            });
+            container.innerHTML = html;
+            document.querySelectorAll('#driversListPanel .list-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentDriverId = el.dataset.id;
+                    renderDriversList();
+                    renderDriverDetail();
+                });
+            });
+        }
+
+        function renderDriverDetail() {
+            const container = document.getElementById('driverDetail');
+            const driver = appData.drivers.find(d => d.id === currentDriverId);
+            if (!driver) {
+                container.innerHTML = '<p>Выберите пилота из списка</p>';
+                return;
             }
-        });
-    }
-
-    function addTeam() {
-        const newTeam = { id: generateId(), name: "Новая команда", color: getRandomPastel(), philosophy: "", history: "", titleSponsor: "", otherSponsors: "", constructorCup: false, driverSeasons: [] };
-        appData.teams.push(newTeam);
-        currentTeamId = newTeam.id;
-        renderTeamsList();
-        renderTeamDetail();
-    }
-
-    function renderDriversList() {
-        const container = document.getElementById('driversListPanel');
-        let html = '';
-        appData.drivers.forEach(driver => {
-            html += `<div class="list-item ${currentDriverId === driver.id ? 'selected' : ''}" data-id="${driver.id}">${escapeHtml(driver.name)}</div>`;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll('#driversListPanel .list-item').forEach(el => {
-            el.addEventListener('click', () => {
-                currentDriverId = el.dataset.id;
+            let html = `
+                <h3>Редактирование пилота</h3>
+                <div class="form-row"><label>Имя:</label><input type="text" id="driverName" value="${escapeHtml(driver.name)}"></div>
+                <div class="form-row"><label>Номер:</label><input type="number" id="driverNumber" value="${driver.number || ''}"></div>
+                <div class="form-row"><label>Позывной:</label><input type="text" id="driverNickname" value="${escapeHtml(driver.nickname || '')}"></div>
+                <div class="form-row"><label>Характеристика:</label><textarea id="driverBio" rows="3">${escapeHtml(driver.bio || '')}</textarea></div>
+                <div class="form-row"><label>Титулы (чемпионства):</label><input type="number" id="driverTitles" value="${driver.titles || 0}"></div>
+                <div class="sub-section"><strong>Статистика</strong></div>
+                <div class="form-row"><label>Всего очков:</label><input type="number" id="statPoints" value="${driver.stats.totalPoints || 0}"></div>
+                <div class="form-row"><label>Гран-при:</label><input type="number" id="statGP" value="${driver.stats.grandsPrix || 0}"></div>
+                <div class="form-row"><label>Быстрые круги:</label><input type="number" id="statFL" value="${driver.stats.fastestLaps || 0}"></div>
+                <div class="form-row"><label>Поулы:</label><input type="number" id="statPoles" value="${driver.stats.poles || 0}"></div>
+                <div class="form-row"><label>Подиумы 1 место:</label><input type="number" id="statPod1" value="${driver.stats.podiums?.first || 0}"></div>
+                <div class="form-row"><label>Подиумы 2 место:</label><input type="number" id="statPod2" value="${driver.stats.podiums?.second || 0}"></div>
+                <div class="form-row"><label>Подиумы 3 место:</label><input type="number" id="statPod3" value="${driver.stats.podiums?.third || 0}"></div>
+                <div class="button-bar">
+                    <button id="saveDriverBtn" class="primary">Сохранить</button>
+                    <button id="deleteDriverBtn" class="danger">Удалить пилота</button>
+                </div>
+            `;
+            container.innerHTML = html;
+            document.getElementById('saveDriverBtn').addEventListener('click', () => {
+                driver.name = document.getElementById('driverName').value;
+                driver.number = parseInt(document.getElementById('driverNumber').value) || '';
+                driver.nickname = document.getElementById('driverNickname').value;
+                driver.bio = document.getElementById('driverBio').value;
+                driver.titles = parseInt(document.getElementById('driverTitles').value) || 0;
+                driver.stats = {
+                    totalPoints: parseInt(document.getElementById('statPoints').value) || 0,
+                    titles: driver.titles,
+                    grandsPrix: parseInt(document.getElementById('statGP').value) || 0,
+                    fastestLaps: parseInt(document.getElementById('statFL').value) || 0,
+                    poles: parseInt(document.getElementById('statPoles').value) || 0,
+                    podiums: {
+                        first: parseInt(document.getElementById('statPod1').value) || 0,
+                        second: parseInt(document.getElementById('statPod2').value) || 0,
+                        third: parseInt(document.getElementById('statPod3').value) || 0
+                    }
+                };
                 renderDriversList();
                 renderDriverDetail();
             });
-        });
-    }
-
-    function renderDriverDetail() {
-        const container = document.getElementById('driverDetail');
-        const driver = appData.drivers.find(d => d.id === currentDriverId);
-        if (!driver) {
-            container.innerHTML = '<p>Выберите пилота из списка</p>';
-            return;
-        }
-        let html = `
-            <h3>Редактирование пилота</h3>
-            <div class="form-row"><label>Имя:</label><input type="text" id="driverName" value="${escapeHtml(driver.name)}"></div>
-            <div class="form-row"><label>Номер:</label><input type="number" id="driverNumber" value="${driver.number || ''}"></div>
-            <div class="form-row"><label>Позывной:</label><input type="text" id="driverNickname" value="${escapeHtml(driver.nickname || '')}"></div>
-            <div class="form-row"><label>Характеристика:</label><textarea id="driverBio" rows="3">${escapeHtml(driver.bio || '')}</textarea></div>
-            <div class="form-row"><label>Титулы (чемпионства):</label><input type="number" id="driverTitles" value="${driver.titles || 0}"></div>
-            <div class="sub-section"><strong>Статистика</strong></div>
-            <div class="form-row"><label>Всего очков:</label><input type="number" id="statPoints" value="${driver.stats.totalPoints || 0}"></div>
-            <div class="form-row"><label>Гран-при:</label><input type="number" id="statGP" value="${driver.stats.grandsPrix || 0}"></div>
-            <div class="form-row"><label>Быстрые круги:</label><input type="number" id="statFL" value="${driver.stats.fastestLaps || 0}"></div>
-            <div class="form-row"><label>Поулы:</label><input type="number" id="statPoles" value="${driver.stats.poles || 0}"></div>
-            <div class="form-row"><label>Подиумы 1 место:</label><input type="number" id="statPod1" value="${driver.stats.podiums?.first || 0}"></div>
-            <div class="form-row"><label>Подиумы 2 место:</label><input type="number" id="statPod2" value="${driver.stats.podiums?.second || 0}"></div>
-            <div class="form-row"><label>Подиумы 3 место:</label><input type="number" id="statPod3" value="${driver.stats.podiums?.third || 0}"></div>
-            <div class="button-bar">
-                <button id="saveDriverBtn" class="primary">Сохранить</button>
-                <button id="deleteDriverBtn" class="danger">Удалить пилота</button>
-            </div>
-        `;
-        container.innerHTML = html;
-        document.getElementById('saveDriverBtn').addEventListener('click', () => {
-            driver.name = document.getElementById('driverName').value;
-            driver.number = parseInt(document.getElementById('driverNumber').value) || '';
-            driver.nickname = document.getElementById('driverNickname').value;
-            driver.bio = document.getElementById('driverBio').value;
-            driver.titles = parseInt(document.getElementById('driverTitles').value) || 0;
-            driver.stats = {
-                totalPoints: parseInt(document.getElementById('statPoints').value) || 0,
-                titles: driver.titles,
-                grandsPrix: parseInt(document.getElementById('statGP').value) || 0,
-                fastestLaps: parseInt(document.getElementById('statFL').value) || 0,
-                poles: parseInt(document.getElementById('statPoles').value) || 0,
-                podiums: {
-                    first: parseInt(document.getElementById('statPod1').value) || 0,
-                    second: parseInt(document.getElementById('statPod2').value) || 0,
-                    third: parseInt(document.getElementById('statPod3').value) || 0
+            document.getElementById('deleteDriverBtn').addEventListener('click', () => {
+                if (confirm('Удалить пилота?')) {
+                    appData.drivers = appData.drivers.filter(d => d.id !== driver.id);
+                    currentDriverId = appData.drivers[0]?.id || null;
+                    renderDriversList();
+                    renderDriverDetail();
                 }
-            };
+            });
+        }
+
+        function addDriver() {
+            const newDriver = { id: generateId(), name: "Новый пилот", number: 0, nickname: "", bio: "", titles: 0, stats: { totalPoints: 0, titles: 0, grandsPrix: 0, fastestLaps: 0, poles: 0, podiums: { first: 0, second: 0, third: 0 } } };
+            appData.drivers.push(newDriver);
+            currentDriverId = newDriver.id;
             renderDriversList();
             renderDriverDetail();
-        });
-        document.getElementById('deleteDriverBtn').addEventListener('click', () => {
-            if (confirm('Удалить пилота?')) {
-                appData.drivers = appData.drivers.filter(d => d.id !== driver.id);
-                currentDriverId = appData.drivers[0]?.id || null;
-                renderDriversList();
-                renderDriverDetail();
+        }
+
+        // ---------- СЕЗОНЫ (упрощённый шаг 2) ----------
+        let currentRaceIndex = 0;
+
+        function renderSeasonsList() {
+            const container = document.getElementById('seasonsListPanel');
+            let html = '';
+            appData.seasons.forEach(season => {
+                html += `<div class="list-item ${currentSeasonId === season.id ? 'selected' : ''}" data-id="${season.id}">${escapeHtml(season.name || season.year)}</div>`;
+            });
+            container.innerHTML = html;
+            document.querySelectorAll('#seasonsListPanel .list-item').forEach(el => {
+                el.addEventListener('click', () => {
+                    currentSeasonId = el.dataset.id;
+                    renderSeasonsList();
+                    renderSeasonDetail();
+                });
+            });
+        }
+
+        function renderSeasonDetail() {
+            const container = document.getElementById('seasonDetail');
+            const season = appData.seasons.find(s => s.id === currentSeasonId);
+            if (!season) {
+                container.innerHTML = '<p>Выберите сезон из списка</p>';
+                return;
             }
-        });
-    }
+            if (!season.teamsEntries) season.teamsEntries = [];
+            if (!season.tracksOrder) season.tracksOrder = [];
+            if (!season.races) season.races = [];
+            if (!season.standings) season.standings = { driverPoints: {}, teamPoints: {} };
+            if (season.step === undefined) season.step = 1;
 
-    function addDriver() {
-        const newDriver = { id: generateId(), name: "Новый пилот", number: 0, nickname: "", bio: "", titles: 0, stats: { totalPoints: 0, titles: 0, grandsPrix: 0, fastestLaps: 0, poles: 0, podiums: { first: 0, second: 0, third: 0 } } };
-        appData.drivers.push(newDriver);
-        currentDriverId = newDriver.id;
-        renderDriversList();
-        renderDriverDetail();
-    }
+            if (season.step === 1) renderStepTeams(container, season);
+            else if (season.step === 2) renderStepTracks(container, season);
+            else if (season.step === 3) renderStepRaces(container, season);
+        }
 
-    // ---------- СЕЗОНЫ (упрощённый шаг 2) ----------
-    let currentRaceIndex = 0;
+        function renderStepTeams(container, season) {
+            let html = `
+                <h3>Шаг 1: Состав команд</h3>
+                <div class="sub-section"><strong>Участники сезона</strong>
+                    <div id="seasonEntriesList"></div>
+                    <button id="addSeasonEntryBtn" class="primary">+ Добавить команду</button>
+                </div>
+                <div class="step-buttons">
+                    <button id="cancelSeasonBtn" class="danger">Отмена</button>
+                    <button id="toStep2Btn" class="primary">Далее → Расписание</button>
+                </div>
+            `;
+            container.innerHTML = html;
 
-    function renderSeasonsList() {
-        const container = document.getElementById('seasonsListPanel');
-        let html = '';
-        appData.seasons.forEach(season => {
-            html += `<div class="list-item ${currentSeasonId === season.id ? 'selected' : ''}" data-id="${season.id}">${escapeHtml(season.name || season.year)}</div>`;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll('#seasonsListPanel .list-item').forEach(el => {
-            el.addEventListener('click', () => {
-                currentSeasonId = el.dataset.id;
-                renderSeasonsList();
+            const entriesContainer = document.getElementById('seasonEntriesList');
+            function renderEntries() {
+                entriesContainer.innerHTML = '';
+                season.teamsEntries.forEach((entry, idx) => {
+                    const team = appData.teams.find(t => t.id === entry.teamId);
+                    const teamColor = team ? team.color : '#ccc';
+                    entriesContainer.innerHTML += `
+                        <div class="entry-item" style="border-left-color: ${teamColor}; margin-bottom: 12px;">
+                            <div>Команда: <select class="entry-team" data-idx="${idx}">
+                                ${appData.teams.map(t => `<option value="${t.id}" ${t.id === entry.teamId ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join('')}
+                            </select></div>
+                            <div>Пилоты в команде (можно несколько): 
+                                <select multiple class="entry-drivers" data-idx="${idx}" style="min-width: 200px;">
+                                    ${appData.drivers.map(d => `<option value="${d.id}" ${entry.driverIds && entry.driverIds.includes(d.id) ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('')}
+                                </select>
+                            </div>
+                            <button class="remove-entry-btn danger" data-idx="${idx}">Удалить команду</button>
+                        </div>
+                    `;
+                });
+                document.querySelectorAll('.entry-team').forEach(select => {
+                    select.addEventListener('change', (e) => {
+                        const idx = parseInt(e.target.dataset.idx);
+                        const newTeamId = e.target.value;
+                        const team = appData.teams.find(t => t.id === newTeamId);
+                        const parentDiv = e.target.closest('.entry-item');
+                        if (team && parentDiv) parentDiv.style.borderLeftColor = team.color;
+                        season.teamsEntries[idx].teamId = newTeamId;
+                    });
+                });
+                document.querySelectorAll('.entry-drivers').forEach(select => {
+                    select.addEventListener('change', (e) => {
+                        const idx = parseInt(e.target.dataset.idx);
+                        const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+                        season.teamsEntries[idx].driverIds = selected;
+                    });
+                });
+                document.querySelectorAll('.remove-entry-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        season.teamsEntries.splice(idx, 1);
+                        renderEntries();
+                    });
+                });
+            }
+            renderEntries();
+
+            document.getElementById('addSeasonEntryBtn').addEventListener('click', () => {
+                season.teamsEntries.push({ teamId: appData.teams[0]?.id || '', driverIds: [] });
+                renderEntries();
+            });
+            document.getElementById('toStep2Btn').addEventListener('click', () => {
+                if (season.teamsEntries.length === 0) { alert("Добавьте хотя бы одну команду"); return; }
+                if (season.tracksOrder.length === 0 && appData.tracks.length) {
+                    season.tracksOrder = appData.tracks.map(t => t.id);
+                }
+                season.step = 2;
+                if (!season.races || season.races.length !== season.tracksOrder.length) {
+                    season.races = season.tracksOrder.map(trackId => ({
+                        trackId: trackId,
+                        qualifying: [],
+                        race: []
+                    }));
+                }
                 renderSeasonDetail();
             });
-        });
-    }
-
-    function renderSeasonDetail() {
-        const container = document.getElementById('seasonDetail');
-        const season = appData.seasons.find(s => s.id === currentSeasonId);
-        if (!season) {
-            container.innerHTML = '<p>Выберите сезон из списка</p>';
-            return;
+            document.getElementById('cancelSeasonBtn').addEventListener('click', () => {
+                renderSeasonsList();
+                if (currentSeasonId) renderSeasonDetail();
+                else container.innerHTML = '<p>Выберите сезон из списка</p>';
+            });
         }
-        if (!season.teamsEntries) season.teamsEntries = [];
-        if (!season.tracksOrder) season.tracksOrder = [];
-        if (!season.races) season.races = [];
-        if (!season.standings) season.standings = { driverPoints: {}, teamPoints: {} };
-        if (season.step === undefined) season.step = 1;
 
-        if (season.step === 1) renderStepTeams(container, season);
-        else if (season.step === 2) renderStepTracks(container, season);
-        else if (season.step === 3) renderStepRaces(container, season);
-    }
+        function renderStepTracks(container, season) {
+            let html = `
+                <h3>Шаг 2: Порядок трасс</h3>
+                <div class="sub-section">
+                    <div id="tracksOrderList"></div>
+                    <button id="addTrackToSeasonBtn" class="primary">+ Добавить трассу</button>
+                    <button id="resetTracksOrderBtn" class="primary">🔄 Сбросить к полному списку</button>
+                </div>
+                <div class="step-buttons">
+                    <button id="backToStep1Btn" class="primary">← Назад</button>
+                    <button id="toStep3Btn" class="primary">Далее → Гонки</button>
+                </div>
+            `;
+            container.innerHTML = html;
 
-    function renderStepTeams(container, season) {
-        let html = `
-            <h3>Шаг 1: Состав команд</h3>
-            <div class="sub-section"><strong>Участники сезона</strong>
-                <div id="seasonEntriesList"></div>
-                <button id="addSeasonEntryBtn" class="primary">+ Добавить команду</button>
-            </div>
-            <div class="step-buttons">
-                <button id="cancelSeasonBtn" class="danger">Отмена</button>
-                <button id="toStep2Btn" class="primary">Далее → Расписание</button>
-            </div>
-        `;
-        container.innerHTML = html;
-
-        const entriesContainer = document.getElementById('seasonEntriesList');
-        function renderEntries() {
-            entriesContainer.innerHTML = '';
-            season.teamsEntries.forEach((entry, idx) => {
-                const team = appData.teams.find(t => t.id === entry.teamId);
-                const teamColor = team ? team.color : '#ccc';
-                entriesContainer.innerHTML += `
-                    <div class="entry-item" style="border-left-color: ${teamColor}; margin-bottom: 12px;">
-                        <div>Команда: <select class="entry-team" data-idx="${idx}">
-                            ${appData.teams.map(t => `<option value="${t.id}" ${t.id === entry.teamId ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join('')}
-                        </select></div>
-                        <div>Пилоты в команде (можно несколько): 
-                            <select multiple class="entry-drivers" data-idx="${idx}" style="min-width: 200px;">
-                                ${appData.drivers.map(d => `<option value="${d.id}" ${entry.driverIds && entry.driverIds.includes(d.id) ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('')}
-                            </select>
+            const tracksContainer = document.getElementById('tracksOrderList');
+            function renderTracksOrder() {
+                tracksContainer.innerHTML = '';
+                season.tracksOrder.forEach((trackId, idx) => {
+                    const track = appData.tracks.find(t => t.id === trackId);
+                    tracksContainer.innerHTML += `
+                        <div class="track-order-item">
+                            <span><strong>${idx+1}.</strong> ${track ? escapeHtml(track.name) : '?'}</span>
+                            <span>
+                                <button class="move-up-btn" data-idx="${idx}" ${idx===0?'disabled':''}>↑</button>
+                                <button class="move-down-btn" data-idx="${idx}" ${idx===season.tracksOrder.length-1?'disabled':''}>↓</button>
+                                <button class="remove-track-order-btn danger" data-idx="${idx}">Удалить</button>
+                            </span>
                         </div>
-                        <button class="remove-entry-btn danger" data-idx="${idx}">Удалить команду</button>
-                    </div>
-                `;
-            });
-            document.querySelectorAll('.entry-team').forEach(select => {
-                select.addEventListener('change', (e) => {
-                    const idx = parseInt(e.target.dataset.idx);
-                    const newTeamId = e.target.value;
-                    const team = appData.teams.find(t => t.id === newTeamId);
-                    const parentDiv = e.target.closest('.entry-item');
-                    if (team && parentDiv) parentDiv.style.borderLeftColor = team.color;
-                    season.teamsEntries[idx].teamId = newTeamId;
+                    `;
                 });
-            });
-            document.querySelectorAll('.entry-drivers').forEach(select => {
-                select.addEventListener('change', (e) => {
-                    const idx = parseInt(e.target.dataset.idx);
-                    const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-                    season.teamsEntries[idx].driverIds = selected;
+                document.querySelectorAll('.move-up-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        if (idx > 0) {
+                            [season.tracksOrder[idx-1], season.tracksOrder[idx]] = [season.tracksOrder[idx], season.tracksOrder[idx-1]];
+                            renderTracksOrder();
+                        }
+                    });
                 });
-            });
-            document.querySelectorAll('.remove-entry-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    season.teamsEntries.splice(idx, 1);
-                    renderEntries();
+                document.querySelectorAll('.move-down-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        if (idx < season.tracksOrder.length-1) {
+                            [season.tracksOrder[idx], season.tracksOrder[idx+1]] = [season.tracksOrder[idx+1], season.tracksOrder[idx]];
+                            renderTracksOrder();
+                        }
+                    });
                 });
-            });
-        }
-        renderEntries();
-
-        document.getElementById('addSeasonEntryBtn').addEventListener('click', () => {
-            season.teamsEntries.push({ teamId: appData.teams[0]?.id || '', driverIds: [] });
-            renderEntries();
-        });
-        document.getElementById('toStep2Btn').addEventListener('click', () => {
-            if (season.teamsEntries.length === 0) { alert("Добавьте хотя бы одну команду"); return; }
-            // Если порядок трасс пуст, заполняем всеми существующими трассами в текущем порядке
-            if (season.tracksOrder.length === 0 && appData.tracks.length) {
-                season.tracksOrder = appData.tracks.map(t => t.id);
-            }
-            season.step = 2;
-            if (!season.races || season.races.length !== season.tracksOrder.length) {
-                season.races = season.tracksOrder.map(trackId => ({
-                    trackId: trackId,
-                    qualifying: [],
-                    race: []
-                }));
-            }
-            renderSeasonDetail();
-        });
-        document.getElementById('cancelSeasonBtn').addEventListener('click', () => {
-            renderSeasonsList();
-            if (currentSeasonId) renderSeasonDetail();
-            else container.innerHTML = '<p>Выберите сезон из списка</p>';
-        });
-    }
-
-    function renderStepTracks(container, season) {
-        let html = `
-            <h3>Шаг 2: Порядок трасс</h3>
-            <div class="sub-section">
-                <div id="tracksOrderList"></div>
-                <button id="addTrackToSeasonBtn" class="primary">+ Добавить трассу</button>
-                <button id="resetTracksOrderBtn" class="primary">🔄 Сбросить к полному списку</button>
-            </div>
-            <div class="step-buttons">
-                <button id="backToStep1Btn" class="primary">← Назад</button>
-                <button id="toStep3Btn" class="primary">Далее → Гонки</button>
-            </div>
-        `;
-        container.innerHTML = html;
-
-        const tracksContainer = document.getElementById('tracksOrderList');
-        function renderTracksOrder() {
-            tracksContainer.innerHTML = '';
-            season.tracksOrder.forEach((trackId, idx) => {
-                const track = appData.tracks.find(t => t.id === trackId);
-                tracksContainer.innerHTML += `
-                    <div class="track-order-item">
-                        <span><strong>${idx+1}.</strong> ${track ? escapeHtml(track.name) : '?'}</span>
-                        <span>
-                            <button class="move-up-btn" data-idx="${idx}" ${idx===0?'disabled':''}>↑</button>
-                            <button class="move-down-btn" data-idx="${idx}" ${idx===season.tracksOrder.length-1?'disabled':''}>↓</button>
-                            <button class="remove-track-order-btn danger" data-idx="${idx}">Удалить</button>
-                        </span>
-                    </div>
-                `;
-            });
-            // Обработчики перемещения
-            document.querySelectorAll('.move-up-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    if (idx > 0) {
-                        [season.tracksOrder[idx-1], season.tracksOrder[idx]] = [season.tracksOrder[idx], season.tracksOrder[idx-1]];
+                document.querySelectorAll('.remove-track-order-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.idx);
+                        season.tracksOrder.splice(idx, 1);
                         renderTracksOrder();
-                    }
+                    });
                 });
-            });
-            document.querySelectorAll('.move-down-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    if (idx < season.tracksOrder.length-1) {
-                        [season.tracksOrder[idx], season.tracksOrder[idx+1]] = [season.tracksOrder[idx+1], season.tracksOrder[idx]];
-                        renderTracksOrder();
-                    }
-                });
-            });
-            document.querySelectorAll('.remove-track-order-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    season.tracksOrder.splice(idx, 1);
+            }
+            renderTracksOrder();
+
+            document.getElementById('addTrackToSeasonBtn').addEventListener('click', () => {
+                if (appData.tracks.length === 0) { alert("Нет трасс"); return; }
+                const select = document.createElement('select');
+                select.innerHTML = appData.tracks.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
+                const btn = document.createElement('button');
+                btn.textContent = 'Добавить';
+                btn.className = 'primary';
+                const div = document.createElement('div');
+                div.style.margin = '5px 0';
+                div.appendChild(select);
+                div.appendChild(btn);
+                tracksContainer.appendChild(div);
+                btn.onclick = () => {
+                    const trackId = select.value;
+                    season.tracksOrder.push(trackId);
                     renderTracksOrder();
+                    div.remove();
+                };
+            });
+            document.getElementById('resetTracksOrderBtn').addEventListener('click', () => {
+                if (appData.tracks.length) {
+                    season.tracksOrder = appData.tracks.map(t => t.id);
+                    renderTracksOrder();
+                } else alert("Нет трасс");
+            });
+            document.getElementById('backToStep1Btn').addEventListener('click', () => {
+                season.step = 1;
+                renderSeasonDetail();
+            });
+            document.getElementById('toStep3Btn').addEventListener('click', () => {
+                if (season.tracksOrder.length === 0) { alert("Добавьте хотя бы одну трассу"); return; }
+                const newRaces = [];
+                for (let trackId of season.tracksOrder) {
+                    const existing = season.races.find(r => r.trackId === trackId);
+                    if (existing) newRaces.push(existing);
+                    else newRaces.push({ trackId, qualifying: [], race: [] });
+                }
+                season.races = newRaces;
+                season.step = 3;
+                currentRaceIndex = 0;
+                renderSeasonDetail();
+            });
+        }
+
+        function renderStepRaces(container, season) {
+            if (!season.races.length) {
+                container.innerHTML = '<p>Ошибка: нет гонок</p>';
+                return;
+            }
+            const race = season.races[currentRaceIndex];
+            const track = appData.tracks.find(t => t.id === race.trackId);
+            const driversList = [];
+            season.teamsEntries.forEach(entry => {
+                entry.driverIds.forEach(driverId => {
+                    const driver = appData.drivers.find(d => d.id === driverId);
+                    if (driver) driversList.push(driver);
                 });
             });
-        }
-        renderTracksOrder();
 
-        document.getElementById('addTrackToSeasonBtn').addEventListener('click', () => {
-            if (appData.tracks.length === 0) { alert("Нет трасс"); return; }
-            const select = document.createElement('select');
-            select.innerHTML = appData.tracks.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
-            const btn = document.createElement('button');
-            btn.textContent = 'Добавить';
-            btn.className = 'primary';
-            const div = document.createElement('div');
-            div.style.margin = '5px 0';
-            div.appendChild(select);
-            div.appendChild(btn);
-            tracksContainer.appendChild(div);
-            btn.onclick = () => {
-                const trackId = select.value;
-                season.tracksOrder.push(trackId);
-                renderTracksOrder();
-                div.remove();
-            };
-        });
-        document.getElementById('resetTracksOrderBtn').addEventListener('click', () => {
-            if (appData.tracks.length) {
-                season.tracksOrder = appData.tracks.map(t => t.id);
-                renderTracksOrder();
-            } else alert("Нет трасс");
-        });
-        document.getElementById('backToStep1Btn').addEventListener('click', () => {
-            season.step = 1;
-            renderSeasonDetail();
-        });
-        document.getElementById('toStep3Btn').addEventListener('click', () => {
-            if (season.tracksOrder.length === 0) { alert("Добавьте хотя бы одну трассу"); return; }
-            // Пересоздаём races в соответствии с новым порядком (сохраняя старые результаты, если совпадают)
-            const newRaces = [];
-            for (let trackId of season.tracksOrder) {
-                const existing = season.races.find(r => r.trackId === trackId);
-                if (existing) newRaces.push(existing);
-                else newRaces.push({ trackId, qualifying: [], race: [] });
+            function computePoints(pos) {
+                const pts = [25,18,15,12,10,8,6,4,2,1];
+                if (pos >= 1 && pos <= 10) return pts[pos-1];
+                return 0;
             }
-            season.races = newRaces;
-            season.step = 3;
-            currentRaceIndex = 0;
-            renderSeasonDetail();
-        });
-    }
 
-    function renderStepRaces(container, season) {
-        if (!season.races.length) {
-            container.innerHTML = '<p>Ошибка: нет гонок</p>';
-            return;
-        }
-        const race = season.races[currentRaceIndex];
-        const track = appData.tracks.find(t => t.id === race.trackId);
-        const driversList = [];
-        season.teamsEntries.forEach(entry => {
-            entry.driverIds.forEach(driverId => {
-                const driver = appData.drivers.find(d => d.id === driverId);
-                if (driver) driversList.push(driver);
-            });
-        });
-
-        function computePoints(pos) {
-            const pts = [25,18,15,12,10,8,6,4,2,1];
-            if (pos >= 1 && pos <= 10) return pts[pos-1];
-            return 0;
-        }
-
-        function updateStandings() {
-            const driverPoints = {};
-            const teamPoints = {};
-            season.races.forEach(race => {
-                race.race.forEach(res => {
-                    if (res.points) {
-                        driverPoints[res.driverId] = (driverPoints[res.driverId] || 0) + res.points;
-                        for (let entry of season.teamsEntries) {
-                            if (entry.driverIds.includes(res.driverId)) {
-                                teamPoints[entry.teamId] = (teamPoints[entry.teamId] || 0) + res.points;
-                                break;
+            function updateStandings() {
+                const driverPoints = {};
+                const teamPoints = {};
+                season.races.forEach(race => {
+                    race.race.forEach(res => {
+                        if (res.points) {
+                            driverPoints[res.driverId] = (driverPoints[res.driverId] || 0) + res.points;
+                            for (let entry of season.teamsEntries) {
+                                if (entry.driverIds.includes(res.driverId)) {
+                                    teamPoints[entry.teamId] = (teamPoints[entry.teamId] || 0) + res.points;
+                                    break;
+                                }
                             }
                         }
-                    }
+                    });
                 });
-            });
-            season.standings = { driverPoints, teamPoints };
-        }
+                season.standings = { driverPoints, teamPoints };
+            }
 
-        function renderQualifying() {
-            const qContainer = document.getElementById('qualifyingTable');
-            if (!qContainer) return;
-            let html = `<table class="race-table"><tr><th>Пилот</th><th>Время круга (мм:сс.мс)</th></tr>`;
-            driversList.forEach(driver => {
-                const existing = race.qualifying.find(q => q.driverId === driver.id);
-                const timeValue = existing ? existing.time : '';
-                html += `<tr>
-                             <td>${escapeHtml(driver.name)}</td>
-                             <td><input type="text" class="q-time" data-driver="${driver.id}" value="${timeValue}" placeholder="1:23.456"></td>
-                         </tr>`;
-            });
-            html += `</table><button id="saveQualifyingBtn" class="primary">Сохранить квалификацию</button>`;
-            qContainer.innerHTML = html;
-            document.querySelectorAll('.q-time').forEach(inp => {
-                inp.addEventListener('change', (e) => {
-                    const driverId = e.target.dataset.driver;
-                    const time = e.target.value;
-                    const existingIdx = race.qualifying.findIndex(q => q.driverId === driverId);
-                    if (existingIdx >= 0) race.qualifying[existingIdx].time = time;
-                    else race.qualifying.push({ driverId, time });
+            function renderQualifying() {
+                const qContainer = document.getElementById('qualifyingTable');
+                if (!qContainer) return;
+                let html = `<table class="race-table"><tr><th>Пилот</th><th>Время круга (мм:сс.мс)</th></tr>`;
+                driversList.forEach(driver => {
+                    const existing = race.qualifying.find(q => q.driverId === driver.id);
+                    const timeValue = existing ? existing.time : '';
+                    html += `<tr>
+                                 <td>${escapeHtml(driver.name)}</td>
+                                 <td><input type="text" class="q-time" data-driver="${driver.id}" value="${timeValue}" placeholder="1:23.456"></td>
+                             </tr>`;
                 });
-            });
-            document.getElementById('saveQualifyingBtn')?.addEventListener('click', () => {
-                alert('Квалификация сохранена');
-            });
-        }
+                html += `</table><button id="saveQualifyingBtn" class="primary">Сохранить квалификацию</button>`;
+                qContainer.innerHTML = html;
+                document.querySelectorAll('.q-time').forEach(inp => {
+                    inp.addEventListener('change', (e) => {
+                        const driverId = e.target.dataset.driver;
+                        const time = e.target.value;
+                        const existingIdx = race.qualifying.findIndex(q => q.driverId === driverId);
+                        if (existingIdx >= 0) race.qualifying[existingIdx].time = time;
+                        else race.qualifying.push({ driverId, time });
+                    });
+                });
+                document.getElementById('saveQualifyingBtn')?.addEventListener('click', () => {
+                    alert('Квалификация сохранена');
+                });
+            }
 
-        function renderRace() {
-            const rContainer = document.getElementById('raceTable');
-            if (!rContainer) return;
-            let html = `<table class="race-table"><tr><th>Пилот</th><th>Позиция</th><th>Очки</th></tr>`;
-            driversList.forEach(driver => {
-                const existing = race.race.find(r => r.driverId === driver.id);
-                const position = existing ? existing.position : '';
-                const points = existing ? existing.points : 0;
-                html += `<tr>
-                             <td>${escapeHtml(driver.name)}</td>
-                             <td><input type="number" class="race-pos" data-driver="${driver.id}" value="${position}" min="1" max="${driversList.length}"></td>
-                             <td class="race-points" data-driver="${driver.id}">${points}</td>
-                         </tr>`;
-            });
-            html += `</table><button id="saveRaceBtn" class="primary">Сохранить результаты гонки</button>`;
-            rContainer.innerHTML = html;
-            document.querySelectorAll('.race-pos').forEach(inp => {
-                inp.addEventListener('change', (e) => {
-                    const driverId = e.target.dataset.driver;
-                    let pos = parseInt(e.target.value);
-                    if (isNaN(pos)) pos = 0;
-                    const points = computePoints(pos);
-                    const pointsSpan = document.querySelector(`.race-points[data-driver="${driverId}"]`);
-                    if (pointsSpan) pointsSpan.innerText = points;
-                    const existingIdx = race.race.findIndex(r => r.driverId === driverId);
-                    if (existingIdx >= 0) {
-                        race.race[existingIdx].position = pos;
-                        race.race[existingIdx].points = points;
-                    } else {
-                        race.race.push({ driverId, position: pos, points });
-                    }
+            function renderRace() {
+                const rContainer = document.getElementById('raceTable');
+                if (!rContainer) return;
+                let html = `<table class="race-table"><tr><th>Пилот</th><th>Позиция</th><th>Очки</th></tr>`;
+                driversList.forEach(driver => {
+                    const existing = race.race.find(r => r.driverId === driver.id);
+                    const position = existing ? existing.position : '';
+                    const points = existing ? existing.points : 0;
+                    html += `<tr>
+                                 <td>${escapeHtml(driver.name)}</td>
+                                 <td><input type="number" class="race-pos" data-driver="${driver.id}" value="${position}" min="1" max="${driversList.length}"></td>
+                                 <td class="race-points" data-driver="${driver.id}">${points}</td>
+                             </tr>`;
+                });
+                html += `</table><button id="saveRaceBtn" class="primary">Сохранить результаты гонки</button>`;
+                rContainer.innerHTML = html;
+                document.querySelectorAll('.race-pos').forEach(inp => {
+                    inp.addEventListener('change', (e) => {
+                        const driverId = e.target.dataset.driver;
+                        let pos = parseInt(e.target.value);
+                        if (isNaN(pos)) pos = 0;
+                        const points = computePoints(pos);
+                        const pointsSpan = document.querySelector(`.race-points[data-driver="${driverId}"]`);
+                        if (pointsSpan) pointsSpan.innerText = points;
+                        const existingIdx = race.race.findIndex(r => r.driverId === driverId);
+                        if (existingIdx >= 0) {
+                            race.race[existingIdx].position = pos;
+                            race.race[existingIdx].points = points;
+                        } else {
+                            race.race.push({ driverId, position: pos, points });
+                        }
+                        updateStandings();
+                        renderLeaderboard();
+                    });
+                });
+                document.getElementById('saveRaceBtn')?.addEventListener('click', () => {
+                    alert('Результаты гонки сохранены');
                     updateStandings();
                     renderLeaderboard();
                 });
-            });
-            document.getElementById('saveRaceBtn')?.addEventListener('click', () => {
-                alert('Результаты гонки сохранены');
-                updateStandings();
-                renderLeaderboard();
-            });
-        }
-
-        function renderLeaderboard() {
-            const leaderDiv = document.getElementById('leaderboard');
-            if (!leaderDiv) return;
-            const driverPoints = season.standings.driverPoints || {};
-            const teamPoints = season.standings.teamPoints || {};
-            const sortedDrivers = Object.entries(driverPoints).sort((a,b)=>b[1]-a[1]).slice(0,3);
-            let driverHtml = '<h4>🏆 Лидеры пилотов</h4><ol>';
-            sortedDrivers.forEach(([driverId, pts]) => {
-                const driver = appData.drivers.find(d => d.id === driverId);
-                driverHtml += `<li>${driver ? escapeHtml(driver.name) : '?'} — ${pts} очков</li>`;
-            });
-            driverHtml += '</ol>';
-            const sortedTeams = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1]);
-            let teamHtml = '<h4>🏆 Кубок конструкторов</h4>';
-            if (sortedTeams.length) {
-                const [teamId, pts] = sortedTeams[0];
-                const team = appData.teams.find(t => t.id === teamId);
-                teamHtml += `<p>${team ? escapeHtml(team.name) : '?'} — ${pts} очков</p>`;
-            } else teamHtml += '<p>нет данных</p>';
-            leaderDiv.innerHTML = driverHtml + teamHtml;
-        }
-
-        let html = `
-            <h3>Шаг 3: Гонки (этап ${currentRaceIndex+1} из ${season.races.length})</h3>
-            <div class="race-nav">
-                <button id="prevRaceBtn" ${currentRaceIndex===0?'disabled':''}>← Предыдущий этап</button>
-                <span>${track ? escapeHtml(track.name) : ''}</span>
-                <button id="nextRaceBtn" ${currentRaceIndex===season.races.length-1?'disabled':''}>Следующий этап →</button>
-            </div>
-            <div class="sub-section"><strong>Квалификация</strong><div id="qualifyingTable"></div></div>
-            <div class="sub-section"><strong>Гонка</strong><div id="raceTable"></div></div>
-            <div id="leaderboard" class="leaderboard"></div>
-            <div class="step-buttons">
-                <button id="backToStep2Btn" class="primary">← Назад (расписание)</button>
-                <button id="finishSeasonBtn" class="primary">🏁 Завершить сезон и обновить статистику</button>
-            </div>
-        `;
-        container.innerHTML = html;
-        renderQualifying();
-        renderRace();
-        renderLeaderboard();
-
-        document.getElementById('prevRaceBtn')?.addEventListener('click', () => {
-            if (currentRaceIndex > 0) {
-                currentRaceIndex--;
-                renderStepRaces(container, season);
             }
-        });
-        document.getElementById('nextRaceBtn')?.addEventListener('click', () => {
-            if (currentRaceIndex < season.races.length-1) {
-                currentRaceIndex++;
-                renderStepRaces(container, season);
+
+            function renderLeaderboard() {
+                const leaderDiv = document.getElementById('leaderboard');
+                if (!leaderDiv) return;
+                const driverPoints = season.standings.driverPoints || {};
+                const teamPoints = season.standings.teamPoints || {};
+                const sortedDrivers = Object.entries(driverPoints).sort((a,b)=>b[1]-a[1]).slice(0,3);
+                let driverHtml = '<h4>🏆 Лидеры пилотов</h4><ol>';
+                sortedDrivers.forEach(([driverId, pts]) => {
+                    const driver = appData.drivers.find(d => d.id === driverId);
+                    driverHtml += `<li>${driver ? escapeHtml(driver.name) : '?'} — ${pts} очков</li>`;
+                });
+                driverHtml += '</ol>';
+                const sortedTeams = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1]);
+                let teamHtml = '<h4>🏆 Кубок конструкторов</h4>';
+                if (sortedTeams.length) {
+                    const [teamId, pts] = sortedTeams[0];
+                    const team = appData.teams.find(t => t.id === teamId);
+                    teamHtml += `<p>${team ? escapeHtml(team.name) : '?'} — ${pts} очков</p>`;
+                } else teamHtml += '<p>нет данных</p>';
+                leaderDiv.innerHTML = driverHtml + teamHtml;
             }
-        });
-        document.getElementById('backToStep2Btn')?.addEventListener('click', () => {
-            season.step = 2;
-            renderSeasonDetail();
-        });
-        document.getElementById('finishSeasonBtn')?.addEventListener('click', () => {
-            updateStandings();
-            const driverPoints = season.standings.driverPoints || {};
-            const teamPoints = season.standings.teamPoints || {};
-            // Обновление статистики пилотов
-            for (let driver of appData.drivers) {
-                const addedPoints = driverPoints[driver.id] || 0;
-                driver.stats.totalPoints += addedPoints;
-                let first=0, second=0, third=0;
-                for (let race of season.races) {
-                    const res = race.race.find(r => r.driverId === driver.id);
-                    if (res) {
-                        if (res.position === 1) first++;
-                        else if (res.position === 2) second++;
-                        else if (res.position === 3) third++;
-                    }
+
+            let html = `
+                <h3>Шаг 3: Гонки (этап ${currentRaceIndex+1} из ${season.races.length})</h3>
+                <div class="race-nav">
+                    <button id="prevRaceBtn" ${currentRaceIndex===0?'disabled':''}>← Предыдущий этап</button>
+                    <span>${track ? escapeHtml(track.name) : ''}</span>
+                    <button id="nextRaceBtn" ${currentRaceIndex===season.races.length-1?'disabled':''}>Следующий этап →</button>
+                </div>
+                <div class="sub-section"><strong>Квалификация</strong><div id="qualifyingTable"></div></div>
+                <div class="sub-section"><strong>Гонка</strong><div id="raceTable"></div></div>
+                <div id="leaderboard" class="leaderboard"></div>
+                <div class="step-buttons">
+                    <button id="backToStep2Btn" class="primary">← Назад (расписание)</button>
+                    <button id="finishSeasonBtn" class="primary">🏁 Завершить сезон и обновить статистику</button>
+                </div>
+            `;
+            container.innerHTML = html;
+            renderQualifying();
+            renderRace();
+            renderLeaderboard();
+
+            document.getElementById('prevRaceBtn')?.addEventListener('click', () => {
+                if (currentRaceIndex > 0) {
+                    currentRaceIndex--;
+                    renderStepRaces(container, season);
                 }
-                driver.stats.podiums.first += first;
-                driver.stats.podiums.second += second;
-                driver.stats.podiums.third += third;
-                // Поулы
-                for (let race of season.races) {
-                    if (race.qualifying && race.qualifying.length) {
+            });
+            document.getElementById('nextRaceBtn')?.addEventListener('click', () => {
+                if (currentRaceIndex < season.races.length-1) {
+                    currentRaceIndex++;
+                    renderStepRaces(container, season);
+                }
+            });
+            document.getElementById('backToStep2Btn')?.addEventListener('click', () => {
+                season.step = 2;
+                renderSeasonDetail();
+            });
+            document.getElementById('finishSeasonBtn')?.addEventListener('click', () => {
+                updateStandings();
+                const driverPoints = season.standings.driverPoints || {};
+                const teamPoints = season.standings.teamPoints || {};
+                for (let driver of appData.drivers) {
+                    const addedPoints = driverPoints[driver.id] || 0;
+                    driver.stats.totalPoints += addedPoints;
+                    let first=0, second=0, third=0;
+                    for (let race of season.races) {
+                        const res = race.race.find(r => r.driverId === driver.id);
+                        if (res) {
+                            if (res.position === 1) first++;
+                            else if (res.position === 2) second++;
+                            else if (res.position === 3) third++;
+                        }
+                    }
+                    driver.stats.podiums.first += first;
+                    driver.stats.podiums.second += second;
+                    driver.stats.podiums.third += third;
+                    for (let race of season.races) {
+                        if (race.qualifying && race.qualifying.length) {
+                            const sorted = [...race.qualifying].sort((a,b) => {
+                                const toSec = (t) => { if (!t) return Infinity; let parts = t.split(':'); return parseFloat(parts[0])*60 + parseFloat(parts[1]); };
+                                return toSec(a.time) - toSec(b.time);
+                            });
+                            if (sorted[0] && sorted[0].driverId === driver.id) driver.stats.poles++;
+                        }
+                    }
+                    driver.stats.grandsPrix += season.races.length;
+                }
+                if (Object.keys(teamPoints).length) {
+                    const bestTeamId = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1])[0][0];
+                    const team = appData.teams.find(t => t.id === bestTeamId);
+                    if (team) team.constructorCup = true;
+                }
+                season.completed = true;
+                alert('Статистика обновлена! Не забудьте сделать экспорт, чтобы сохранить изменения.');
+                renderSeasonsList();
+                renderSeasonDetail();
+            });
+        }
+
+        function addSeason() {
+            const newSeason = {
+                id: generateId(),
+                year: new Date().getFullYear(),
+                name: "Новый сезон",
+                step: 1,
+                teamsEntries: [],
+                tracksOrder: [],
+                races: [],
+                standings: { driverPoints: {}, teamPoints: {} }
+            };
+            appData.seasons.push(newSeason);
+            currentSeasonId = newSeason.id;
+            renderSeasonsList();
+            renderSeasonDetail();
+        }
+
+        function fullRecalcStats() {
+            for (let d of appData.drivers) {
+                d.stats = {
+                    totalPoints: 0,
+                    titles: d.titles || 0,
+                    grandsPrix: 0,
+                    fastestLaps: 0,
+                    poles: 0,
+                    podiums: { first: 0, second: 0, third: 0 }
+                };
+            }
+            for (let t of appData.teams) {
+                t.constructorCup = false;
+            }
+            const pointsSystem = [25,18,15,12,10,8,6,4,2,1];
+            for (let s of appData.seasons) {
+                if (!s.races) continue;
+                const driverPoints = {};
+                const teamPoints = {};
+                for (let race of s.races) {
+                    for (let res of race.race) {
+                        const driver = appData.drivers.find(d => d.id === res.driverId);
+                        if (!driver) continue;
+                        const pts = res.points || 0;
+                        driverPoints[res.driverId] = (driverPoints[res.driverId] || 0) + pts;
+                        for (let entry of s.teamsEntries) {
+                            if (entry.driverIds.includes(res.driverId)) {
+                                teamPoints[entry.teamId] = (teamPoints[entry.teamId] || 0) + pts;
+                                break;
+                            }
+                        }
+                        driver.stats.grandsPrix++;
+                        if (res.position === 1) driver.stats.podiums.first++;
+                        else if (res.position === 2) driver.stats.podiums.second++;
+                        else if (res.position === 3) driver.stats.podiums.third++;
+                    }
+                    if (race.qualifying) {
                         const sorted = [...race.qualifying].sort((a,b) => {
                             const toSec = (t) => { if (!t) return Infinity; let parts = t.split(':'); return parseFloat(parts[0])*60 + parseFloat(parts[1]); };
                             return toSec(a.time) - toSec(b.time);
                         });
-                        if (sorted[0] && sorted[0].driverId === driver.id) driver.stats.poles++;
-                    }
-                }
-                driver.stats.grandsPrix += season.races.length;
-            }
-            // Кубок конструкторов
-            if (Object.keys(teamPoints).length) {
-                const bestTeamId = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1])[0][0];
-                const team = appData.teams.find(t => t.id === bestTeamId);
-                if (team) team.constructorCup = true;
-            }
-            season.completed = true;
-            alert('Статистика обновлена! Не забудьте сделать экспорт, чтобы сохранить изменения.');
-            renderSeasonsList();
-            renderSeasonDetail();
-        });
-    }
-
-    function addSeason() {
-        const newSeason = {
-            id: generateId(),
-            year: new Date().getFullYear(),
-            name: "Новый сезон",
-            step: 1,
-            teamsEntries: [],
-            tracksOrder: [],
-            races: [],
-            standings: { driverPoints: {}, teamPoints: {} }
-        };
-        appData.seasons.push(newSeason);
-        currentSeasonId = newSeason.id;
-        renderSeasonsList();
-        renderSeasonDetail();
-    }
-
-    function fullRecalcStats() {
-        // Сброс статистики пилотов
-        for (let d of appData.drivers) {
-            d.stats = {
-                totalPoints: 0,
-                titles: d.titles || 0,
-                grandsPrix: 0,
-                fastestLaps: 0,
-                poles: 0,
-                podiums: { first: 0, second: 0, third: 0 }
-            };
-        }
-        for (let t of appData.teams) {
-            t.constructorCup = false;
-        }
-        const pointsSystem = [25,18,15,12,10,8,6,4,2,1];
-        for (let s of appData.seasons) {
-            if (!s.races) continue;
-            const driverPoints = {};
-            const teamPoints = {};
-            for (let race of s.races) {
-                for (let res of race.race) {
-                    const driver = appData.drivers.find(d => d.id === res.driverId);
-                    if (!driver) continue;
-                    const pts = res.points || 0;
-                    driverPoints[res.driverId] = (driverPoints[res.driverId] || 0) + pts;
-                    for (let entry of s.teamsEntries) {
-                        if (entry.driverIds.includes(res.driverId)) {
-                            teamPoints[entry.teamId] = (teamPoints[entry.teamId] || 0) + pts;
-                            break;
+                        if (sorted[0]) {
+                            const poleDriver = appData.drivers.find(d => d.id === sorted[0].driverId);
+                            if (poleDriver) poleDriver.stats.poles++;
                         }
                     }
-                    driver.stats.grandsPrix++;
-                    if (res.position === 1) driver.stats.podiums.first++;
-                    else if (res.position === 2) driver.stats.podiums.second++;
-                    else if (res.position === 3) driver.stats.podiums.third++;
                 }
-                if (race.qualifying) {
-                    const sorted = [...race.qualifying].sort((a,b) => {
-                        const toSec = (t) => { if (!t) return Infinity; let parts = t.split(':'); return parseFloat(parts[0])*60 + parseFloat(parts[1]); };
-                        return toSec(a.time) - toSec(b.time);
-                    });
-                    if (sorted[0]) {
-                        const poleDriver = appData.drivers.find(d => d.id === sorted[0].driverId);
-                        if (poleDriver) poleDriver.stats.poles++;
-                    }
+                for (let [driverId, pts] of Object.entries(driverPoints)) {
+                    const driver = appData.drivers.find(d => d.id === driverId);
+                    if (driver) driver.stats.totalPoints += pts;
+                }
+                if (Object.keys(teamPoints).length) {
+                    const bestTeamId = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1])[0][0];
+                    const team = appData.teams.find(t => t.id === bestTeamId);
+                    if (team) team.constructorCup = true;
                 }
             }
-            for (let [driverId, pts] of Object.entries(driverPoints)) {
-                const driver = appData.drivers.find(d => d.id === driverId);
-                if (driver) driver.stats.totalPoints += pts;
-            }
-            if (Object.keys(teamPoints).length) {
-                const bestTeamId = Object.entries(teamPoints).sort((a,b)=>b[1]-a[1])[0][0];
-                const team = appData.teams.find(t => t.id === bestTeamId);
-                if (team) team.constructorCup = true;
+            alert('Глобальная статистика пересчитана из всех сезонов');
+            if (currentDriverId) renderDriverDetail();
+            if (currentTeamId) renderTeamDetail();
+        }
+
+        function renderMain() {
+            document.getElementById('mainText').value = appData.mainPageText || '';
+        }
+        function saveMain() {
+            appData.mainPageText = document.getElementById('mainText').value;
+            alert('Сохранено');
+        }
+
+        async function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file) {
+                const savedPath = await window.pywebview.api.save_file(dataStr);
+                alert(savedPath ? "Сохранено" : "Отменено");
+            } else {
+                const blob = new Blob([dataStr], {type: "application/json"});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = "racing_manager.json";
+                a.click();
+                URL.revokeObjectURL(a.href);
             }
         }
-        alert('Глобальная статистика пересчитана из всех сезонов');
-        if (currentDriverId) renderDriverDetail();
-        if (currentTeamId) renderTeamDetail();
-    }
 
-    function renderMain() {
-        document.getElementById('mainText').value = appData.mainPageText || '';
-    }
-    function saveMain() {
-        appData.mainPageText = document.getElementById('mainText').value;
-        alert('Сохранено');
-    }
-
-    async function exportData() {
-        const dataStr = JSON.stringify(appData, null, 2);
-        if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file) {
-            const savedPath = await window.pywebview.api.save_file(dataStr);
-            alert(savedPath ? "Сохранено" : "Отменено");
-        } else {
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "racing_manager.json";
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }
-    }
-
-    async function importData() {
-        if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file) {
-            const content = await window.pywebview.api.load_file();
-            if (content) {
-                try {
-                    const imported = JSON.parse(content);
-                    if (confirm("Импорт заменит текущие данные. Продолжить?")) {
-                        appData = imported;
-                        for (let team of appData.teams) if (!team.color) team.color = getRandomPastel();
-                        renderMain();
-                        renderTracksList();
-                        renderTrackDetail();
-                        renderTeamsList();
-                        renderTeamDetail();
-                        renderDriversList();
-                        renderDriverDetail();
-                        renderSeasonsList();
-                        renderSeasonDetail();
-                        alert("Импорт выполнен");
-                    }
-                } catch(e) { alert("Ошибка файла"); }
-            }
-        } else {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = ev => {
+        async function importData() {
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file) {
+                const content = await window.pywebview.api.load_file();
+                if (content) {
                     try {
-                        const imported = JSON.parse(ev.target.result);
-                        if (confirm("Заменить данные?")) {
+                        const imported = JSON.parse(content);
+                        if (confirm("Импорт заменит текущие данные. Продолжить?")) {
                             appData = imported;
                             for (let team of appData.teams) if (!team.color) team.color = getRandomPastel();
                             renderMain();
@@ -1203,64 +1210,75 @@
                             renderDriverDetail();
                             renderSeasonsList();
                             renderSeasonDetail();
-                            alert("Импорт завершён");
+                            alert("Импорт выполнен");
                         }
-                    } catch(e) { alert("Ошибка"); }
+                    } catch(e) { alert("Ошибка файла"); }
+                }
+            } else {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        try {
+                            const imported = JSON.parse(ev.target.result);
+                            if (confirm("Заменить данные?")) {
+                                appData = imported;
+                                for (let team of appData.teams) if (!team.color) team.color = getRandomPastel();
+                                renderMain();
+                                renderTracksList();
+                                renderTrackDetail();
+                                renderTeamsList();
+                                renderTeamDetail();
+                                renderDriversList();
+                                renderDriverDetail();
+                                renderSeasonsList();
+                                renderSeasonDetail();
+                                alert("Импорт завершён");
+                            }
+                        } catch(e) { alert("Ошибка"); }
+                    };
+                    reader.readAsText(file);
                 };
-                reader.readAsText(file);
-            };
-            input.click();
+                input.click();
+            }
         }
-    }
 
-    function initTabs() {
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.tab-content');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.dataset.tab;
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                contents.forEach(c => c.classList.remove('active'));
-                document.getElementById(target + '-tab').classList.add('active');
-                if (target === 'tracks') { renderTracksList(); if (currentTrackId) renderTrackDetail(); else if (appData.tracks[0]) { currentTrackId = appData.tracks[0].id; renderTracksList(); renderTrackDetail(); } }
-                else if (target === 'teams') { renderTeamsList(); if (currentTeamId) renderTeamDetail(); else if (appData.teams[0]) { currentTeamId = appData.teams[0].id; renderTeamsList(); renderTeamDetail(); } }
-                else if (target === 'drivers') { renderDriversList(); if (currentDriverId) renderDriverDetail(); else if (appData.drivers[0]) { currentDriverId = appData.drivers[0].id; renderDriversList(); renderDriverDetail(); } }
-                else if (target === 'seasons') { renderSeasonsList(); if (currentSeasonId) renderSeasonDetail(); else if (appData.seasons[0]) { currentSeasonId = appData.seasons[0].id; renderSeasonsList(); renderSeasonDetail(); } }
-                else if (target === 'main') renderMain();
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    contents.forEach(c => c.classList.remove('active'));
+                    document.getElementById(target + '-tab').classList.add('active');
+                    if (target === 'tracks') { renderTracksList(); if (currentTrackId) renderTrackDetail(); else if (appData.tracks[0]) { currentTrackId = appData.tracks[0].id; renderTracksList(); renderTrackDetail(); } }
+                    else if (target === 'teams') { renderTeamsList(); if (currentTeamId) renderTeamDetail(); else if (appData.teams[0]) { currentTeamId = appData.teams[0].id; renderTeamsList(); renderTeamDetail(); } }
+                    else if (target === 'drivers') { renderDriversList(); if (currentDriverId) renderDriverDetail(); else if (appData.drivers[0]) { currentDriverId = appData.drivers[0].id; renderDriversList(); renderDriverDetail(); } }
+                    else if (target === 'seasons') { renderSeasonsList(); if (currentSeasonId) renderSeasonDetail(); else if (appData.seasons[0]) { currentSeasonId = appData.seasons[0].id; renderSeasonsList(); renderSeasonDetail(); } }
+                    else if (target === 'main') renderMain();
+                });
             });
+        }
+
+        function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+        loadDataFromJson().then(() => {
+            initTabs();
+            document.getElementById('saveMainBtn').addEventListener('click', saveMain);
+            document.getElementById('addTrackBtn').addEventListener('click', addTrack);
+            document.getElementById('addTeamBtn').addEventListener('click', addTeam);
+            document.getElementById('addDriverBtn').addEventListener('click', addDriver);
+            document.getElementById('addSeasonBtn').addEventListener('click', addSeason);
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+            document.getElementById('importBtn').addEventListener('click', importData);
         });
-    }
+    </script>
 
-    function escapeHtml(str) { return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-    loadDataFromJson().then(() => {
-        initTabs();
-        document.getElementById('saveMainBtn').addEventListener('click', saveMain);
-        document.getElementById('addTrackBtn').addEventListener('click', addTrack);
-        document.getElementById('addTeamBtn').addEventListener('click', addTeam);
-        document.getElementById('addDriverBtn').addEventListener('click', addDriver);
-        document.getElementById('addSeasonBtn').addEventListener('click', addSeason);
-        document.getElementById('exportBtn').addEventListener('click', exportData);
-        document.getElementById('importBtn').addEventListener('click', importData);
-    });
-</script>
-
-     <nav class="sidebar">
-        <h2>📜 Дьётонрей</h2>
-        <ul>
-            <li><a href="index.html">🏠 Главная</a></li>
-            <li><a href="calendar-events.html">📅 Календарь событий</a></li>
-            <li><a href="racing_manager.html">🏁 Глобл Тэк Рэйс</a></li>
-            <li><a href="uni_schedule.html">🎓 Расписание Национального Космического</a></li>
-            <li><a href="history.html">📖 История Дьётонрея</a></li>
-        </ul>
-    </nav>
-
-    <!-- А СЮДА вставляете уникальное содержание этой страницы (календарь, текст и т.д.) -->
-    <main class="main-content">
-        <h1>Заголовок этой страницы</h1>
-        <p>Ваш текст...</p>
-    </main>
 </body>
 </html>
