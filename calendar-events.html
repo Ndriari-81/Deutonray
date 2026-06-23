@@ -2,17 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Календарь Дьётонрея</title>
+    <!-- Подключаем общий файл стилей (в нём уже есть оформление колонки и main) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Дополнительные стили, специфичные для календаря (не конфликтуют с общими) -->
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f0;
-            margin: 20px;
-        }
-        /* Управление */
+        /* Эти стили относятся только к календарю, их можно оставить здесь,
+           но они не должны дублировать общие стили для sidebar и main-content */
         .controls {
             background: #fff8e7;
             padding: 15px;
@@ -92,8 +89,6 @@
             border-radius: 4px;
             display: inline-block;
         }
-
-        /* Двухколоночная раскладка: сетка слева, список справа */
         .main-layout {
             display: flex;
             gap: 24px;
@@ -157,8 +152,6 @@
             border-radius: 2px;
             flex-shrink: 0;
         }
-
-        /* Сетка календаря (2 колонки) */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -258,702 +251,47 @@
             color: #000000;
             margin-top: 4px;
         }
+        .clear-btn {
+            background: #b34e4e;
+        }
+        .clear-btn:hover {
+            background: #8a3a3a;
+        }
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .event-category-badge {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+        .edit-event, .delete-event {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px 6px;
+            margin-left: 4px;
+            border-radius: 4px;
+        }
+        .edit-event:hover {
+            background: #d0e0ff;
+        }
+        .delete-event:hover {
+            background: #ffd0d0;
+        }
     </style>
 </head>
 <body>
 
-<h2>📆 Календарь Дьётонрея</h2>
-<div class="controls">
-    <div class="year-nav">
-        <button id="prevYearBtn">Prev</button>
-        <label>Год:</label>
-        <input type="number" id="yearInput" value="3835" step="1" style="width: 90px;">
-        <button id="nextYearBtn">Next</button>
-        <button id="showBtn">Показать</button>
-    </div>
-    <div class="right-group">
-        <div class="export-import">
-            <button id="exportEventsBtn">💾 Экспорт</button>
-            <button id="importEventsBtn">📂 Импорт</button>
-        </div>
-        <div class="settings-message">
-            ⚙️ Нечётный → ПН, чётный → середина (настройка ниже)
-        </div>
-    </div>
-</div>
-
-<div>
-    <label>👉 Для чётных годов первый день (0=Пн,1=Вт,2=Ср,3=Сб,4=Чт,5=Пт,6=Шн,7=Вс): </label>
-    <input type="number" id="evenStartDay" value="4" min="0" max="7" step="1" style="width: 70px;">
-    <button id="clearEventsBtn" class="clear-btn" style="background:#b34e4e; margin-left:15px;">🗑️ Стереть все события</button>
-</div>
-
-<div class="calculator">
-    <div>
-        <label>Дата начала (ГГГГ.ММ.ДД):</label>
-        <input type="text" id="startDate" placeholder="например 3837.12.03">
-    </div>
-    <div>
-        <label>Дата конца (ГГГГ.ММ.ДД):</label>
-        <input type="text" id="endDate" placeholder="например 3837.14.30">
-    </div>
-    <div>
-        <button id="calcDiffBtn">Рассчитать разницу</button>
-    </div>
-    <div id="diffResult" class="result">— дней —</div>
-</div>
-
-<div class="filter-bar" id="filterBar"></div>
-
-<div class="main-layout">
-    <div class="calendar-section">
-        <div id="calendarContainer" class="calendar-grid"></div>
-        <div id="infoPanel" class="info-panel">
-            💡 Кликните на любую дату, чтобы добавить событие (с выбором цвета).<br>
-            🎨 Сверху — фильтр по цвету.<br>
-            📅 Справа — список событий выбранного года.
-        </div>
-    </div>
-    <div class="events-sidebar" id="eventsSidebar">
-        <h3>События <span id="currentYearDisplay"></span> года
-            <span class="sort-buttons">
-                <button data-sort="date-asc" class="active">📅 по дате ↑</button>
-                <button data-sort="date-desc">📅 по дате ↓</button>
-                <button data-sort="category">🎨 по цвету</button>
-            </span>
-        </h3>
-        <div id="yearEventsList" class="year-events-list">
-            <p>Выберите год</p>
-        </div>
-    </div>
-</div>
-
-<div class="note">
-    📌 События делятся на категории (цвета).<br>
-    🔘 Нажмите на цветной квадратик в фильтре, чтобы показывать только события этого цвета.<br>
-    📅 Справа — список всех событий текущего года (клик по событию открывает подробности).<br>
-    💾 Экспорт/импорт сохраняют все события в JSON-файл.<br>
-    🔄 При загрузке страницы события автоматически загружаются из <strong>calendar_events.json</strong>.
-</div>
-<footer>Календарь с цветными категориями, фильтром, списком событий года и экспортом/импортом</footer>
-
-<script>
-    // ---- Константы ----
-    const monthNames = [
-        "Январь", "Февраль", "Снежбарь", "Март", "Месяц 5",
-        "Апрель", "Май", "Июнь", "Июль", "Зельнар",
-        "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-    ];
-    const weekDays = ["Пн", "Вт", "Ср", "Сб", "Чт", "Пт", "Шн", "Вс"];
-    const daysInMonth = Array(15).fill(36);
-
-    const CATEGORIES = [
-        { id: "color1", name: "Красный", color: "#ff6666" },
-        { id: "color2", name: "Зелёный", color: "#66ff66" },
-        { id: "color3", name: "Синий", color: "#6666ff" },
-        { id: "color4", name: "Жёлтый", color: "#ffcc66" },
-        { id: "color5", name: "Фиолетовый", color: "#cc66ff" },
-        { id: "color6", name: "Оранжевый", color: "#ffaa66" },
-        { id: "color7", name: "Серый", color: "#aaaaaa" }
-    ];
-
-    const STORAGE_KEY = "fantasyCalendarEventsMulti";
-    let currentFilter = null; // id категории или null
-    let currentSort = "date-asc"; // date-asc, date-desc, category
-
-    // ---- Работа с хранилищем ----
-    function loadEvents() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
-    function saveEvents(events) { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
-
-    // Автозагрузка из JSON при старте
-    async function autoLoadFromJson() {
-        try {
-            const response = await fetch("calendar_events.json");
-            if (!response.ok) throw new Error("Файл не найден");
-            const imported = await response.json();
-            if (typeof imported === 'object' && imported !== null) {
-                saveEvents(imported);
-                console.log("Автозагрузка: события импортированы из calendar_events.json");
-                return true;
-            }
-        } catch(e) {
-            console.warn("Автозагрузка не удалась, оставляем текущие события", e);
-        }
-        return false;
-    }
-
-    // Вспомогательные функции
-    function getEventsForDate(year, monthIdx, day) { return loadEvents()[`${year}-${monthIdx}-${day}`] || []; }
-
-    function addEventToDate(year, monthIdx, day, text, categoryId) {
-        if (!text.trim()) return;
-        const events = loadEvents();
-        const key = `${year}-${monthIdx}-${day}`;
-        if (!events[key]) events[key] = [];
-        events[key].push({ text: text.trim(), categoryId });
-        saveEvents(events);
-        renderCalendar();
-        showDateInfo(year, monthIdx, day);
-        updateYearEventsList(year);
-    }
-
-    function editEventFromDate(year, monthIdx, day, index) {
-        const events = loadEvents();
-        const key = `${year}-${monthIdx}-${day}`;
-        if (!events[key] || !events[key][index]) return;
-        const oldEvent = events[key][index];
-        let newText = prompt("Редактировать текст события:", oldEvent.text);
-        if (newText === null) return;
-        newText = newText.trim();
-        let catOptions = CATEGORIES.map((c, i) => `${i+1} - ${c.name}`).join('\n');
-        let newCatId = oldEvent.categoryId;
-        let changeCat = confirm(`Изменить категорию? Сейчас: ${CATEGORIES.find(c => c.id === oldEvent.categoryId).name}\nОК — да, Отмена — оставить.`);
-        if (changeCat) {
-            let catChoice = prompt(`Выберите новую категорию:\n${catOptions}\nВведите номер (1-${CATEGORIES.length}):`);
-            if (catChoice) {
-                let num = parseInt(catChoice);
-                if (num >= 1 && num <= CATEGORIES.length) newCatId = CATEGORIES[num-1].id;
-            }
-        }
-        if (newText === "") {
-            events[key].splice(index, 1);
-            if (events[key].length === 0) delete events[key];
-        } else {
-            events[key][index] = { text: newText, categoryId: newCatId };
-        }
-        saveEvents(events);
-        renderCalendar();
-        const panel = document.getElementById('infoPanel');
-        const curr = panel.getAttribute('data-current-date');
-        if (curr) {
-            const [y, m, d] = curr.split('-').map(Number);
-            if (y === year && m === monthIdx && d === day) showDateInfo(year, monthIdx, day);
-        }
-        updateYearEventsList(year);
-    }
-
-    function deleteEventFromDate(year, monthIdx, day, index) {
-        const events = loadEvents();
-        const key = `${year}-${monthIdx}-${day}`;
-        if (events[key] && events[key][index]) {
-            events[key].splice(index, 1);
-            if (events[key].length === 0) delete events[key];
-            saveEvents(events);
-            renderCalendar();
-            showDateInfo(year, monthIdx, day);
-            updateYearEventsList(year);
-        }
-    }
-
-    function clearAllEvents() {
-        if (confirm("Удалить ВСЕ события?")) {
-            localStorage.removeItem(STORAGE_KEY);
-            renderCalendar();
-            document.getElementById('infoPanel').innerHTML = "💡 Все события удалены. Кликните на дату, чтобы добавить новое.";
-            const currentYear = getCurrentYear();
-            updateYearEventsList(currentYear);
-        }
-    }
-
-    // --- Экспорт/импорт (как ранее) ---
-    async function exportEvents() {
-        const events = loadEvents();
-        const dataStr = JSON.stringify(events, null, 2);
-        if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file) {
-            const savedPath = await window.pywebview.api.save_file(dataStr);
-            if (savedPath) alert("События сохранены в файл:\n" + savedPath);
-            else alert("Сохранение отменено");
-        } else {
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "calendar_events.json";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    }
-
-    async function importEventsFromFile() {
-        if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file) {
-            const content = await window.pywebview.api.load_file();
-            if (content) {
-                try {
-                    const imported = JSON.parse(content);
-                    if (typeof imported === 'object' && imported !== null) {
-                        if (confirm("Импорт заменит все текущие события. Продолжить?")) {
-                            saveEvents(imported);
-                            renderCalendar();
-                            document.getElementById('infoPanel').innerHTML = "✅ События успешно импортированы.";
-                            const currentYear = getCurrentYear();
-                            updateYearEventsList(currentYear);
-                        }
-                    } else throw new Error();
-                } catch(e) { alert("Ошибка: неверный формат файла"); }
-            }
-        } else {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    try {
-                        const imported = JSON.parse(ev.target.result);
-                        if (confirm("Импорт заменит все текущие события. Продолжить?")) {
-                            saveEvents(imported);
-                            renderCalendar();
-                            document.getElementById('infoPanel').innerHTML = "✅ События импортированы.";
-                            const currentYear = getCurrentYear();
-                            updateYearEventsList(currentYear);
-                        }
-                    } catch(e) { alert("Ошибка чтения файла"); }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-    }
-
-    // --- Работа с датами ---
-    function dateToAbsoluteDays(year, monthIndex, day) {
-        let total = 0;
-        for (let y = 1; y < year; y++) total += 540;
-        for (let m = 0; m < monthIndex; m++) total += daysInMonth[m];
-        return total + day;
-    }
-
-    function parseDateString(str) {
-        const parts = str.split('.');
-        if (parts.length !== 3) return null;
-        let year = parseInt(parts[0]), month = parseInt(parts[1]), day = parseInt(parts[2]);
-        if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 15 || day < 1 || day > 36) return null;
-        return { year, monthIndex: month-1, day };
-    }
-
-    function calculateDateDiff() {
-        const startStr = document.getElementById('startDate').value.trim();
-        const endStr = document.getElementById('endDate').value.trim();
-        if (!startStr || !endStr) { document.getElementById('diffResult').innerText = '❌ Введите обе даты'; return; }
-        const start = parseDateString(startStr);
-        const end = parseDateString(endStr);
-        if (!start) { document.getElementById('diffResult').innerText = '❌ Неверный формат начала'; return; }
-        if (!end) { document.getElementById('diffResult').innerText = '❌ Неверный формат конца'; return; }
-        const diff = dateToAbsoluteDays(end.year, end.monthIndex, end.day) - dateToAbsoluteDays(start.year, start.monthIndex, start.day);
-        const absDiff = Math.abs(diff);
-        let resultText = `Разница: ${absDiff} день(дней)`;
-        if (diff > 0) resultText += ` (дата конца позже)`;
-        else if (diff < 0) resultText += ` (дата начала позже)`;
-        else resultText += ` (даты одинаковы)`;
-        document.getElementById('diffResult').innerHTML = resultText;
-    }
-
-    function getStartWeekDay(yearNum) {
-        if (yearNum % 2 !== 0) return 0;
-        let evenStart = parseInt(document.getElementById('evenStartDay').value, 10);
-        if (isNaN(evenStart)) evenStart = 4;
-        return Math.min(7, Math.max(0, evenStart));
-    }
-
-    function buildMonthCalendar(monthIndex, startWeekDayForYear) {
-        let daysBefore = 0;
-        for (let i = 0; i < monthIndex; i++) daysBefore += daysInMonth[i];
-        let firstDayWeek = (startWeekDayForYear + daysBefore) % 8;
-        const daysCount = daysInMonth[monthIndex];
-        let rows = [], week = [];
-        for (let i = 0; i < firstDayWeek; i++) week.push(null);
-        for (let d = 1; d <= daysCount; d++) {
-            week.push(d);
-            if (week.length === 8) { rows.push(week); week = []; }
-        }
-        if (week.length) { while (week.length < 8) week.push(null); rows.push(week); }
-        return rows;
-    }
-
-    function getCurrentYear() {
-        return parseInt(document.getElementById('yearInput').value, 10);
-    }
-
-    // --- Боковая панель: список событий выбранного года ---
-    function getEventsForYear(year) {
-        const events = loadEvents();
-        const result = [];
-        for (const key in events) {
-            const [y, monthIdx, day] = key.split('-').map(Number);
-            if (y === year) {
-                for (let idx = 0; idx < events[key].length; idx++) {
-                    result.push({
-                        year, monthIdx, day,
-                        index: idx,
-                        text: events[key][idx].text,
-                        categoryId: events[key][idx].categoryId,
-                        absDay: dateToAbsoluteDays(year, monthIdx, day)
-                    });
-                }
-            }
-        }
-        return result;
-    }
-
-    function sortEventList(events, sortType) {
-        const catOrder = CATEGORIES.reduce((acc, cat, i) => { acc[cat.id] = i; return acc; }, {});
-        if (sortType === "date-asc") {
-            events.sort((a,b) => a.absDay - b.absDay);
-        } else if (sortType === "date-desc") {
-            events.sort((a,b) => b.absDay - a.absDay);
-        } else if (sortType === "category") {
-            events.sort((a,b) => catOrder[a.categoryId] - catOrder[b.categoryId]);
-        }
-        return events;
-    }
-
-    function updateYearEventsList(year) {
-        const container = document.getElementById('yearEventsList');
-        const yearDisplay = document.getElementById('currentYearDisplay');
-        yearDisplay.textContent = year;
-        let events = getEventsForYear(year);
-        if (events.length === 0) {
-            container.innerHTML = '<p>Нет событий в этом году</p>';
-            return;
-        }
-        events = sortEventList(events, currentSort);
-        const catMap = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
-        let html = '';
-        for (const ev of events) {
-            const cat = catMap[ev.categoryId];
-            const monthName = monthNames[ev.monthIdx];
-            const dateStr = `${monthName} ${ev.day}`;
-            html += `
-                <div class="year-event-item" data-year="${ev.year}" data-month="${ev.monthIdx}" data-day="${ev.day}">
-                    <div class="event-color-badge" style="background: ${cat.color};"></div>
-                    <div><strong>${dateStr}</strong>: ${escapeHtml(ev.text)}</div>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-        // Добавляем обработчики клика, чтобы открыть инфо-панель
-        document.querySelectorAll('.year-event-item').forEach(el => {
-            el.addEventListener('click', (e) => {
-                const year = parseInt(el.dataset.year);
-                const month = parseInt(el.dataset.month);
-                const day = parseInt(el.dataset.day);
-                showDateInfo(year, month, day);
-            });
-        });
-    }
-
-    // --- Отображение информации о дате (инфопанель) ---
-    function showDateInfo(year, monthIdx, day) {
-        let daysBefore = 0;
-        for (let i = 0; i < monthIdx; i++) daysBefore += daysInMonth[i];
-        const dayOfYear = daysBefore + day;
-        const startDay = getStartWeekDay(year);
-        const weekNumber = Math.floor((dayOfYear - 1 + startDay) / 8) + 1;
-        const daysLeft = 540 - dayOfYear;
-        const startDayOfYear = getStartWeekDay(year);
-        const weekDayIndex = (startDayOfYear + dayOfYear - 1) % 8;
-        const weekDayName = weekDays[weekDayIndex];
-
-        const allEvents = getEventsForDate(year, monthIdx, day);
-        let filteredEvents = allEvents;
-        if (currentFilter !== null) filteredEvents = allEvents.filter(ev => ev.categoryId === currentFilter);
-        const catMap = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
-
-        let eventsHtml = '';
-        if (filteredEvents.length === 0) {
-            eventsHtml = '<p><em>Нет событий (с учётом фильтра)</em></p>';
-        } else {
-            filteredEvents.forEach((ev, idx) => {
-                const cat = catMap[ev.categoryId];
-                const originalIdx = allEvents.findIndex((e, i) => e.text === ev.text && e.categoryId === ev.categoryId);
-                eventsHtml += `
-                    <div class="event-item">
-                        <div>
-                            <span class="event-category-badge" style="background: ${cat.color};"></span>
-                            <strong>${cat.name}:</strong> ${escapeHtml(ev.text)}
-                        </div>
-                        <div>
-                            <button class="edit-event" data-year="${year}" data-month="${monthIdx}" data-day="${day}" data-index="${originalIdx}">✏️</button>
-                            <button class="delete-event" data-year="${year}" data-month="${monthIdx}" data-day="${day}" data-index="${originalIdx}">✖ Удалить</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        const panel = document.getElementById('infoPanel');
-        panel.setAttribute('data-current-date', `${year}-${monthIdx}-${day}`);
-        panel.innerHTML = `
-            <strong>📅 ${monthNames[monthIdx]} ${day}, ${year} год</strong><br>
-            🗓️ День недели: ${weekDayName}<br>
-            🔢 Порядковый номер: ${dayOfYear} из 540<br>
-            📅 Неделя №${weekNumber} (8-дневная)<br>
-            ⏳ До конца года осталось: ${daysLeft} дней<br>
-            <div style="margin-top:12px;"><strong>📌 События${currentFilter ? ` (категория: ${catMap[currentFilter]?.name || '?'})` : ''}:</strong></div>
-            <div id="eventsList">${eventsHtml}</div>
-            <button id="addEventBtn" class="add-event-btn">+ Добавить событие</button>
-        `;
-
-        document.querySelectorAll('.edit-event').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const y = parseInt(btn.dataset.year);
-                const m = parseInt(btn.dataset.month);
-                const d = parseInt(btn.dataset.day);
-                const idx = parseInt(btn.dataset.index);
-                editEventFromDate(y, m, d, idx);
-            });
-        });
-        document.querySelectorAll('.delete-event').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const y = parseInt(btn.dataset.year);
-                const m = parseInt(btn.dataset.month);
-                const d = parseInt(btn.dataset.day);
-                const idx = parseInt(btn.dataset.index);
-                deleteEventFromDate(y, m, d, idx);
-            });
-        });
-        const addBtn = document.getElementById('addEventBtn');
-        if (addBtn) {
-            addBtn.addEventListener('click', () => {
-                let catOptions = CATEGORIES.map((c, i) => `${i+1} - ${c.name}`).join('\n');
-                let catChoice = prompt(`Выберите категорию:\n${catOptions}\nВведите номер (1-${CATEGORIES.length}):`);
-                let categoryId = null;
-                if (catChoice) {
-                    let num = parseInt(catChoice);
-                    if (num >= 1 && num <= CATEGORIES.length) categoryId = CATEGORIES[num-1].id;
-                }
-                if (!categoryId) { alert("Категория не выбрана"); return; }
-                let eventText = prompt("Введите текст события:");
-                if (eventText && eventText.trim()) addEventToDate(year, monthIdx, day, eventText, categoryId);
-            });
-        }
-    }
-
-    // --- Рендер календаря (сетка) ---
-    function renderCalendar() {
-        let year = getCurrentYear();
-        document.getElementById('yearInput').value = year;
-        const startDay = getStartWeekDay(year);
-        const container = document.getElementById('calendarContainer');
-        container.innerHTML = '';
-        const allEvents = loadEvents();
-        for (let m = 0; m < 15; m++) {
-            const rows = buildMonthCalendar(m, startDay);
-            const card = document.createElement('div');
-            card.className = 'month-card';
-            const title = document.createElement('h3');
-            title.innerText = monthNames[m];
-            title.style.backgroundColor = getSeasonColor(m);
-            card.appendChild(title);
-            const table = document.createElement('table');
-            const thead = document.createElement('thead');
-            const trHead = document.createElement('tr');
-            const thWeek = document.createElement('th');
-            thWeek.innerText = 'Нед.';
-            thWeek.style.backgroundColor = '#e9e9d8';
-            trHead.appendChild(thWeek);
-            for (let d = 0; d < weekDays.length; d++) {
-                const th = document.createElement('th');
-                th.innerText = weekDays[d];
-                if (d === 3 || d === 7) th.style.backgroundColor = '#ffdd99';
-                trHead.appendChild(th);
-            }
-            thead.appendChild(trHead);
-            table.appendChild(thead);
-
-            const tbody = document.createElement('tbody');
-            for (let r = 0; r < rows.length; r++) {
-                const tr = document.createElement('tr');
-                let firstDayNum = null;
-                for (let c = 0; c < rows[r].length; c++) {
-                    if (rows[r][c] !== null) { firstDayNum = rows[r][c]; break; }
-                }
-                let weekNumber = '';
-                if (firstDayNum !== null) {
-                    let daysBefore = 0;
-                    for (let i = 0; i < m; i++) daysBefore += daysInMonth[i];
-                    const dayOfYear = daysBefore + firstDayNum;
-                    weekNumber = Math.floor((dayOfYear - 1 + startDay) / 8) + 1;
-                }
-                const tdWeek = document.createElement('td');
-                tdWeek.innerText = weekNumber;
-                tdWeek.style.backgroundColor = '#f0f0e0';
-                tdWeek.style.fontWeight = 'bold';
-                tr.appendChild(tdWeek);
-
-                for (let c = 0; c < rows[r].length; c++) {
-                    const dayNum = rows[r][c];
-                    const td = document.createElement('td');
-                    if (dayNum !== null) {
-                        td.innerText = dayNum;
-                        const key = `${year}-${m}-${dayNum}`;
-                        const evs = allEvents[key];
-                        let showMarker = false;
-                        let tooltipText = '';
-                        if (evs && evs.length > 0) {
-                            if (currentFilter === null) {
-                                showMarker = true;
-                                tooltipText = evs.map(e => e.text).join(', ');
-                            } else {
-                                const hasFiltered = evs.some(ev => ev.categoryId === currentFilter);
-                                if (hasFiltered) {
-                                    showMarker = true;
-                                    tooltipText = evs.map(e => e.text).join(', ');
-                                }
-                            }
-                        }
-                        if (showMarker) {
-                            const marker = document.createElement('span');
-                            marker.className = 'event-marker';
-                            marker.innerText = ' 📌';
-                            td.appendChild(marker);
-                            td.title = tooltipText;
-                        }
-                        if ((c === 3 || c === 7)) td.style.backgroundColor = '#fff0c0';
-                        td.addEventListener('click', (function(y, mm, dd) {
-                            return function() { showDateInfo(y, mm, dd); };
-                        })(year, m, dayNum));
-                    } else {
-                        td.innerText = '';
-                    }
-                    tr.appendChild(td);
-                }
-                tbody.appendChild(tr);
-            }
-            table.appendChild(tbody);
-            card.appendChild(table);
-            container.appendChild(card);
-        }
-        let extra = document.getElementById('yearExtraInfo');
-        if (!extra) {
-            extra = document.createElement('div');
-            extra.id = 'yearExtraInfo';
-            extra.style.marginTop = '10px';
-            extra.style.fontStyle = 'italic';
-            container.parentNode.appendChild(extra);
-        }
-        extra.innerHTML = `📅 Год ${year} (${year % 2 === 0 ? 'чётный' : 'нечётный'}) — первый день: ${weekDays[startDay]}.`;
-        updateYearEventsList(year);
-    }
-
-    // --- Фильтр ---
-    function buildFilterBar() {
-        const bar = document.getElementById('filterBar');
-        bar.innerHTML = '';
-        const allBtn = document.createElement('button');
-        allBtn.innerText = 'All';
-        allBtn.className = `filter-btn ${currentFilter === null ? 'active' : ''}`;
-        allBtn.style.width = 'auto';
-        allBtn.style.padding = '6px 12px';
-        allBtn.style.background = '#e0e0d0';
-        allBtn.addEventListener('click', () => {
-            currentFilter = null;
-            renderCalendar();
-            updateFilterUI();
-            const panel = document.getElementById('infoPanel');
-            const curr = panel.getAttribute('data-current-date');
-            if (curr) { const [y, m, d] = curr.split('-').map(Number); showDateInfo(y, m, d); }
-            else panel.innerHTML = `💡 Фильтр сброшен. Кликните на дату для просмотра событий.`;
-        });
-        bar.appendChild(allBtn);
-        CATEGORIES.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = `filter-btn ${currentFilter === cat.id ? 'active' : ''}`;
-            btn.title = cat.name;
-            const colorSpan = document.createElement('span');
-            colorSpan.className = 'filter-color';
-            colorSpan.style.backgroundColor = cat.color;
-            btn.appendChild(colorSpan);
-            btn.addEventListener('click', () => {
-                currentFilter = cat.id;
-                renderCalendar();
-                updateFilterUI();
-                const panel = document.getElementById('infoPanel');
-                const curr = panel.getAttribute('data-current-date');
-                if (curr) { const [y, m, d] = curr.split('-').map(Number); showDateInfo(y, m, d); }
-                else panel.innerHTML = `💡 Показаны только события с цветом "${cat.name}". Кликните на дату.`;
-            });
-            bar.appendChild(btn);
-        });
-    }
-
-    function updateFilterUI() {
-        const btns = document.querySelectorAll('#filterBar .filter-btn');
-        btns.forEach(btn => btn.classList.remove('active'));
-        if (currentFilter === null) { btns[0]?.classList.add('active'); return; }
-        const cat = CATEGORIES.find(c => c.id === currentFilter);
-        if (cat) {
-            for (let i = 1; i < btns.length; i++) {
-                if (btns[i].title === cat.name) { btns[i].classList.add('active'); break; }
-            }
-        }
-    }
-
-    function getSeasonColor(monthIndex) {
-        if (monthIndex === 14 || monthIndex === 0 || monthIndex === 1 || monthIndex === 2) return "#7fa8d8";
-        if (monthIndex >= 3 && monthIndex <= 6) return "#a7d36d";
-        if (monthIndex >= 7 && monthIndex <= 10) return "#e2d35d";
-        if (monthIndex >= 11 && monthIndex <= 13) return "#d98859";
-        return "#d9e6c3";
-    }
-
-    function escapeHtml(str) {
-        return String(str).replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // --- Навигация и кнопки сортировки ---
-    function prevYear() { let y = getCurrentYear(); document.getElementById('yearInput').value = y - 1; renderCalendar(); }
-    function nextYear() { let y = getCurrentYear(); document.getElementById('yearInput').value = y + 1; renderCalendar(); }
-
-    // Инициализация
-    window.addEventListener('DOMContentLoaded', async () => {
-        await autoLoadFromJson();
-        buildFilterBar();
-        renderCalendar();
-        // Обработчики
-        document.getElementById('prevYearBtn').addEventListener('click', prevYear);
-        document.getElementById('nextYearBtn').addEventListener('click', nextYear);
-        document.getElementById('showBtn').addEventListener('click', renderCalendar);
-        document.getElementById('evenStartDay').addEventListener('change', renderCalendar);
-        document.getElementById('clearEventsBtn').addEventListener('click', clearAllEvents);
-        document.getElementById('calcDiffBtn').addEventListener('click', calculateDateDiff);
-        document.getElementById('exportEventsBtn').addEventListener('click', exportEvents);
-        document.getElementById('importEventsBtn').addEventListener('click', importEventsFromFile);
-        document.getElementById('yearInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') renderCalendar(); });
-
-        // Сортировка
-        const sortBtns = document.querySelectorAll('[data-sort]');
-        sortBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const sort = btn.dataset.sort;
-                currentSort = sort;
-                sortBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const year = getCurrentYear();
-                updateYearEventsList(year);
-            });
-        });
-    });
-</script>
-
-<script>
-    if (window.pywebview && window.pywebview.window) {
-        window.pywebview.window.maximize();
-    }
-</script>
-    
-     <nav class="sidebar">
+    <!-- ===== ЛЕВАЯ КОЛОНКА (общая для всех страниц) ===== -->
+    <nav class="sidebar">
         <h2>📜 Дьётонрей</h2>
         <ul>
             <li><a href="index.html">🏠 Главная</a></li>
@@ -964,10 +302,684 @@
         </ul>
     </nav>
 
-    <!-- А СЮДА вставляете уникальное содержание этой страницы (календарь, текст и т.д.) -->
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ (уникальный для календаря) ===== -->
     <main class="main-content">
-        <h1>Заголовок этой страницы</h1>
-        <p>Ваш текст...</p>
+        <h2>📆 Календарь Дьётонрея</h2>
+        <div class="controls">
+            <div class="year-nav">
+                <button id="prevYearBtn">Prev</button>
+                <label>Год:</label>
+                <input type="number" id="yearInput" value="3835" step="1" style="width: 90px;">
+                <button id="nextYearBtn">Next</button>
+                <button id="showBtn">Показать</button>
+            </div>
+            <div class="right-group">
+                <div class="export-import">
+                    <button id="exportEventsBtn">💾 Экспорт</button>
+                    <button id="importEventsBtn">📂 Импорт</button>
+                </div>
+                <div class="settings-message">
+                    ⚙️ Нечётный → ПН, чётный → середина (настройка ниже)
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label>👉 Для чётных годов первый день (0=Пн,1=Вт,2=Ср,3=Сб,4=Чт,5=Пт,6=Шн,7=Вс): </label>
+            <input type="number" id="evenStartDay" value="4" min="0" max="7" step="1" style="width: 70px;">
+            <button id="clearEventsBtn" class="clear-btn" style="margin-left:15px;">🗑️ Стереть все события</button>
+        </div>
+
+        <div class="calculator">
+            <div>
+                <label>Дата начала (ГГГГ.ММ.ДД):</label>
+                <input type="text" id="startDate" placeholder="например 3837.12.03">
+            </div>
+            <div>
+                <label>Дата конца (ГГГГ.ММ.ДД):</label>
+                <input type="text" id="endDate" placeholder="например 3837.14.30">
+            </div>
+            <div>
+                <button id="calcDiffBtn">Рассчитать разницу</button>
+            </div>
+            <div id="diffResult" class="result">— дней —</div>
+        </div>
+
+        <div class="filter-bar" id="filterBar"></div>
+
+        <div class="main-layout">
+            <div class="calendar-section">
+                <div id="calendarContainer" class="calendar-grid"></div>
+                <div id="infoPanel" class="info-panel">
+                    💡 Кликните на любую дату, чтобы добавить событие (с выбором цвета).<br>
+                    🎨 Сверху — фильтр по цвету.<br>
+                    📅 Справа — список событий выбранного года.
+                </div>
+            </div>
+            <div class="events-sidebar" id="eventsSidebar">
+                <h3>События <span id="currentYearDisplay"></span> года
+                    <span class="sort-buttons">
+                        <button data-sort="date-asc" class="active">📅 по дате ↑</button>
+                        <button data-sort="date-desc">📅 по дате ↓</button>
+                        <button data-sort="category">🎨 по цвету</button>
+                    </span>
+                </h3>
+                <div id="yearEventsList" class="year-events-list">
+                    <p>Выберите год</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            📌 События делятся на категории (цвета).<br>
+            🔘 Нажмите на цветной квадратик в фильтре, чтобы показывать только события этого цвета.<br>
+            📅 Справа — список всех событий текущего года (клик по событию открывает подробности).<br>
+            💾 Экспорт/импорт сохраняют все события в JSON-файл.<br>
+            🔄 При загрузке страницы события автоматически загружаются из <strong>calendar_events.json</strong>.
+        </div>
+        <footer>Календарь с цветными категориями, фильтром, списком событий года и экспортом/импортом</footer>
     </main>
+
+    <!-- ===== ВСЕ СКРИПТЫ (такие же, как были) ===== -->
+    <script>
+        // ---- Константы ----
+        const monthNames = [
+            "Январь", "Февраль", "Снежбарь", "Март", "Месяц 5",
+            "Апрель", "Май", "Июнь", "Июль", "Зельнар",
+            "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        ];
+        const weekDays = ["Пн", "Вт", "Ср", "Сб", "Чт", "Пт", "Шн", "Вс"];
+        const daysInMonth = Array(15).fill(36);
+
+        const CATEGORIES = [
+            { id: "color1", name: "Красный", color: "#ff6666" },
+            { id: "color2", name: "Зелёный", color: "#66ff66" },
+            { id: "color3", name: "Синий", color: "#6666ff" },
+            { id: "color4", name: "Жёлтый", color: "#ffcc66" },
+            { id: "color5", name: "Фиолетовый", color: "#cc66ff" },
+            { id: "color6", name: "Оранжевый", color: "#ffaa66" },
+            { id: "color7", name: "Серый", color: "#aaaaaa" }
+        ];
+
+        const STORAGE_KEY = "fantasyCalendarEventsMulti";
+        let currentFilter = null;
+        let currentSort = "date-asc";
+
+        function loadEvents() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+        function saveEvents(events) { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
+
+        async function autoLoadFromJson() {
+            try {
+                const response = await fetch("calendar_events.json");
+                if (!response.ok) throw new Error("Файл не найден");
+                const imported = await response.json();
+                if (typeof imported === 'object' && imported !== null) {
+                    saveEvents(imported);
+                    console.log("Автозагрузка: события импортированы из calendar_events.json");
+                    return true;
+                }
+            } catch(e) {
+                console.warn("Автозагрузка не удалась, оставляем текущие события", e);
+            }
+            return false;
+        }
+
+        function getEventsForDate(year, monthIdx, day) { return loadEvents()[`${year}-${monthIdx}-${day}`] || []; }
+
+        function addEventToDate(year, monthIdx, day, text, categoryId) {
+            if (!text.trim()) return;
+            const events = loadEvents();
+            const key = `${year}-${monthIdx}-${day}`;
+            if (!events[key]) events[key] = [];
+            events[key].push({ text: text.trim(), categoryId });
+            saveEvents(events);
+            renderCalendar();
+            showDateInfo(year, monthIdx, day);
+            updateYearEventsList(year);
+        }
+
+        function editEventFromDate(year, monthIdx, day, index) {
+            const events = loadEvents();
+            const key = `${year}-${monthIdx}-${day}`;
+            if (!events[key] || !events[key][index]) return;
+            const oldEvent = events[key][index];
+            let newText = prompt("Редактировать текст события:", oldEvent.text);
+            if (newText === null) return;
+            newText = newText.trim();
+            let catOptions = CATEGORIES.map((c, i) => `${i+1} - ${c.name}`).join('\n');
+            let newCatId = oldEvent.categoryId;
+            let changeCat = confirm(`Изменить категорию? Сейчас: ${CATEGORIES.find(c => c.id === oldEvent.categoryId).name}\nОК — да, Отмена — оставить.`);
+            if (changeCat) {
+                let catChoice = prompt(`Выберите новую категорию:\n${catOptions}\nВведите номер (1-${CATEGORIES.length}):`);
+                if (catChoice) {
+                    let num = parseInt(catChoice);
+                    if (num >= 1 && num <= CATEGORIES.length) newCatId = CATEGORIES[num-1].id;
+                }
+            }
+            if (newText === "") {
+                events[key].splice(index, 1);
+                if (events[key].length === 0) delete events[key];
+            } else {
+                events[key][index] = { text: newText, categoryId: newCatId };
+            }
+            saveEvents(events);
+            renderCalendar();
+            const panel = document.getElementById('infoPanel');
+            const curr = panel.getAttribute('data-current-date');
+            if (curr) {
+                const [y, m, d] = curr.split('-').map(Number);
+                if (y === year && m === monthIdx && d === day) showDateInfo(year, monthIdx, day);
+            }
+            updateYearEventsList(year);
+        }
+
+        function deleteEventFromDate(year, monthIdx, day, index) {
+            const events = loadEvents();
+            const key = `${year}-${monthIdx}-${day}`;
+            if (events[key] && events[key][index]) {
+                events[key].splice(index, 1);
+                if (events[key].length === 0) delete events[key];
+                saveEvents(events);
+                renderCalendar();
+                showDateInfo(year, monthIdx, day);
+                updateYearEventsList(year);
+            }
+        }
+
+        function clearAllEvents() {
+            if (confirm("Удалить ВСЕ события?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderCalendar();
+                document.getElementById('infoPanel').innerHTML = "💡 Все события удалены. Кликните на дату, чтобы добавить новое.";
+                const currentYear = getCurrentYear();
+                updateYearEventsList(currentYear);
+            }
+        }
+
+        async function exportEvents() {
+            const events = loadEvents();
+            const dataStr = JSON.stringify(events, null, 2);
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file) {
+                const savedPath = await window.pywebview.api.save_file(dataStr);
+                if (savedPath) alert("События сохранены в файл:\n" + savedPath);
+                else alert("Сохранение отменено");
+            } else {
+                const blob = new Blob([dataStr], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "calendar_events.json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        async function importEventsFromFile() {
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file) {
+                const content = await window.pywebview.api.load_file();
+                if (content) {
+                    try {
+                        const imported = JSON.parse(content);
+                        if (typeof imported === 'object' && imported !== null) {
+                            if (confirm("Импорт заменит все текущие события. Продолжить?")) {
+                                saveEvents(imported);
+                                renderCalendar();
+                                document.getElementById('infoPanel').innerHTML = "✅ События успешно импортированы.";
+                                const currentYear = getCurrentYear();
+                                updateYearEventsList(currentYear);
+                            }
+                        } else throw new Error();
+                    } catch(e) { alert("Ошибка: неверный формат файла"); }
+                }
+            } else {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        try {
+                            const imported = JSON.parse(ev.target.result);
+                            if (confirm("Импорт заменит все текущие события. Продолжить?")) {
+                                saveEvents(imported);
+                                renderCalendar();
+                                document.getElementById('infoPanel').innerHTML = "✅ События импортированы.";
+                                const currentYear = getCurrentYear();
+                                updateYearEventsList(currentYear);
+                            }
+                        } catch(e) { alert("Ошибка чтения файла"); }
+                    };
+                    reader.readAsText(file);
+                };
+                input.click();
+            }
+        }
+
+        function dateToAbsoluteDays(year, monthIndex, day) {
+            let total = 0;
+            for (let y = 1; y < year; y++) total += 540;
+            for (let m = 0; m < monthIndex; m++) total += daysInMonth[m];
+            return total + day;
+        }
+
+        function parseDateString(str) {
+            const parts = str.split('.');
+            if (parts.length !== 3) return null;
+            let year = parseInt(parts[0]), month = parseInt(parts[1]), day = parseInt(parts[2]);
+            if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 15 || day < 1 || day > 36) return null;
+            return { year, monthIndex: month-1, day };
+        }
+
+        function calculateDateDiff() {
+            const startStr = document.getElementById('startDate').value.trim();
+            const endStr = document.getElementById('endDate').value.trim();
+            if (!startStr || !endStr) { document.getElementById('diffResult').innerText = '❌ Введите обе даты'; return; }
+            const start = parseDateString(startStr);
+            const end = parseDateString(endStr);
+            if (!start) { document.getElementById('diffResult').innerText = '❌ Неверный формат начала'; return; }
+            if (!end) { document.getElementById('diffResult').innerText = '❌ Неверный формат конца'; return; }
+            const diff = dateToAbsoluteDays(end.year, end.monthIndex, end.day) - dateToAbsoluteDays(start.year, start.monthIndex, start.day);
+            const absDiff = Math.abs(diff);
+            let resultText = `Разница: ${absDiff} день(дней)`;
+            if (diff > 0) resultText += ` (дата конца позже)`;
+            else if (diff < 0) resultText += ` (дата начала позже)`;
+            else resultText += ` (даты одинаковы)`;
+            document.getElementById('diffResult').innerHTML = resultText;
+        }
+
+        function getStartWeekDay(yearNum) {
+            if (yearNum % 2 !== 0) return 0;
+            let evenStart = parseInt(document.getElementById('evenStartDay').value, 10);
+            if (isNaN(evenStart)) evenStart = 4;
+            return Math.min(7, Math.max(0, evenStart));
+        }
+
+        function buildMonthCalendar(monthIndex, startWeekDayForYear) {
+            let daysBefore = 0;
+            for (let i = 0; i < monthIndex; i++) daysBefore += daysInMonth[i];
+            let firstDayWeek = (startWeekDayForYear + daysBefore) % 8;
+            const daysCount = daysInMonth[monthIndex];
+            let rows = [], week = [];
+            for (let i = 0; i < firstDayWeek; i++) week.push(null);
+            for (let d = 1; d <= daysCount; d++) {
+                week.push(d);
+                if (week.length === 8) { rows.push(week); week = []; }
+            }
+            if (week.length) { while (week.length < 8) week.push(null); rows.push(week); }
+            return rows;
+        }
+
+        function getCurrentYear() {
+            return parseInt(document.getElementById('yearInput').value, 10);
+        }
+
+        function getEventsForYear(year) {
+            const events = loadEvents();
+            const result = [];
+            for (const key in events) {
+                const [y, monthIdx, day] = key.split('-').map(Number);
+                if (y === year) {
+                    for (let idx = 0; idx < events[key].length; idx++) {
+                        result.push({
+                            year, monthIdx, day,
+                            index: idx,
+                            text: events[key][idx].text,
+                            categoryId: events[key][idx].categoryId,
+                            absDay: dateToAbsoluteDays(year, monthIdx, day)
+                        });
+                    }
+                }
+            }
+            return result;
+        }
+
+        function sortEventList(events, sortType) {
+            const catOrder = CATEGORIES.reduce((acc, cat, i) => { acc[cat.id] = i; return acc; }, {});
+            if (sortType === "date-asc") {
+                events.sort((a,b) => a.absDay - b.absDay);
+            } else if (sortType === "date-desc") {
+                events.sort((a,b) => b.absDay - a.absDay);
+            } else if (sortType === "category") {
+                events.sort((a,b) => catOrder[a.categoryId] - catOrder[b.categoryId]);
+            }
+            return events;
+        }
+
+        function updateYearEventsList(year) {
+            const container = document.getElementById('yearEventsList');
+            const yearDisplay = document.getElementById('currentYearDisplay');
+            yearDisplay.textContent = year;
+            let events = getEventsForYear(year);
+            if (events.length === 0) {
+                container.innerHTML = '<p>Нет событий в этом году</p>';
+                return;
+            }
+            events = sortEventList(events, currentSort);
+            const catMap = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+            let html = '';
+            for (const ev of events) {
+                const cat = catMap[ev.categoryId];
+                const monthName = monthNames[ev.monthIdx];
+                const dateStr = `${monthName} ${ev.day}`;
+                html += `
+                    <div class="year-event-item" data-year="${ev.year}" data-month="${ev.monthIdx}" data-day="${ev.day}">
+                        <div class="event-color-badge" style="background: ${cat.color};"></div>
+                        <div><strong>${dateStr}</strong>: ${escapeHtml(ev.text)}</div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+            document.querySelectorAll('.year-event-item').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    const year = parseInt(el.dataset.year);
+                    const month = parseInt(el.dataset.month);
+                    const day = parseInt(el.dataset.day);
+                    showDateInfo(year, month, day);
+                });
+            });
+        }
+
+        function showDateInfo(year, monthIdx, day) {
+            let daysBefore = 0;
+            for (let i = 0; i < monthIdx; i++) daysBefore += daysInMonth[i];
+            const dayOfYear = daysBefore + day;
+            const startDay = getStartWeekDay(year);
+            const weekNumber = Math.floor((dayOfYear - 1 + startDay) / 8) + 1;
+            const daysLeft = 540 - dayOfYear;
+            const startDayOfYear = getStartWeekDay(year);
+            const weekDayIndex = (startDayOfYear + dayOfYear - 1) % 8;
+            const weekDayName = weekDays[weekDayIndex];
+
+            const allEvents = getEventsForDate(year, monthIdx, day);
+            let filteredEvents = allEvents;
+            if (currentFilter !== null) filteredEvents = allEvents.filter(ev => ev.categoryId === currentFilter);
+            const catMap = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+
+            let eventsHtml = '';
+            if (filteredEvents.length === 0) {
+                eventsHtml = '<p><em>Нет событий (с учётом фильтра)</em></p>';
+            } else {
+                filteredEvents.forEach((ev, idx) => {
+                    const cat = catMap[ev.categoryId];
+                    const originalIdx = allEvents.findIndex((e, i) => e.text === ev.text && e.categoryId === ev.categoryId);
+                    eventsHtml += `
+                        <div class="event-item">
+                            <div>
+                                <span class="event-category-badge" style="background: ${cat.color};"></span>
+                                <strong>${cat.name}:</strong> ${escapeHtml(ev.text)}
+                            </div>
+                            <div>
+                                <button class="edit-event" data-year="${year}" data-month="${monthIdx}" data-day="${day}" data-index="${originalIdx}">✏️</button>
+                                <button class="delete-event" data-year="${year}" data-month="${monthIdx}" data-day="${day}" data-index="${originalIdx}">✖ Удалить</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const panel = document.getElementById('infoPanel');
+            panel.setAttribute('data-current-date', `${year}-${monthIdx}-${day}`);
+            panel.innerHTML = `
+                <strong>📅 ${monthNames[monthIdx]} ${day}, ${year} год</strong><br>
+                🗓️ День недели: ${weekDayName}<br>
+                🔢 Порядковый номер: ${dayOfYear} из 540<br>
+                📅 Неделя №${weekNumber} (8-дневная)<br>
+                ⏳ До конца года осталось: ${daysLeft} дней<br>
+                <div style="margin-top:12px;"><strong>📌 События${currentFilter ? ` (категория: ${catMap[currentFilter]?.name || '?'})` : ''}:</strong></div>
+                <div id="eventsList">${eventsHtml}</div>
+                <button id="addEventBtn" class="add-event-btn">+ Добавить событие</button>
+            `;
+
+            document.querySelectorAll('.edit-event').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const y = parseInt(btn.dataset.year);
+                    const m = parseInt(btn.dataset.month);
+                    const d = parseInt(btn.dataset.day);
+                    const idx = parseInt(btn.dataset.index);
+                    editEventFromDate(y, m, d, idx);
+                });
+            });
+            document.querySelectorAll('.delete-event').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const y = parseInt(btn.dataset.year);
+                    const m = parseInt(btn.dataset.month);
+                    const d = parseInt(btn.dataset.day);
+                    const idx = parseInt(btn.dataset.index);
+                    deleteEventFromDate(y, m, d, idx);
+                });
+            });
+            const addBtn = document.getElementById('addEventBtn');
+            if (addBtn) {
+                addBtn.addEventListener('click', () => {
+                    let catOptions = CATEGORIES.map((c, i) => `${i+1} - ${c.name}`).join('\n');
+                    let catChoice = prompt(`Выберите категорию:\n${catOptions}\nВведите номер (1-${CATEGORIES.length}):`);
+                    let categoryId = null;
+                    if (catChoice) {
+                        let num = parseInt(catChoice);
+                        if (num >= 1 && num <= CATEGORIES.length) categoryId = CATEGORIES[num-1].id;
+                    }
+                    if (!categoryId) { alert("Категория не выбрана"); return; }
+                    let eventText = prompt("Введите текст события:");
+                    if (eventText && eventText.trim()) addEventToDate(year, monthIdx, day, eventText, categoryId);
+                });
+            }
+        }
+
+        function renderCalendar() {
+            let year = getCurrentYear();
+            document.getElementById('yearInput').value = year;
+            const startDay = getStartWeekDay(year);
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+            const allEvents = loadEvents();
+            for (let m = 0; m < 15; m++) {
+                const rows = buildMonthCalendar(m, startDay);
+                const card = document.createElement('div');
+                card.className = 'month-card';
+                const title = document.createElement('h3');
+                title.innerText = monthNames[m];
+                title.style.backgroundColor = getSeasonColor(m);
+                card.appendChild(title);
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const trHead = document.createElement('tr');
+                const thWeek = document.createElement('th');
+                thWeek.innerText = 'Нед.';
+                thWeek.style.backgroundColor = '#e9e9d8';
+                trHead.appendChild(thWeek);
+                for (let d = 0; d < weekDays.length; d++) {
+                    const th = document.createElement('th');
+                    th.innerText = weekDays[d];
+                    if (d === 3 || d === 7) th.style.backgroundColor = '#ffdd99';
+                    trHead.appendChild(th);
+                }
+                thead.appendChild(trHead);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                for (let r = 0; r < rows.length; r++) {
+                    const tr = document.createElement('tr');
+                    let firstDayNum = null;
+                    for (let c = 0; c < rows[r].length; c++) {
+                        if (rows[r][c] !== null) { firstDayNum = rows[r][c]; break; }
+                    }
+                    let weekNumber = '';
+                    if (firstDayNum !== null) {
+                        let daysBefore = 0;
+                        for (let i = 0; i < m; i++) daysBefore += daysInMonth[i];
+                        const dayOfYear = daysBefore + firstDayNum;
+                        weekNumber = Math.floor((dayOfYear - 1 + startDay) / 8) + 1;
+                    }
+                    const tdWeek = document.createElement('td');
+                    tdWeek.innerText = weekNumber;
+                    tdWeek.style.backgroundColor = '#f0f0e0';
+                    tdWeek.style.fontWeight = 'bold';
+                    tr.appendChild(tdWeek);
+
+                    for (let c = 0; c < rows[r].length; c++) {
+                        const dayNum = rows[r][c];
+                        const td = document.createElement('td');
+                        if (dayNum !== null) {
+                            td.innerText = dayNum;
+                            const key = `${year}-${m}-${dayNum}`;
+                            const evs = allEvents[key];
+                            let showMarker = false;
+                            let tooltipText = '';
+                            if (evs && evs.length > 0) {
+                                if (currentFilter === null) {
+                                    showMarker = true;
+                                    tooltipText = evs.map(e => e.text).join(', ');
+                                } else {
+                                    const hasFiltered = evs.some(ev => ev.categoryId === currentFilter);
+                                    if (hasFiltered) {
+                                        showMarker = true;
+                                        tooltipText = evs.map(e => e.text).join(', ');
+                                    }
+                                }
+                            }
+                            if (showMarker) {
+                                const marker = document.createElement('span');
+                                marker.className = 'event-marker';
+                                marker.innerText = ' 📌';
+                                td.appendChild(marker);
+                                td.title = tooltipText;
+                            }
+                            if ((c === 3 || c === 7)) td.style.backgroundColor = '#fff0c0';
+                            td.addEventListener('click', (function(y, mm, dd) {
+                                return function() { showDateInfo(y, mm, dd); };
+                            })(year, m, dayNum));
+                        } else {
+                            td.innerText = '';
+                        }
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+                table.appendChild(tbody);
+                card.appendChild(table);
+                container.appendChild(card);
+            }
+            let extra = document.getElementById('yearExtraInfo');
+            if (!extra) {
+                extra = document.createElement('div');
+                extra.id = 'yearExtraInfo';
+                extra.style.marginTop = '10px';
+                extra.style.fontStyle = 'italic';
+                container.parentNode.appendChild(extra);
+            }
+            extra.innerHTML = `📅 Год ${year} (${year % 2 === 0 ? 'чётный' : 'нечётный'}) — первый день: ${weekDays[startDay]}.`;
+            updateYearEventsList(year);
+        }
+
+        function buildFilterBar() {
+            const bar = document.getElementById('filterBar');
+            bar.innerHTML = '';
+            const allBtn = document.createElement('button');
+            allBtn.innerText = 'All';
+            allBtn.className = `filter-btn ${currentFilter === null ? 'active' : ''}`;
+            allBtn.style.width = 'auto';
+            allBtn.style.padding = '6px 12px';
+            allBtn.style.background = '#e0e0d0';
+            allBtn.addEventListener('click', () => {
+                currentFilter = null;
+                renderCalendar();
+                updateFilterUI();
+                const panel = document.getElementById('infoPanel');
+                const curr = panel.getAttribute('data-current-date');
+                if (curr) { const [y, m, d] = curr.split('-').map(Number); showDateInfo(y, m, d); }
+                else panel.innerHTML = `💡 Фильтр сброшен. Кликните на дату для просмотра событий.`;
+            });
+            bar.appendChild(allBtn);
+            CATEGORIES.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `filter-btn ${currentFilter === cat.id ? 'active' : ''}`;
+                btn.title = cat.name;
+                const colorSpan = document.createElement('span');
+                colorSpan.className = 'filter-color';
+                colorSpan.style.backgroundColor = cat.color;
+                btn.appendChild(colorSpan);
+                btn.addEventListener('click', () => {
+                    currentFilter = cat.id;
+                    renderCalendar();
+                    updateFilterUI();
+                    const panel = document.getElementById('infoPanel');
+                    const curr = panel.getAttribute('data-current-date');
+                    if (curr) { const [y, m, d] = curr.split('-').map(Number); showDateInfo(y, m, d); }
+                    else panel.innerHTML = `💡 Показаны только события с цветом "${cat.name}". Кликните на дату.`;
+                });
+                bar.appendChild(btn);
+            });
+        }
+
+        function updateFilterUI() {
+            const btns = document.querySelectorAll('#filterBar .filter-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            if (currentFilter === null) { btns[0]?.classList.add('active'); return; }
+            const cat = CATEGORIES.find(c => c.id === currentFilter);
+            if (cat) {
+                for (let i = 1; i < btns.length; i++) {
+                    if (btns[i].title === cat.name) { btns[i].classList.add('active'); break; }
+                }
+            }
+        }
+
+        function getSeasonColor(monthIndex) {
+            if (monthIndex === 14 || monthIndex === 0 || monthIndex === 1 || monthIndex === 2) return "#7fa8d8";
+            if (monthIndex >= 3 && monthIndex <= 6) return "#a7d36d";
+            if (monthIndex >= 7 && monthIndex <= 10) return "#e2d35d";
+            if (monthIndex >= 11 && monthIndex <= 13) return "#d98859";
+            return "#d9e6c3";
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function prevYear() { let y = getCurrentYear(); document.getElementById('yearInput').value = y - 1; renderCalendar(); }
+        function nextYear() { let y = getCurrentYear(); document.getElementById('yearInput').value = y + 1; renderCalendar(); }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await autoLoadFromJson();
+            buildFilterBar();
+            renderCalendar();
+            document.getElementById('prevYearBtn').addEventListener('click', prevYear);
+            document.getElementById('nextYearBtn').addEventListener('click', nextYear);
+            document.getElementById('showBtn').addEventListener('click', renderCalendar);
+            document.getElementById('evenStartDay').addEventListener('change', renderCalendar);
+            document.getElementById('clearEventsBtn').addEventListener('click', clearAllEvents);
+            document.getElementById('calcDiffBtn').addEventListener('click', calculateDateDiff);
+            document.getElementById('exportEventsBtn').addEventListener('click', exportEvents);
+            document.getElementById('importEventsBtn').addEventListener('click', importEventsFromFile);
+            document.getElementById('yearInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') renderCalendar(); });
+
+            const sortBtns = document.querySelectorAll('[data-sort]');
+            sortBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const sort = btn.dataset.sort;
+                    currentSort = sort;
+                    sortBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const year = getCurrentYear();
+                    updateYearEventsList(year);
+                });
+            });
+        });
+
+        if (window.pywebview && window.pywebview.window) {
+            window.pywebview.window.maximize();
+        }
+    </script>
+
 </body>
 </html>
