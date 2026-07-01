@@ -26,7 +26,6 @@
       display: flex;
       overflow: hidden;
     }
-    /* Левая панель — дерево */
     .sidebar {
       width: 320px;
       background: var(--surface);
@@ -117,7 +116,6 @@
     .tree-label.active { background: var(--surface2); color: var(--accent-glow); font-weight: bold; }
     .children { padding-left: 18px; list-style: none; }
 
-    /* Основная область */
     .main {
       flex: 1;
       padding: 20px 30px;
@@ -188,7 +186,6 @@
       display: inline-block;
     }
 
-    /* Модальное окно */
     .modal-overlay {
       display: none;
       position: fixed; top:0; left:0; width:100%; height:100%;
@@ -224,7 +221,6 @@
 </head>
 <body>
 
-<!-- Левая панель -->
 <div class="sidebar">
   <h2>🌌 Архив Дьётонрея</h2>
   <input type="text" class="search-box" id="searchInput" placeholder="Поиск по названиям...">
@@ -243,14 +239,12 @@
   <div style="font-size:0.7rem; color:var(--text-secondary); margin-top:5px;">Клик на раздел — просмотр содержимого, на статью — чтение.</div>
 </div>
 
-<!-- Основная область -->
 <div class="main" id="mainContent">
   <div class="view-container" id="viewContainer">
     <div class="empty-message" id="noSelection">👈 Выберите раздел или статью из дерева слева</div>
   </div>
 </div>
 
-<!-- Модальное окно -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalContent"></div>
 </div>
@@ -258,12 +252,11 @@
 <script>
   (() => {
     const STORAGE_KEY = 'dyotonrei_tree';
+    const DATA_FILE = 'data.json'; // имя JSON-файла в той же папке
 
-    // Типы иерархии
     const NODE_TYPES = ['eon', 'era', 'period', 'epoch'];
     const NODE_LABELS = { eon: 'Эон', era: 'Эра', period: 'Период', epoch: 'Эпоха' };
 
-    // Загрузка / сохранение
     let data = { nodes: [], articles: [], categories: [] };
 
     function defaultData() {
@@ -299,23 +292,47 @@
       return { nodes, articles, categories };
     }
 
-    function loadData() {
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // Асинхронная загрузка: сначала localStorage, при отсутствии — data.json, иначе дефолт
+    async function loadData() {
+      // 1. Пробуем localStorage
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        try { data = JSON.parse(raw); } catch(e) { data = defaultData(); }
-      } else {
-        data = defaultData();
-        saveData();
+        try {
+          data = JSON.parse(raw);
+          return;
+        } catch (e) {
+          // если битый JSON — игнорируем
+        }
       }
+
+      // 2. Пробуем загрузить из data.json
+      try {
+        const response = await fetch(DATA_FILE);
+        if (!response.ok) throw new Error('File not found');
+        const json = await response.json();
+        if (json.nodes && json.articles && json.categories) {
+          data = json;
+          saveData(); // сохраняем в localStorage для будущих сессий
+          return;
+        }
+      } catch (e) {
+        console.log('Не удалось загрузить data.json, используем встроенные данные по умолчанию.');
+      }
+
+      // 3. Иначе дефолт
+      data = defaultData();
+      saveData();
     }
-    function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
     // UI состояние
-    let currentView = { type: null, id: null }; // 'node' или 'article'
+    let currentView = { type: null, id: null };
     let activeCategory = null;
     let searchQuery = '';
 
-    // Утилиты
     function getNode(id) { return data.nodes.find(n => n.id === id); }
     function getChildren(parentId) {
       return data.nodes.filter(n => n.parentId === parentId).sort((a,b) => a.order - b.order);
@@ -333,7 +350,6 @@
       return path;
     }
 
-    // Рендер дерева
     function renderTree() {
       const root = document.getElementById('treeRoot');
       root.innerHTML = '';
@@ -386,7 +402,6 @@
       parentEl.appendChild(li);
     }
 
-    // Навигация
     function navigateToNode(id) {
       currentView = { type: 'node', id };
       renderAll();
@@ -404,7 +419,6 @@
       renderAll();
     }
 
-    // Рендер основной области
     function renderMain() {
       const container = document.getElementById('viewContainer');
       if (!currentView.type) {
@@ -414,23 +428,24 @@
       if (currentView.type === 'node') {
         const node = getNode(currentView.id);
         if (!node) { container.innerHTML = '<div class="empty-message">Раздел не найден</div>'; return; }
-        const children = getChildren(node.id);
-        const articles = getArticles(node.id).filter(a => !activeCategory || a.category === activeCategory);
+        let children = getChildren(node.id);
+        let articles = getArticles(node.id);
+        if (activeCategory) {
+          articles = articles.filter(a => a.category === activeCategory);
+        }
         if (searchQuery) {
           const q = searchQuery.toLowerCase();
-          // фильтруем статьи по поиску
-          const filteredArticles = articles.filter(a => a.title.toLowerCase().includes(q) || a.body.toLowerCase().includes(q));
-          container.innerHTML = buildNodeHTML(node, children, filteredArticles);
-        } else {
-          container.innerHTML = buildNodeHTML(node, children, articles);
+          articles = articles.filter(a => a.title.toLowerCase().includes(q) || a.body.toLowerCase().includes(q));
         }
-        // привязка событий
+        container.innerHTML = buildNodeHTML(node, children, articles);
         container.querySelectorAll('.child-item').forEach(el => {
           el.addEventListener('click', () => navigateToNode(Number(el.dataset.id)));
         });
         container.querySelectorAll('.article-item').forEach(el => {
           el.addEventListener('click', () => navigateToArticle(Number(el.dataset.id)));
         });
+        const editNodeBtn = container.querySelector('#editNodeBtn');
+        if (editNodeBtn) editNodeBtn.addEventListener('click', () => openNodeEditor(node.id));
       } else if (currentView.type === 'article') {
         const article = data.articles.find(a => a.id === currentView.id);
         if (!article) { container.innerHTML = '<div class="empty-message">Статья не найдена</div>'; return; }
@@ -489,7 +504,6 @@
         </div>`;
     }
 
-    // Модальное окно
     function showModal(title, bodyHTML, onSave) {
       const modal = document.getElementById('modalOverlay');
       const content = document.getElementById('modalContent');
@@ -564,7 +578,6 @@
       });
     }
 
-    // Рендер категорий
     function renderCategories() {
       const container = document.getElementById('categoryFilters');
       container.innerHTML = data.categories.map(c => {
@@ -586,14 +599,13 @@
       renderMain();
     }
 
-    // Привязка глобальных событий
+    // Глобальные события
     document.getElementById('addNodeBtn').addEventListener('click', () => openNodeEditor(null));
     document.getElementById('addArticleBtnRoot').addEventListener('click', () => openArticleEditor(null));
     document.getElementById('searchInput').addEventListener('input', e => {
       searchQuery = e.target.value;
       renderMain();
     });
-    // Экспорт / импорт
     document.getElementById('exportBtn').addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
       const a = document.createElement('a');
@@ -624,7 +636,6 @@
       e.target.value = '';
     });
 
-    // Закрытие модального по Escape
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') document.getElementById('modalOverlay').style.display = 'none';
     });
@@ -633,14 +644,16 @@
       return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
     }
 
-    // Старт
-    loadData();
-    if (data.nodes.length && !currentView.type) {
-      // Откроем первый корневой узел
-      const firstRoot = data.nodes.find(n => n.parentId === null);
-      if (firstRoot) currentView = { type: 'node', id: firstRoot.id };
-    }
-    renderAll();
+    // Запуск
+    (async () => {
+      await loadData();
+      if (data.nodes.length && !currentView.type) {
+        const firstRoot = data.nodes.find(n => n.parentId === null);
+        if (firstRoot) currentView = { type: 'node', id: firstRoot.id };
+      }
+      renderAll();
+    })();
+
   })();
 </script>
 </body>
