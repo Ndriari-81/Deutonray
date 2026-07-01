@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Хроники Дьётонрея — персональная историческая вики</title>
 <style>
+  /* (стили без изменений, те же что были) */
   :root {
     --bg: #0f0f1a;
     --surface: #1a1a2e;
@@ -358,7 +359,7 @@
 <script>
   (function() {
     const STORAGE_KEY = 'penata_chronicles';
-    const AUTO_LOAD_FILENAME = 'history2.json'; // изменено на нужный файл
+    const AUTO_LOAD_FILENAME = 'history2.json';
 
     let events = [];
     let epochs = ['Эпоха Туманов', 'Эра Единства', 'Век Раскола', 'Звёздная Эра'];
@@ -665,41 +666,54 @@
       URL.revokeObjectURL(url);
     });
 
+    // --- ИСПРАВЛЕННЫЙ ИМПОРТ С ОТЛАДКОЙ ---
     document.getElementById('importBtn').addEventListener('click', () => {
       document.getElementById('importFile').click();
     });
+
     document.getElementById('importFile').addEventListener('change', (e) => {
       const file = e.target.files[0];
+      console.log('Файл выбран:', file); // ← отладка
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
+        console.log('Чтение завершено'); // ← отладка
         try {
           const data = JSON.parse(ev.target.result);
+          console.log('Данные импорта:', data); // ← отладка
           if (data.events && data.epochs && data.categories) {
             if (confirm('Импорт заменит все текущие данные. Продолжить?')) {
               events = data.events;
               epochs = data.epochs;
-              epochColors = data.epochColors;
+              epochColors = data.epochColors || epochColors; // защита от отсутствия
               categories = data.categories;
               events.forEach((e, idx) => { if (!e.id) e.id = Date.now() + idx; });
               saveData();
               renderFilters();
               renderTimeline();
               updateModalSelects();
-              alert('Импорт завершён!');
+              alert('✅ Импорт завершён!');
             }
           } else {
-            alert('Неверный формат файла.');
+            alert('❌ Неверный формат файла: отсутствуют events, epochs или categories.');
           }
-        } catch(ex) { alert('Ошибка чтения JSON.'); }
+        } catch(ex) {
+          console.error('Ошибка парсинга JSON:', ex);
+          alert('❌ Ошибка чтения JSON: ' + ex.message);
+        }
+      };
+      reader.onerror = (err) => {
+        console.error('Ошибка чтения файла:', err);
+        alert('❌ Ошибка чтения файла');
       };
       reader.readAsText(file);
-      e.target.value = '';
+      e.target.value = ''; // сброс, чтобы можно было загрузить тот же файл повторно
     });
 
     async function init() {
       const loaded = await autoLoadJSON();
       if (!loaded) {
+        // если авто-загрузка не удалась, данные уже загружены из localStorage
       }
       renderFilters();
       updateModalSelects();
