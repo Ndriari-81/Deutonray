@@ -1,334 +1,314 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Хроники Дьётонрея — персональная историческая вики</title>
-<style>
-  /* (стили без изменений, те же что были) */
-  :root {
-    --bg: #0f0f1a;
-    --surface: #1a1a2e;
-    --surface2: #16213e;
-    --text: #e0e0e0;
-    --text-secondary: #a0a0b0;
-    --accent: #7b5ea7;
-    --accent-glow: #a37ecc;
-    --border: #2a2a40;
-    --danger: #c0392b;
-    --success: #27ae60;
-    --warning: #f39c12;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    overflow: hidden;
-  }
-  .sidebar {
-    width: 280px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 20px 15px;
-    gap: 20px;
-    overflow-y: auto;
-    flex-shrink: 0;
-  }
-  .sidebar h2 {
-    font-size: 1.6rem;
-    background: linear-gradient(135deg, var(--accent-glow), #c084fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 5px;
-  }
-  .sidebar h3 {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-  }
-  .epoch-list, .cat-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .badge {
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    user-select: none;
-  }
-  .badge.active { border-color: var(--accent); background: rgba(123,94,167,0.2); color: white; }
-  .badge.epoch-badge { border-left: 4px solid var(--epoch-color, #888); }
-  .search-box {
-    width: 100%;
-    padding: 8px 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.9rem;
-    outline: none;
-    transition: 0.2s;
-  }
-  .search-box:focus { border-color: var(--accent); }
-  .btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-  }
-  .btn:hover { background: var(--accent-glow); }
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    margin-top: 5px;
-  }
-  .btn-outline:hover { background: var(--surface2); }
-  .btn-small {
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    width: auto;
-  }
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px 30px;
-    overflow-y: auto;
-    gap: 20px;
-  }
-  .timeline-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .event-count {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-  }
-  .event-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--accent);
-    border-radius: 10px;
-    padding: 15px 20px;
-    transition: 0.2s;
-    position: relative;
-  }
-  .event-card:hover { border-color: var(--accent-glow); }
-  .event-header {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-  .event-date {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--accent-glow);
-    white-space: nowrap;
-  }
-  .event-epoch {
-    font-size: 0.8rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: var(--epoch-bg, #333);
-    color: white;
-  }
-  .event-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    flex: 1;
-  }
-  .event-category {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    background: var(--surface2);
-    padding: 2px 8px;
-    border-radius: 10px;
-    color: var(--text-secondary);
-  }
-  .event-desc {
-    color: var(--text-secondary);
-    line-height: 1.5;
-    margin: 5px 0 0 0;
-  }
-  .event-actions {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    display: flex;
-    gap: 5px;
-    opacity: 0;
-    transition: 0.2s;
-  }
-  .event-card:hover .event-actions { opacity: 1; }
-  .action-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-  .action-btn:hover { color: white; background: rgba(255,255,255,0.1); }
-  .action-btn.delete:hover { color: var(--danger); }
-
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top:0;left:0;width:100%;height:100%;
-    background: rgba(0,0,0,0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  .modal {
-    background: var(--surface);
-    padding: 25px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 650px;
-    max-height: 90vh;
-    overflow-y: auto;
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  .modal h2 { color: var(--accent-glow); }
-  .form-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-    min-width: 140px;
-  }
-  .form-group label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-  }
-  input, select, textarea {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: var(--text);
-    font-size: 0.9rem;
-    outline: none;
-    resize: vertical;
-  }
-  textarea { min-height: 80px; }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  .flex-buttons { display: flex; gap: 10px; justify-content: flex-end; }
-  .empty-state {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-top: 60px;
-  }
-  .epoch-manager {
-    display: flex;
-    gap: 5px;
-    margin-top: 5px;
-  }
-  .epoch-manager input { flex: 1; }
-  .color-picker { width: 40px; height: 30px; padding: 2px; }
-
-  #loadingIndicator {
-    display: none;
-    text-align: center;
-    padding: 8px;
-    background: var(--surface2);
-    border-radius: 8px;
-    color: var(--accent-glow);
-    margin-top: 10px;
-    font-size: 0.8rem;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Архив Дьётонрея — персональная вики</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Linux Libertine','Georgia','Times',serif;
+      background: #f6f6f6;
+      color: #202122;
+      display: flex;
+      min-height: 100vh;
+    }
+    /* Боковая панель в стиле Википедии */
+    .sidebar {
+      width: 260px;
+      background: #f8f9fa;
+      border-right: 1px solid #a2a9b1;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      font-size: 0.9rem;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    .sidebar .wiki-logo {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .sidebar .wiki-logo img {
+      width: 120px;
+      height: auto;
+    }
+    .sidebar h2 {
+      font-family: 'Linux Libertine','Georgia',serif;
+      font-size: 1.3rem;
+      border-bottom: 1px solid #a2a9b1;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+      color: #000;
+    }
+    .sidebar .nav-section h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: #54595d;
+      letter-spacing: 0.5px;
+      margin: 10px 0 5px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      margin: 2px;
+      border-radius: 3px;
+      background: #eaecf0;
+      color: #202122;
+      font-size: 0.8rem;
+      border: 1px solid #c8ccd1;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .badge.active {
+      background: #eaf3ff;
+      border-color: #447ff5;
+      color: #0645ad;
+      font-weight: bold;
+    }
+    .badge.epoch-badge {
+      border-left: 5px solid var(--epoch-color, #888);
+    }
+    .search-box {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #a2a9b1;
+      border-radius: 2px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .search-box:focus { border-color: #447ff5; box-shadow: 0 0 0 1px #447ff5; }
+    .btn {
+      background: #f8f9fa;
+      border: 1px solid #a2a9b1;
+      border-radius: 2px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #202122;
+      transition: 0.1s;
+      text-align: center;
+      width: 100%;
+      margin: 3px 0;
+    }
+    .btn:hover { background: #eaecf0; }
+    .btn-primary {
+      background: #447ff5;
+      border-color: #447ff5;
+      color: white;
+      font-weight: bold;
+    }
+    .btn-primary:hover { background: #2a4b8d; }
+    .btn-small { width: auto; padding: 4px 10px; font-size: 0.8rem; }
+    .main {
+      flex: 1;
+      padding: 20px 30px;
+      overflow-y: auto;
+      background: #ffffff;
+    }
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #a2a9b1;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .main-header h1 {
+      font-family: 'Linux Libertine','Georgia',serif;
+      font-size: 2rem;
+      font-weight: normal;
+      color: #000;
+    }
+    .event-count { color: #54595d; font-size: 0.9rem; }
+    .event-card {
+      background: #fff;
+      border: 1px solid #c8ccd1;
+      border-left: 6px solid #447ff5;
+      border-radius: 2px;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      transition: 0.1s;
+      position: relative;
+    }
+    .event-card:hover { border-color: #a2a9b1; }
+    .event-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .event-date {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0645ad;
+      white-space: nowrap;
+    }
+    .event-epoch {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--epoch-bg, #eaecf0);
+      color: #fff;
+      font-weight: bold;
+    }
+    .event-title {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #000;
+      flex: 1;
+    }
+    .event-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      background: #eaecf0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #54595d;
+      border: 1px solid #c8ccd1;
+    }
+    .event-desc {
+      color: #202122;
+      line-height: 1.6;
+      margin-top: 5px;
+    }
+    .event-actions {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      display: flex;
+      gap: 5px;
+      opacity: 0;
+      transition: 0.1s;
+    }
+    .event-card:hover .event-actions { opacity: 1; }
+    .action-btn {
+      background: none;
+      border: none;
+      color: #54595d;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+    .action-btn:hover { background: #eaecf0; color: #000; }
+    .action-btn.delete:hover { color: #d33; }
+    .empty-state {
+      text-align: center;
+      color: #54595d;
+      margin-top: 50px;
+      font-size: 1.1rem;
+    }
+    /* Модальное окно */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: white;
+      border: 1px solid #a2a9b1;
+      border-radius: 2px;
+      padding: 25px;
+      width: 90%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    .modal h2 {
+      font-family: 'Linux Libertine',serif;
+      font-size: 1.6rem;
+      border-bottom: 1px solid #a2a9b1;
+      padding-bottom: 5px;
+    }
+    .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+    .form-group label { font-size: 0.8rem; color: #54595d; }
+    input, select, textarea {
+      border: 1px solid #a2a9b1;
+      border-radius: 2px;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      resize: vertical;
+    }
+    textarea { min-height: 80px; }
+    input:focus, select:focus, textarea:focus { border-color: #447ff5; box-shadow: 0 0 0 1px #447ff5; }
+    .flex-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+    .epoch-manager { display: flex; gap: 5px; margin-top: 5px; }
+    .epoch-manager input { flex: 1; }
+    .color-picker { width: 40px; height: 30px; padding: 2px; border: 1px solid #a2a9b1; }
+  </style>
 </head>
 <body>
 
+<!-- Боковая панель -->
 <div class="sidebar">
-  <h2>📜 Хроники Дьётонрей</h2>
-  <div>
-    <h3>🔍 Поиск</h3>
-    <input type="text" class="search-box" id="searchInput" placeholder="Событие, дата, описание...">
+  <div class="wiki-logo">
+    <div style="font-size:1.8rem; color:#0645ad; font-family:'Linux Libertine',serif;">🌍 Дьётонрей</div>
+    <div style="font-size:0.8rem; color:#54595d;">персональная хроника</div>
   </div>
   <div>
-    <h3>🌌 Эпохи</h3>
-    <div class="epoch-list" id="epochFilters"></div>
+    <input type="text" class="search-box" id="searchInput" placeholder="Поиск по архиву...">
+  </div>
+  <div class="nav-section">
+    <h3>📅 Эпохи</h3>
+    <div id="epochFilters" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
     <div class="epoch-manager">
       <input type="text" id="newEpochName" placeholder="Новая эпоха">
-      <input type="color" id="newEpochColor" class="color-picker" value="#7b5ea7">
+      <input type="color" id="newEpochColor" class="color-picker" value="#447ff5">
       <button class="btn btn-small" id="addEpochBtn">+</button>
     </div>
   </div>
-  <div>
+  <div class="nav-section">
     <h3>🏷️ Категории</h3>
-    <div class="cat-list" id="categoryFilters"></div>
-    <div style="display:flex; gap:5px;">
+    <div id="categoryFilters" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
+    <div style="display:flex; gap:5px; margin-top:5px;">
       <input type="text" id="newCategoryName" placeholder="Новая категория">
       <button class="btn btn-small" id="addCategoryBtn">+</button>
     </div>
   </div>
-  <button class="btn" id="addEventBtn">➕ Добавить событие</button>
-  <button class="btn btn-outline" id="exportBtn">📤 Экспорт (JSON)</button>
-  <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
+  <button class="btn btn-primary" id="addEventBtn">➕ Добавить событие</button>
+  <button class="btn" id="exportBtn">📤 Экспорт (JSON)</button>
+  <button class="btn" id="importBtn">📥 Импорт</button>
   <input type="file" id="importFile" accept=".json" style="display:none">
-  <div id="loadingIndicator"></div>
-  <div style="font-size:0.7rem; color:var(--text-secondary); margin-top:10px;">
-    Данные хранятся локально в браузере. Регулярно делайте экспорт!
+  <div style="font-size:0.7rem; color:#54595d; margin-top:10px;">
+    Данные хранятся локально. Регулярно делайте экспорт.
   </div>
 </div>
 
+<!-- Основная область -->
 <div class="main">
-  <div class="timeline-header">
-    <h2 style="font-weight:400;">📅 Историческая лента</h2>
+  <div class="main-header">
+    <h1>Хронология Дьётонрея</h1>
     <span class="event-count" id="eventCount"></span>
   </div>
   <div id="timelineContainer"></div>
 </div>
 
+<!-- Модальное окно -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2 id="modalTitle">Новое событие</h2>
     <div class="form-row">
       <div class="form-group">
         <label>Дата / год</label>
-        <input type="text" id="eventDate" placeholder="например, 245 Эпохи Единства">
+        <input type="text" id="eventDate" placeholder="например, 6.87 млрд д.л.">
       </div>
       <div class="form-group">
         <label>Порядок сортировки</label>
-        <input type="number" id="eventOrder" placeholder="Число для хронологии" value="0">
+        <input type="number" id="eventOrder" placeholder="Число" value="0">
       </div>
     </div>
     <div class="form-row">
@@ -347,85 +327,109 @@
     </div>
     <div class="form-group">
       <label>Описание</label>
-      <textarea id="eventDesc" placeholder="Подробности, участники, последствия..."></textarea>
+      <textarea id="eventDesc" placeholder="Подробности..."></textarea>
     </div>
     <div class="flex-buttons">
-      <button class="btn btn-outline" id="cancelModalBtn">Отмена</button>
-      <button class="btn" id="saveEventBtn">Сохранить</button>
+      <button class="btn" id="cancelModalBtn">Отмена</button>
+      <button class="btn btn-primary" id="saveEventBtn">Сохранить</button>
     </div>
   </div>
 </div>
 
 <script>
   (function() {
-    const STORAGE_KEY = 'penata_chronicles';
-    const AUTO_LOAD_FILENAME = 'history2.json';
+    const STORAGE_KEY = 'dyotonrei_archive';
+
+    // Стартовые данные мира Дьётонрей (будут загружены при первом запуске)
+    const defaultEpochs = [
+      'Эон I: Рождение Огненного Шара',
+      'Эон II: Континенты и Ванадиевая Жизнь',
+      'Эон III: Звук и Кость',
+      'Эон IV: Кхаары и Звёздные Сады'
+    ];
+    const defaultEpochColors = ['#d35400', '#2980b9', '#8e44ad', '#27ae60'];
+    const defaultCategories = [
+      'Космогония', 'Геология', 'Биология', 'Катаклизм',
+      'Эволюция', 'Культура', 'Война', 'Технология', 'Современность'
+    ];
+    const defaultEvents = [
+      { id: 1, dateString: '6.87 млрд д.л.', order: 1, epoch: defaultEpochs[0], category: 'Космогония',
+        title: 'Рождение системы Кхарона',
+        desc: 'Оранжевый карлик Кхарон (K4V) собрал протопланетный диск. Началось формирование Дьётонрея — второй планеты системы.' },
+      { id: 2, dateString: '6.27 млрд д.л.', order: 2, epoch: defaultEpochs[0], category: 'Геология',
+        title: 'Эпоха Плазменных Вихрей',
+        desc: 'Солнечные бури молодого Кхарона породили гигантские плазменные торнадо, выжигавшие стекловидные каньоны и обогащавшие кору тяжёлыми металлами.' },
+      { id: 3, dateString: '5.52 млрд д.л.', order: 3, epoch: defaultEpochs[0], category: 'Космогония',
+        title: 'Обретение лун Ара и Тисиф',
+        desc: 'Дьётонрей захватил два спутника, стабилизировавших вращение планеты. Луны стали «небесными демпферами» климата.' },
+      { id: 4, dateString: '4.93 млрд д.л.', order: 4, epoch: defaultEpochs[0], category: 'Геология',
+        title: 'Рождение Ванадиевого Моря',
+        desc: 'Первые постоянные водоёмы: мелководный океан из кометной и вулканической воды. Берега из базальта и кварцевого стекла.' },
+      { id: 5, dateString: '4.03 млрд д.л.', order: 5, epoch: defaultEpochs[1], category: 'Биология',
+        title: 'Кислородная революция',
+        desc: 'Цианобактерии с ванадохлорофиллом насытили океан кислородом, вызвав окрашивание вод в ржавый цвет и вымирание анаэробов.' },
+      { id: 6, dateString: '3.37 млрд д.л.', order: 6, epoch: defaultEpochs[1], category: 'Геология',
+        title: 'Формирование суперконтинента Ильтара',
+        desc: 'Столкновение Ульгура и Ванаара создало гигантский массив суши с горами, рифтовыми ртутными морями и Серебряной революцией флоры.' },
+      { id: 7, dateString: '2.41 млрд д.л.', order: 7, epoch: defaultEpochs[2], category: 'Эволюция',
+        title: 'Начало Эона Звука',
+        desc: 'Кристальные хоры губок и Шептуны-растения открыли эру акустической эволюции. Первые звуковые войны между видами.' },
+      { id: 8, dateString: '1.74 млрд д.л.', order: 8, epoch: defaultEpochs[2], category: 'Эволюция',
+        title: 'Появление ванадазавров',
+        desc: 'Рептилии с ванадиевой кровью и бронёй из карбида кремния стали доминирующими гигантами суши (до 15 м).' },
+      { id: 9, dateString: '0.67 млрд д.л.', order: 9, epoch: defaultEpochs[2], category: 'Катаклизм',
+        title: 'Великое Угасание',
+        desc: 'Падение уровня O₂, кислотные дожди и огненные штормы уничтожили 95% видов, завершив эру исполинов.' },
+      { id: 10, dateString: '0.57 млрд д.л.', order: 10, epoch: defaultEpochs[3], category: 'Культура',
+        title: 'Пещерные царства барсов',
+        desc: 'Северяне-барсы освоили Вечные костры и выплавку металла, южане-леопарды — земледелие и биофильтрацию.' },
+      { id: 11, dateString: '0.22 млрд д.л.', order: 11, epoch: defaultEpochs[3], category: 'Война',
+        title: 'Война у Слезы Ары',
+        desc: 'Первый контакт и конфликт барсов и леопардов за ресурсы. Создана нейтральная зона Ильтара-2.' },
+      { id: 12, dateString: '3179 г. (современность)', order: 12, epoch: defaultEpochs[3], category: 'Современность',
+        title: 'Космический Рассвет',
+        desc: 'Терраформинг астероидов, орбитальные зеркала, совместный ИИ «Ара-Тис». Праздник Танца Двух Лун объединяет народы.' }
+    ];
 
     let events = [];
-    let epochs = ['Эпоха Туманов', 'Эра Единства', 'Век Раскола', 'Звёздная Эра'];
-    let epochColors = ['#9b59b6', '#3498db', '#e74c3c', '#f1c40f'];
-    let categories = ['Политика', 'Война', 'Эволюция', 'Катаклизм', 'Культура', 'Наука', 'Религия'];
+    let epochs = [];
+    let epochColors = [];
+    let categories = [];
 
     let activeEpoch = null;
     let activeCategory = null;
     let searchQuery = '';
     let editingId = null;
 
-    // --- Автоматическая загрузка JSON ---
-    async function autoLoadJSON() {
-      const indicator = document.getElementById('loadingIndicator');
-      indicator.style.display = 'block';
-      indicator.textContent = '⏳ Загрузка данных из JSON...';
-      try {
-        const response = await fetch(AUTO_LOAD_FILENAME);
-        if (!response.ok) throw new Error('Файл не найден');
-        const data = await response.json();
-        if (data.epochs && data.epochColors && data.categories && data.events) {
-          events = data.events;
-          epochs = data.epochs;
-          epochColors = data.epochColors;
-          categories = data.categories;
-          events.forEach((e, idx) => { if (!e.id) e.id = Date.now() + idx; });
-          saveData();
-          indicator.textContent = '✅ Данные загружены из ' + AUTO_LOAD_FILENAME;
-          setTimeout(() => { indicator.style.display = 'none'; }, 2500);
-          return true;
-        } else {
-          throw new Error('Неверная структура JSON');
-        }
-      } catch (err) {
-        console.warn('Автозагрузка не удалась:', err.message);
-        indicator.textContent = '⚠️ JSON не загружен. Использую данные из localStorage.';
-        setTimeout(() => { indicator.style.display = 'none'; }, 3000);
-        loadFromStorage();
-        return false;
-      }
-    }
-
-    // --- Загрузка из localStorage ---
-    function loadFromStorage() {
+    // Загрузка данных
+    function loadData() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         try {
           const data = JSON.parse(raw);
           events = data.events || [];
-          epochs = data.epochs || epochs;
-          epochColors = data.epochColors || epochColors;
-          categories = data.categories || categories;
-        } catch(e) { console.warn('Ошибка чтения localStorage'); }
+          epochs = data.epochs || [];
+          epochColors = data.epochColors || [];
+          categories = data.categories || [];
+        } catch(e) {}
       }
-      events.forEach((e, idx) => {
-        if (!e.id) e.id = Date.now() + idx + Math.random();
-        if (e.order === undefined) e.order = 0;
-      });
+      // Если данных нет — загружаем демо-версию мира Дьётонрей
+      if (!raw || events.length === 0) {
+        events = JSON.parse(JSON.stringify(defaultEvents));
+        epochs = [...defaultEpochs];
+        epochColors = [...defaultEpochColors];
+        categories = [...defaultCategories];
+        saveData();
+      }
+      // Убедимся, что у всех событий есть id
+      events.forEach((e,idx) => { if (!e.id) e.id = Date.now() + idx; });
     }
 
     function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        events, epochs, epochColors, categories
-      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ events, epochs, epochColors, categories }));
     }
 
+    // Рендер фильтров
     function renderFilters() {
       const epochContainer = document.getElementById('epochFilters');
       epochContainer.innerHTML = '';
@@ -459,11 +463,10 @@
     }
 
     function updateModalSelects() {
-      const epochSelect = document.getElementById('eventEpoch');
-      const catSelect = document.getElementById('eventCategory');
-      if (!epochSelect || !catSelect) return;
-      epochSelect.innerHTML = epochs.map(e => `<option value="${e}">${e}</option>`).join('');
-      catSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      const epochSel = document.getElementById('eventEpoch');
+      const catSel = document.getElementById('eventCategory');
+      if (epochSel) epochSel.innerHTML = epochs.map(e => `<option value="${e}">${e}</option>`).join('');
+      if (catSel) catSel.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
     function getFilteredEvents() {
@@ -479,10 +482,7 @@
                   ev.category.toLowerCase().includes(q));
         }
         return true;
-      }).sort((a, b) => {
-        if (a.order !== b.order) return a.order - b.order;
-        return a.id - b.id;
-      });
+      }).sort((a, b) => a.order - b.order);
     }
 
     function renderTimeline() {
@@ -491,13 +491,13 @@
       document.getElementById('eventCount').textContent = `Показано: ${filtered.length} из ${events.length}`;
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state">🕳️ Нет событий, соответствующих фильтрам.<br>Добавьте первое событие или импортируйте данные.</div>`;
+        container.innerHTML = `<div class="empty-state">🔍 Нет событий, соответствующих фильтрам. Добавьте новое событие или измените критерии.</div>`;
         return;
       }
 
       container.innerHTML = filtered.map(ev => {
-        const epochIndex = epochs.indexOf(ev.epoch);
-        const color = epochColors[epochIndex] || '#888';
+        const epochIdx = epochs.indexOf(ev.epoch);
+        const color = epochColors[epochIdx] || '#888';
         return `
           <div class="event-card" style="border-left-color: ${color}">
             <div class="event-header">
@@ -516,16 +516,12 @@
       }).join('');
 
       container.querySelectorAll('.edit').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const id = Number(btn.dataset.id);
-          openEditor(id);
-        });
+        btn.addEventListener('click', () => openEditor(Number(btn.dataset.id)));
       });
       container.querySelectorAll('.delete').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const id = Number(btn.dataset.id);
-          if (confirm('Удалить это событие навсегда?')) {
-            events = events.filter(ev => ev.id !== id);
+        btn.addEventListener('click', () => {
+          if (confirm('Удалить это событие?')) {
+            events = events.filter(e => e.id !== Number(btn.dataset.id));
             saveData();
             renderTimeline();
           }
@@ -534,40 +530,32 @@
     }
 
     function escapeHtml(text) {
-      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return String(text).replace(/[&<>"']/g, m => map[m]);
+      return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
     }
 
+    // Модальное окно
     const modal = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
-    const eventDateInp = document.getElementById('eventDate');
-    const eventOrderInp = document.getElementById('eventOrder');
-    const eventEpochSel = document.getElementById('eventEpoch');
-    const eventCatSel = document.getElementById('eventCategory');
-    const eventTitleInp = document.getElementById('eventTitle');
-    const eventDescInp = document.getElementById('eventDesc');
-
     function openEditor(id = null) {
       editingId = id;
       updateModalSelects();
       if (id) {
         const ev = events.find(e => e.id === id);
         if (!ev) return;
-        modalTitle.textContent = 'Редактировать событие';
-        eventDateInp.value = ev.dateString;
-        eventOrderInp.value = ev.order;
-        eventEpochSel.value = ev.epoch;
-        eventCatSel.value = ev.category;
-        eventTitleInp.value = ev.title;
-        eventDescInp.value = ev.desc;
+        document.getElementById('modalTitle').textContent = 'Редактировать событие';
+        document.getElementById('eventDate').value = ev.dateString;
+        document.getElementById('eventOrder').value = ev.order;
+        document.getElementById('eventEpoch').value = ev.epoch;
+        document.getElementById('eventCategory').value = ev.category;
+        document.getElementById('eventTitle').value = ev.title;
+        document.getElementById('eventDesc').value = ev.desc;
       } else {
-        modalTitle.textContent = 'Новое событие';
-        eventDateInp.value = '';
-        eventOrderInp.value = events.length ? Math.max(...events.map(e=>e.order), 0) + 1 : 0;
-        eventEpochSel.value = epochs[0] || '';
-        eventCatSel.value = categories[0] || '';
-        eventTitleInp.value = '';
-        eventDescInp.value = '';
+        document.getElementById('modalTitle').textContent = 'Новое событие';
+        document.getElementById('eventDate').value = '';
+        document.getElementById('eventOrder').value = events.length ? Math.max(...events.map(e=>e.order),0)+1 : 0;
+        document.getElementById('eventEpoch').value = epochs[0] || '';
+        document.getElementById('eventCategory').value = categories[0] || '';
+        document.getElementById('eventTitle').value = '';
+        document.getElementById('eventDesc').value = '';
       }
       modal.style.display = 'flex';
     }
@@ -577,155 +565,102 @@
       editingId = null;
     }
 
-    function saveEventFromModal() {
-      const dateString = eventDateInp.value.trim();
-      const order = parseInt(eventOrderInp.value) || 0;
-      const epoch = eventEpochSel.value;
-      const category = eventCatSel.value;
-      const title = eventTitleInp.value.trim();
-      const desc = eventDescInp.value.trim();
-
-      if (!dateString || !title) {
-        alert('Дата и название обязательны!');
-        return;
-      }
-
+    document.getElementById('saveEventBtn').addEventListener('click', () => {
+      const date = document.getElementById('eventDate').value.trim();
+      const order = parseInt(document.getElementById('eventOrder').value) || 0;
+      const epoch = document.getElementById('eventEpoch').value;
+      const cat = document.getElementById('eventCategory').value;
+      const title = document.getElementById('eventTitle').value.trim();
+      const desc = document.getElementById('eventDesc').value.trim();
+      if (!date || !title) { alert('Дата и название обязательны'); return; }
       if (editingId) {
         const ev = events.find(e => e.id === editingId);
-        if (ev) {
-          ev.dateString = dateString;
-          ev.order = order;
-          ev.epoch = epoch;
-          ev.category = category;
-          ev.title = title;
-          ev.desc = desc;
-        }
+        if (ev) { ev.dateString = date; ev.order = order; ev.epoch = epoch; ev.category = cat; ev.title = title; ev.desc = desc; }
       } else {
-        events.push({
-          id: Date.now(),
-          dateString,
-          order,
-          epoch,
-          category,
-          title,
-          desc
-        });
+        events.push({ id: Date.now(), dateString: date, order, epoch, category: cat, title, desc });
       }
       saveData();
       closeModal();
       renderTimeline();
       renderFilters();
-    }
+    });
 
     document.getElementById('addEventBtn').addEventListener('click', () => openEditor(null));
     document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
-    document.getElementById('saveEventBtn').addEventListener('click', saveEventFromModal);
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
+    // Поиск
+    document.getElementById('searchInput').addEventListener('input', e => {
       searchQuery = e.target.value;
       renderTimeline();
     });
 
+    // Добавление эпохи/категории
     document.getElementById('addEpochBtn').addEventListener('click', () => {
-      const nameInput = document.getElementById('newEpochName');
-      const colorInput = document.getElementById('newEpochColor');
-      const name = nameInput.value.trim();
+      const name = document.getElementById('newEpochName').value.trim();
       if (!name) return;
       if (epochs.includes(name)) { alert('Такая эпоха уже есть'); return; }
       epochs.push(name);
-      epochColors.push(colorInput.value);
+      epochColors.push(document.getElementById('newEpochColor').value);
       saveData();
-      nameInput.value = '';
+      document.getElementById('newEpochName').value = '';
       renderFilters();
       updateModalSelects();
     });
-
     document.getElementById('addCategoryBtn').addEventListener('click', () => {
-      const nameInput = document.getElementById('newCategoryName');
-      const name = nameInput.value.trim();
+      const name = document.getElementById('newCategoryName').value.trim();
       if (!name) return;
       if (categories.includes(name)) { alert('Такая категория уже есть'); return; }
       categories.push(name);
       saveData();
-      nameInput.value = '';
+      document.getElementById('newCategoryName').value = '';
       renderFilters();
       updateModalSelects();
     });
 
+    // Экспорт/импорт
     document.getElementById('exportBtn').addEventListener('click', () => {
-      const data = { events, epochs, epochColors, categories };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
+      const blob = new Blob([JSON.stringify({ events, epochs, epochColors, categories }, null, 2)], {type:'application/json'});
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `dyotonrei_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.href = URL.createObjectURL(blob);
+      a.download = `dyotonrei_${new Date().toISOString().slice(0,10)}.json`;
       a.click();
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(a.href);
     });
-
-    // --- ИСПРАВЛЕННЫЙ ИМПОРТ С ОТЛАДКОЙ ---
-    document.getElementById('importBtn').addEventListener('click', () => {
-      document.getElementById('importFile').click();
-    });
-
-    document.getElementById('importFile').addEventListener('change', (e) => {
+    document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
+    document.getElementById('importFile').addEventListener('change', e => {
       const file = e.target.files[0];
-      console.log('Файл выбран:', file); // ← отладка
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = (ev) => {
-        console.log('Чтение завершено'); // ← отладка
+      reader.onload = ev => {
         try {
           const data = JSON.parse(ev.target.result);
-          console.log('Данные импорта:', data); // ← отладка
           if (data.events && data.epochs && data.categories) {
             if (confirm('Импорт заменит все текущие данные. Продолжить?')) {
               events = data.events;
               epochs = data.epochs;
-              epochColors = data.epochColors || epochColors; // защита от отсутствия
+              epochColors = data.epochColors || [];
               categories = data.categories;
-              events.forEach((e, idx) => { if (!e.id) e.id = Date.now() + idx; });
+              events.forEach((ev,i) => { if (!ev.id) ev.id = Date.now()+i; });
               saveData();
               renderFilters();
               renderTimeline();
               updateModalSelects();
-              alert('✅ Импорт завершён!');
             }
-          } else {
-            alert('❌ Неверный формат файла: отсутствуют events, epochs или categories.');
-          }
-        } catch(ex) {
-          console.error('Ошибка парсинга JSON:', ex);
-          alert('❌ Ошибка чтения JSON: ' + ex.message);
-        }
-      };
-      reader.onerror = (err) => {
-        console.error('Ошибка чтения файла:', err);
-        alert('❌ Ошибка чтения файла');
+          } else alert('Неверный формат файла.');
+        } catch(ex) { alert('Ошибка чтения JSON.'); }
       };
       reader.readAsText(file);
-      e.target.value = ''; // сброс, чтобы можно было загрузить тот же файл повторно
+      e.target.value = '';
     });
 
-    async function init() {
-      const loaded = await autoLoadJSON();
-      if (!loaded) {
-        // если авто-загрузка не удалась, данные уже загружены из localStorage
-      }
-      renderFilters();
-      updateModalSelects();
-      renderTimeline();
-    }
+    document.addEventListener('keydown', e => { if (e.key==='Escape' && modal.style.display==='flex') closeModal(); });
 
-    init();
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
-    });
-
+    // Старт
+    loadData();
+    renderFilters();
+    updateModalSelects();
+    renderTimeline();
   })();
 </script>
 </body>
