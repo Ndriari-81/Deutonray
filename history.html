@@ -1,346 +1,296 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Архив Дьётонрея — персональная вики</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Linux Libertine','Georgia','Times',serif;
-      background: #f6f6f6;
-      color: #202122;
-      display: flex;
-      min-height: 100vh;
-    }
-    /* Боковая панель в стиле Википедии */
-    .sidebar {
-      width: 260px;
-      background: #f8f9fa;
-      border-right: 1px solid #a2a9b1;
-      padding: 20px 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      font-size: 0.9rem;
-      overflow-y: auto;
-      flex-shrink: 0;
-    }
-    .sidebar .wiki-logo {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .sidebar .wiki-logo img {
-      width: 120px;
-      height: auto;
-    }
-    .sidebar h2 {
-      font-family: 'Linux Libertine','Georgia',serif;
-      font-size: 1.3rem;
-      border-bottom: 1px solid #a2a9b1;
-      padding-bottom: 5px;
-      margin-bottom: 5px;
-      color: #000;
-    }
-    .sidebar .nav-section h3 {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: #54595d;
-      letter-spacing: 0.5px;
-      margin: 10px 0 5px;
-    }
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      margin: 2px;
-      border-radius: 3px;
-      background: #eaecf0;
-      color: #202122;
-      font-size: 0.8rem;
-      border: 1px solid #c8ccd1;
-      cursor: pointer;
-      transition: 0.1s;
-    }
-    .badge.active {
-      background: #eaf3ff;
-      border-color: #447ff5;
-      color: #0645ad;
-      font-weight: bold;
-    }
-    .badge.epoch-badge {
-      border-left: 5px solid var(--epoch-color, #888);
-    }
-    .search-box {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid #a2a9b1;
-      border-radius: 2px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    .search-box:focus { border-color: #447ff5; box-shadow: 0 0 0 1px #447ff5; }
-    .btn {
-      background: #f8f9fa;
-      border: 1px solid #a2a9b1;
-      border-radius: 2px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: #202122;
-      transition: 0.1s;
-      text-align: center;
-      width: 100%;
-      margin: 3px 0;
-    }
-    .btn:hover { background: #eaecf0; }
-    .btn-primary {
-      background: #447ff5;
-      border-color: #447ff5;
-      color: white;
-      font-weight: bold;
-    }
-    .btn-primary:hover { background: #2a4b8d; }
-    .btn-small { width: auto; padding: 4px 10px; font-size: 0.8rem; }
-    .main {
-      flex: 1;
-      padding: 20px 30px;
-      overflow-y: auto;
-      background: #ffffff;
-    }
-    .main-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #a2a9b1;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-    }
-    .main-header h1 {
-      font-family: 'Linux Libertine','Georgia',serif;
-      font-size: 2rem;
-      font-weight: normal;
-      color: #000;
-    }
-    .event-count { color: #54595d; font-size: 0.9rem; }
-    .event-card {
-      background: #fff;
-      border: 1px solid #c8ccd1;
-      border-left: 6px solid #447ff5;
-      border-radius: 2px;
-      padding: 15px 20px;
-      margin-bottom: 15px;
-      transition: 0.1s;
-      position: relative;
-    }
-    .event-card:hover { border-color: #a2a9b1; }
-    .event-header {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-    }
-    .event-date {
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #0645ad;
-      white-space: nowrap;
-    }
-    .event-epoch {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: var(--epoch-bg, #eaecf0);
-      color: #fff;
-      font-weight: bold;
-    }
-    .event-title {
-      font-size: 1.3rem;
-      font-weight: 500;
-      color: #000;
-      flex: 1;
-    }
-    .event-category {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      background: #eaecf0;
-      padding: 2px 8px;
-      border-radius: 10px;
-      color: #54595d;
-      border: 1px solid #c8ccd1;
-    }
-    .event-desc {
-      color: #202122;
-      line-height: 1.6;
-      margin-top: 5px;
-    }
-    .event-actions {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      display: flex;
-      gap: 5px;
-      opacity: 0;
-      transition: 0.1s;
-    }
-    .event-card:hover .event-actions { opacity: 1; }
-    .action-btn {
-      background: none;
-      border: none;
-      color: #54595d;
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 2px 6px;
-      border-radius: 2px;
-    }
-    .action-btn:hover { background: #eaecf0; color: #000; }
-    .action-btn.delete:hover { color: #d33; }
-    .empty-state {
-      text-align: center;
-      color: #54595d;
-      margin-top: 50px;
-      font-size: 1.1rem;
-    }
-    /* Модальное окно */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal {
-      background: white;
-      border: 1px solid #a2a9b1;
-      border-radius: 2px;
-      padding: 25px;
-      width: 90%;
-      max-width: 650px;
-      max-height: 90vh;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    }
-    .modal h2 {
-      font-family: 'Linux Libertine',serif;
-      font-size: 1.6rem;
-      border-bottom: 1px solid #a2a9b1;
-      padding-bottom: 5px;
-    }
-    .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
-    .form-group label { font-size: 0.8rem; color: #54595d; }
-    input, select, textarea {
-      border: 1px solid #a2a9b1;
-      border-radius: 2px;
-      padding: 7px 10px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
-      resize: vertical;
-    }
-    textarea { min-height: 80px; }
-    input:focus, select:focus, textarea:focus { border-color: #447ff5; box-shadow: 0 0 0 1px #447ff5; }
-    .flex-buttons { display: flex; gap: 10px; justify-content: flex-end; }
-    .epoch-manager { display: flex; gap: 5px; margin-top: 5px; }
-    .epoch-manager input { flex: 1; }
-    .color-picker { width: 40px; height: 30px; padding: 2px; border: 1px solid #a2a9b1; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вики Дьётонрея — Архив</title>
+<style>
+  :root {
+    --bg: #0a0a14;
+    --surface: #14142b;
+    --surface2: #1e1e3a;
+    --text: #d0d0e0;
+    --text-secondary: #9090b0;
+    --accent: #7b5ea7;
+    --accent-glow: #a37ecc;
+    --border: #2a2a45;
+    --danger: #c0392b;
+    --link: #c084fc;
+    --gold: #f0b27a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+  /* Левая панель — список статей */
+  .sidebar {
+    width: 300px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px;
+    gap: 15px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sidebar h2 {
+    font-size: 1.6rem;
+    background: linear-gradient(135deg, var(--accent-glow), #e0b0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .search-box {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .sidebar .filters { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+  }
+  .badge.active { border-color: var(--accent); background: rgba(123,94,167,0.3); color: white; }
+  .badge.epoch-badge { border-left: 4px solid var(--epoch-color, #888); }
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+  }
+  .btn:hover { background: var(--accent-glow); }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover { background: var(--surface2); }
+  .btn-small { width: auto; padding: 4px 10px; font-size: 0.75rem; }
+
+  .article-list {
+    list-style: none;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .article-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.1s;
+    border-left: 3px solid transparent;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .article-item:hover { background: var(--surface2); }
+  .article-item.active {
+    background: var(--surface2);
+    border-left-color: var(--accent);
+    color: white;
+    font-weight: 500;
+  }
+  .article-item .item-date {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-right: 5px;
+  }
+
+  /* Основная область — статья */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    overflow-y: auto;
+    background: var(--bg);
+  }
+  .article-view {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 25px 30px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .article-view h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: var(--accent-glow);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .article-meta {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  .article-meta span {
+    background: var(--surface2);
+    padding: 2px 10px;
+    border-radius: 12px;
+  }
+  .article-body {
+    line-height: 1.7;
+    margin-top: 20px;
+    white-space: pre-wrap;
+    font-size: 1rem;
+  }
+  .edit-btn {
+    margin-top: 20px;
+    width: auto;
+  }
+  .empty-message {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-top: 50px;
+    font-size: 1.1rem;
+  }
+
+  /* Модальное окно редактирования */
+  .modal-overlay {
+    display: none;
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center; align-items: center; z-index:1000;
+  }
+  .modal {
+    background: var(--surface);
+    padding: 25px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+  }
+  .modal h2 { color: var(--accent-glow); }
+  .form-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+  label { font-size: 0.8rem; color: var(--text-secondary); }
+  input, select, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 0.9rem;
+    outline: none;
+    font-family: inherit;
+  }
+  textarea { min-height: 250px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  .flex-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+</style>
 </head>
 <body>
 
-<!-- Боковая панель -->
+<!-- Левая панель -->
 <div class="sidebar">
-  <div class="wiki-logo">
-    <div style="font-size:1.8rem; color:#0645ad; font-family:'Linux Libertine',serif;">🌍 Дьётонрей</div>
-    <div style="font-size:0.8rem; color:#54595d;">персональная хроника</div>
+  <h2>🌌 Архив Дьётонрея</h2>
+  <input type="text" class="search-box" id="searchInput" placeholder="Поиск по статьям...">
+  <div>
+    <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:5px;">Эпохи:</div>
+    <div class="filters" id="epochFilters"></div>
   </div>
   <div>
-    <input type="text" class="search-box" id="searchInput" placeholder="Поиск по архиву...">
+    <div style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:5px;">Категории:</div>
+    <div class="filters" id="categoryFilters"></div>
   </div>
-  <div class="nav-section">
-    <h3>📅 Эпохи</h3>
-    <div id="epochFilters" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
-    <div class="epoch-manager">
-      <input type="text" id="newEpochName" placeholder="Новая эпоха">
-      <input type="color" id="newEpochColor" class="color-picker" value="#447ff5">
-      <button class="btn btn-small" id="addEpochBtn">+</button>
-    </div>
+  <button class="btn" id="addArticleBtn">➕ Новая статья</button>
+  <div style="margin-top:10px;">
+    <button class="btn btn-outline" id="exportBtn">📤 Экспорт</button>
+    <button class="btn btn-outline" id="importBtn">📥 Импорт</button>
   </div>
-  <div class="nav-section">
-    <h3>🏷️ Категории</h3>
-    <div id="categoryFilters" style="display:flex; flex-wrap:wrap; gap:4px;"></div>
-    <div style="display:flex; gap:5px; margin-top:5px;">
-      <input type="text" id="newCategoryName" placeholder="Новая категория">
-      <button class="btn btn-small" id="addCategoryBtn">+</button>
-    </div>
-  </div>
-  <button class="btn btn-primary" id="addEventBtn">➕ Добавить событие</button>
-  <button class="btn" id="exportBtn">📤 Экспорт (JSON)</button>
-  <button class="btn" id="importBtn">📥 Импорт</button>
   <input type="file" id="importFile" accept=".json" style="display:none">
-  <div style="font-size:0.7rem; color:#54595d; margin-top:10px;">
-    Данные хранятся локально. Регулярно делайте экспорт.
+  <div style="font-size:0.7rem; color:var(--text-secondary); margin-top:10px;">
+    Кликните на статью слева, чтобы прочитать.
   </div>
+  <ul class="article-list" id="articleList"></ul>
 </div>
 
 <!-- Основная область -->
-<div class="main">
-  <div class="main-header">
-    <h1>Хронология Дьётонрея</h1>
-    <span class="event-count" id="eventCount"></span>
-  </div>
-  <div id="timelineContainer"></div>
+<div class="main" id="mainContent">
+  <div class="empty-message" id="noSelection">👈 Выберите статью из списка или создайте новую</div>
+  <div class="article-view" id="articleView" style="display:none;"></div>
 </div>
 
-<!-- Модальное окно -->
+<!-- Модальное окно редактирования -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
-    <h2 id="modalTitle">Новое событие</h2>
+    <h2 id="modalTitle">Редактирование статьи</h2>
     <div class="form-row">
       <div class="form-group">
-        <label>Дата / год</label>
-        <input type="text" id="eventDate" placeholder="например, 6.87 млрд д.л.">
+        <label>Дата / временная метка</label>
+        <input type="text" id="editDate" placeholder="например, 4.03 млрд д.л.">
       </div>
       <div class="form-group">
         <label>Порядок сортировки</label>
-        <input type="number" id="eventOrder" placeholder="Число" value="0">
+        <input type="number" id="editOrder" value="0">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Эпоха</label>
-        <select id="eventEpoch"></select>
+        <select id="editEpoch"></select>
       </div>
       <div class="form-group">
         <label>Категория</label>
-        <select id="eventCategory"></select>
+        <select id="editCategory"></select>
       </div>
     </div>
     <div class="form-group">
-      <label>Название события</label>
-      <input type="text" id="eventTitle" placeholder="Краткое название">
+      <label>Название статьи</label>
+      <input type="text" id="editTitle" placeholder="Заголовок">
     </div>
     <div class="form-group">
-      <label>Описание</label>
-      <textarea id="eventDesc" placeholder="Подробности..."></textarea>
+      <label>Текст статьи</label>
+      <textarea id="editBody" placeholder="Подробное описание... Можно использовать пустые строки для абзацев."></textarea>
     </div>
     <div class="flex-buttons">
-      <button class="btn" id="cancelModalBtn">Отмена</button>
-      <button class="btn btn-primary" id="saveEventBtn">Сохранить</button>
+      <button class="btn btn-outline" id="cancelEditBtn">Отмена</button>
+      <button class="btn" id="saveEditBtn">Сохранить</button>
     </div>
   </div>
 </div>
 
 <script>
-  (function() {
-    const STORAGE_KEY = 'dyotonrei_archive';
+  (() => {
+    const STORAGE_KEY = 'dyotonrei_wiki';
 
-    // Стартовые данные мира Дьётонрей (будут загружены при первом запуске)
+    // Стартовые данные (демо)
     const defaultEpochs = [
       'Эон I: Рождение Огненного Шара',
       'Эон II: Континенты и Ванадиевая Жизнь',
@@ -349,281 +299,242 @@
     ];
     const defaultEpochColors = ['#d35400', '#2980b9', '#8e44ad', '#27ae60'];
     const defaultCategories = [
-      'Космогония', 'Геология', 'Биология', 'Катаклизм',
-      'Эволюция', 'Культура', 'Война', 'Технология', 'Современность'
+      'Космогония', 'Геология', 'Биология', 'Катаклизм', 'Эволюция',
+      'Культура', 'Война', 'Технология', 'Современность'
     ];
-    const defaultEvents = [
-      { id: 1, dateString: '6.87 млрд д.л.', order: 1, epoch: defaultEpochs[0], category: 'Космогония',
-        title: 'Рождение системы Кхарона',
-        desc: 'Оранжевый карлик Кхарон (K4V) собрал протопланетный диск. Началось формирование Дьётонрея — второй планеты системы.' },
-      { id: 2, dateString: '6.27 млрд д.л.', order: 2, epoch: defaultEpochs[0], category: 'Геология',
-        title: 'Эпоха Плазменных Вихрей',
-        desc: 'Солнечные бури молодого Кхарона породили гигантские плазменные торнадо, выжигавшие стекловидные каньоны и обогащавшие кору тяжёлыми металлами.' },
-      { id: 3, dateString: '5.52 млрд д.л.', order: 3, epoch: defaultEpochs[0], category: 'Космогония',
-        title: 'Обретение лун Ара и Тисиф',
-        desc: 'Дьётонрей захватил два спутника, стабилизировавших вращение планеты. Луны стали «небесными демпферами» климата.' },
-      { id: 4, dateString: '4.93 млрд д.л.', order: 4, epoch: defaultEpochs[0], category: 'Геология',
-        title: 'Рождение Ванадиевого Моря',
-        desc: 'Первые постоянные водоёмы: мелководный океан из кометной и вулканической воды. Берега из базальта и кварцевого стекла.' },
-      { id: 5, dateString: '4.03 млрд д.л.', order: 5, epoch: defaultEpochs[1], category: 'Биология',
-        title: 'Кислородная революция',
-        desc: 'Цианобактерии с ванадохлорофиллом насытили океан кислородом, вызвав окрашивание вод в ржавый цвет и вымирание анаэробов.' },
-      { id: 6, dateString: '3.37 млрд д.л.', order: 6, epoch: defaultEpochs[1], category: 'Геология',
-        title: 'Формирование суперконтинента Ильтара',
-        desc: 'Столкновение Ульгура и Ванаара создало гигантский массив суши с горами, рифтовыми ртутными морями и Серебряной революцией флоры.' },
-      { id: 7, dateString: '2.41 млрд д.л.', order: 7, epoch: defaultEpochs[2], category: 'Эволюция',
-        title: 'Начало Эона Звука',
-        desc: 'Кристальные хоры губок и Шептуны-растения открыли эру акустической эволюции. Первые звуковые войны между видами.' },
-      { id: 8, dateString: '1.74 млрд д.л.', order: 8, epoch: defaultEpochs[2], category: 'Эволюция',
-        title: 'Появление ванадазавров',
-        desc: 'Рептилии с ванадиевой кровью и бронёй из карбида кремния стали доминирующими гигантами суши (до 15 м).' },
-      { id: 9, dateString: '0.67 млрд д.л.', order: 9, epoch: defaultEpochs[2], category: 'Катаклизм',
-        title: 'Великое Угасание',
-        desc: 'Падение уровня O₂, кислотные дожди и огненные штормы уничтожили 95% видов, завершив эру исполинов.' },
-      { id: 10, dateString: '0.57 млрд д.л.', order: 10, epoch: defaultEpochs[3], category: 'Культура',
-        title: 'Пещерные царства барсов',
-        desc: 'Северяне-барсы освоили Вечные костры и выплавку металла, южане-леопарды — земледелие и биофильтрацию.' },
-      { id: 11, dateString: '0.22 млрд д.л.', order: 11, epoch: defaultEpochs[3], category: 'Война',
-        title: 'Война у Слезы Ары',
-        desc: 'Первый контакт и конфликт барсов и леопардов за ресурсы. Создана нейтральная зона Ильтара-2.' },
-      { id: 12, dateString: '3179 г. (современность)', order: 12, epoch: defaultEpochs[3], category: 'Современность',
-        title: 'Космический Рассвет',
-        desc: 'Терраформинг астероидов, орбитальные зеркала, совместный ИИ «Ара-Тис». Праздник Танца Двух Лун объединяет народы.' }
+    const defaultArticles = [
+      { id:1, date:'6.87 млрд д.л.', order:1, epoch:defaultEpochs[0], category:'Космогония',
+        title:'Рождение системы Кхарона',
+        body:'Оранжевый карлик **Кхарон** (спектральный класс K4V, масса 0.75 M⊙, светимость 0.45 L⊙) собрал из протопланетного диска, богатого кристаллами силиката железа и вандата, шесть планет.\n\n**Дьётонрей** — вторая планета системы. Его скалистый мир начал формироваться 6.87 млрд д.л.\n\nПоверхность молодой планеты кипела реками расплавленной железисто-ванадиевой лавы под ядовитым оранжево-метановым небом. Кристаллы вандата и силиката железа придали будущей коре характерный оранжево-багряный оттенок.\n\nПараметры планеты:\n- Орбита: 1.21 а.е.\n- Год: 540 дней × 25 часов = 13 500 часов\n- Сутки: 25 часов\n- Гравитация: 0.85 g⊕\n- Радиус: 8600 км\n- Наклон оси: 24°' },
+      { id:2, date:'4.03 млрд д.л.', order:2, epoch:defaultEpochs[1], category:'Биология',
+        title:'Кислородная революция',
+        body:'Цианобактерии освоили фотосинтез с ванадохлорофиллом → накопление O₂ → окрашивание океанов в ржавый цвет. Выжили организмы с ванадиевыми антиоксидантами.\n\nЭтот процесс радикально изменил атмосферу и подготовил почву для многоклеточной жизни.' },
+      { id:3, date:'0.57 млрд д.л.', order:3, epoch:defaultEpochs[3], category:'Культура',
+        title:'Пещерные царства барсов',
+        body:'В ледниковых пещерах Ульдры барсы нашли спасение от кислотных туч. У разлома «Храмовых Пик» они обнаружили Вечные костры — подземные пожары, где плавились металлы. Это стало основой их культуры и технологии.\n\nРелигия: Огонь — лик богини Ары-Кузнечихи.\nТехнологии: выплавка олова, свинца, позже стали.\nОбщество: кланы объединились в «Союз Огня и Камня».' }
     ];
 
-    let events = [];
+    let articles = [];
     let epochs = [];
     let epochColors = [];
     let categories = [];
+    let activeId = null;
 
-    let activeEpoch = null;
-    let activeCategory = null;
-    let searchQuery = '';
-    let editingId = null;
-
-    // Загрузка данных
+    // Загрузка
     function loadData() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         try {
-          const data = JSON.parse(raw);
-          events = data.events || [];
-          epochs = data.epochs || [];
-          epochColors = data.epochColors || [];
-          categories = data.categories || [];
-        } catch(e) {}
+          const d = JSON.parse(raw);
+          articles = d.articles || [];
+          epochs = d.epochs || [];
+          epochColors = d.epochColors || [];
+          categories = d.categories || [];
+        } catch(e){}
       }
-      // Если данных нет — загружаем демо-версию мира Дьётонрей
-      if (!raw || events.length === 0) {
-        events = JSON.parse(JSON.stringify(defaultEvents));
+      if (!articles.length) {
+        articles = defaultArticles.map(a => ({...a}));
         epochs = [...defaultEpochs];
         epochColors = [...defaultEpochColors];
         categories = [...defaultCategories];
         saveData();
       }
-      // Убедимся, что у всех событий есть id
-      events.forEach((e,idx) => { if (!e.id) e.id = Date.now() + idx; });
     }
-
     function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ events, epochs, epochColors, categories }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({articles, epochs, epochColors, categories}));
     }
 
-    // Рендер фильтров
+    // Фильтры (эпохи/категории)
+    let activeEpoch = null, activeCategory = null, searchQuery = '';
     function renderFilters() {
-      const epochContainer = document.getElementById('epochFilters');
-      epochContainer.innerHTML = '';
-      epochs.forEach((name, i) => {
-        const badge = document.createElement('span');
-        badge.className = `badge epoch-badge ${activeEpoch === name ? 'active' : ''}`;
-        badge.style.setProperty('--epoch-color', epochColors[i] || '#888');
-        badge.style.borderLeftColor = epochColors[i] || '#888';
-        badge.textContent = name;
-        badge.onclick = () => {
-          activeEpoch = activeEpoch === name ? null : name;
-          renderFilters();
-          renderTimeline();
-        };
-        epochContainer.appendChild(badge);
+      const epochDiv = document.getElementById('epochFilters');
+      epochDiv.innerHTML = '';
+      epochs.forEach((name,i) => {
+        const span = document.createElement('span');
+        span.className = `badge epoch-badge ${activeEpoch===name?'active':''}`;
+        span.style.setProperty('--epoch-color', epochColors[i]||'#888');
+        span.style.borderLeftColor = epochColors[i]||'#888';
+        span.textContent = name;
+        span.onclick = () => { activeEpoch = activeEpoch===name ? null : name; renderAll(); };
+        epochDiv.appendChild(span);
       });
-
-      const catContainer = document.getElementById('categoryFilters');
-      catContainer.innerHTML = '';
+      const catDiv = document.getElementById('categoryFilters');
+      catDiv.innerHTML = '';
       categories.forEach(cat => {
-        const badge = document.createElement('span');
-        badge.className = `badge ${activeCategory === cat ? 'active' : ''}`;
-        badge.textContent = cat;
-        badge.onclick = () => {
-          activeCategory = activeCategory === cat ? null : cat;
-          renderFilters();
-          renderTimeline();
-        };
-        catContainer.appendChild(badge);
+        const span = document.createElement('span');
+        span.className = `badge ${activeCategory===cat?'active':''}`;
+        span.textContent = cat;
+        span.onclick = () => { activeCategory = activeCategory===cat ? null : cat; renderAll(); };
+        catDiv.appendChild(span);
       });
     }
 
-    function updateModalSelects() {
-      const epochSel = document.getElementById('eventEpoch');
-      const catSel = document.getElementById('eventCategory');
-      if (epochSel) epochSel.innerHTML = epochs.map(e => `<option value="${e}">${e}</option>`).join('');
-      if (catSel) catSel.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
-    }
-
-    function getFilteredEvents() {
-      return events.filter(ev => {
-        if (activeEpoch && ev.epoch !== activeEpoch) return false;
-        if (activeCategory && ev.category !== activeCategory) return false;
+    function getFilteredArticles() {
+      return articles.filter(a => {
+        if (activeEpoch && a.epoch !== activeEpoch) return false;
+        if (activeCategory && a.category !== activeCategory) return false;
         if (searchQuery) {
           const q = searchQuery.toLowerCase();
-          return (ev.dateString.toLowerCase().includes(q) ||
-                  ev.title.toLowerCase().includes(q) ||
-                  ev.desc.toLowerCase().includes(q) ||
-                  ev.epoch.toLowerCase().includes(q) ||
-                  ev.category.toLowerCase().includes(q));
+          return (a.title.toLowerCase().includes(q) || a.body.toLowerCase().includes(q) ||
+                  a.date.toLowerCase().includes(q) || a.epoch.toLowerCase().includes(q));
         }
         return true;
-      }).sort((a, b) => a.order - b.order);
+      }).sort((a,b) => a.order - b.order);
     }
 
-    function renderTimeline() {
-      const container = document.getElementById('timelineContainer');
-      const filtered = getFilteredEvents();
-      document.getElementById('eventCount').textContent = `Показано: ${filtered.length} из ${events.length}`;
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="empty-state">🔍 Нет событий, соответствующих фильтрам. Добавьте новое событие или измените критерии.</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(ev => {
-        const epochIdx = epochs.indexOf(ev.epoch);
-        const color = epochColors[epochIdx] || '#888';
-        return `
-          <div class="event-card" style="border-left-color: ${color}">
-            <div class="event-header">
-              <span class="event-date">${escapeHtml(ev.dateString)}</span>
-              <span class="event-epoch" style="background:${color}">${escapeHtml(ev.epoch)}</span>
-              <span class="event-title">${escapeHtml(ev.title)}</span>
-              <span class="event-category">${escapeHtml(ev.category)}</span>
-            </div>
-            <div class="event-desc">${escapeHtml(ev.desc).replace(/\n/g, '<br>')}</div>
-            <div class="event-actions">
-              <button class="action-btn edit" data-id="${ev.id}">✏️</button>
-              <button class="action-btn delete" data-id="${ev.id}">🗑️</button>
-            </div>
-          </div>
-        `;
+    // Рендер списка статей слева
+    function renderArticleList() {
+      const list = document.getElementById('articleList');
+      const filtered = getFilteredArticles();
+      list.innerHTML = filtered.map(a => {
+        const activeClass = (activeId === a.id) ? 'active' : '';
+        return `<li class="article-item ${activeClass}" data-id="${a.id}">
+          <span class="item-date">${escapeHtml(a.date)}</span>${escapeHtml(a.title)}
+        </li>`;
       }).join('');
-
-      container.querySelectorAll('.edit').forEach(btn => {
-        btn.addEventListener('click', () => openEditor(Number(btn.dataset.id)));
-      });
-      container.querySelectorAll('.delete').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (confirm('Удалить это событие?')) {
-            events = events.filter(e => e.id !== Number(btn.dataset.id));
-            saveData();
-            renderTimeline();
-          }
+      // Обработчики клика
+      list.querySelectorAll('.article-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const id = Number(item.dataset.id);
+          setActiveArticle(id);
         });
       });
     }
 
-    function escapeHtml(text) {
-      return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    function renderArticleView() {
+      const container = document.getElementById('articleView');
+      const noSel = document.getElementById('noSelection');
+      if (!activeId) {
+        container.style.display = 'none';
+        noSel.style.display = 'block';
+        return;
+      }
+      const art = articles.find(a => a.id === activeId);
+      if (!art) {
+        container.style.display = 'none';
+        noSel.style.display = 'block';
+        return;
+      }
+      noSel.style.display = 'none';
+      container.style.display = 'block';
+      container.innerHTML = `
+        <h1>${escapeHtml(art.title)}</h1>
+        <div class="article-meta">
+          <span style="background:${epochColors[epochs.indexOf(art.epoch)] || '#888'}">${escapeHtml(art.epoch)}</span>
+          <span>${escapeHtml(art.category)}</span>
+          <span>${escapeHtml(art.date)}</span>
+        </div>
+        <div class="article-body">${escapeHtml(art.body).replace(/\n/g, '<br>')}</div>
+        <button class="btn edit-btn" id="editCurrentBtn">✏️ Редактировать</button>
+        <button class="btn btn-outline edit-btn" id="deleteCurrentBtn" style="margin-left:10px;">🗑️ Удалить</button>
+      `;
+      document.getElementById('editCurrentBtn').addEventListener('click', () => openEditor(activeId));
+      document.getElementById('deleteCurrentBtn').addEventListener('click', () => {
+        if (confirm('Удалить эту статью?')) {
+          articles = articles.filter(a => a.id !== activeId);
+          activeId = null;
+          saveData();
+          renderAll();
+        }
+      });
     }
 
-    // Модальное окно
+    function setActiveArticle(id) {
+      activeId = id;
+      renderArticleList();
+      renderArticleView();
+    }
+
+    function renderAll() {
+      renderFilters();
+      renderArticleList();
+      renderArticleView();
+    }
+
+    // Модальное окно редактирования
     const modal = document.getElementById('modalOverlay');
     function openEditor(id = null) {
-      editingId = id;
-      updateModalSelects();
+      const titleEl = document.getElementById('modalTitle');
+      const dateInp = document.getElementById('editDate');
+      const orderInp = document.getElementById('editOrder');
+      const epochSel = document.getElementById('editEpoch');
+      const catSel = document.getElementById('editCategory');
+      const titleInp = document.getElementById('editTitle');
+      const bodyInp = document.getElementById('editBody');
+
+      // Заполнить селекты
+      epochSel.innerHTML = epochs.map(e => `<option value="${e}">${e}</option>`).join('');
+      catSel.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
       if (id) {
-        const ev = events.find(e => e.id === id);
-        if (!ev) return;
-        document.getElementById('modalTitle').textContent = 'Редактировать событие';
-        document.getElementById('eventDate').value = ev.dateString;
-        document.getElementById('eventOrder').value = ev.order;
-        document.getElementById('eventEpoch').value = ev.epoch;
-        document.getElementById('eventCategory').value = ev.category;
-        document.getElementById('eventTitle').value = ev.title;
-        document.getElementById('eventDesc').value = ev.desc;
+        const art = articles.find(a => a.id === id);
+        if (!art) return;
+        titleEl.textContent = 'Редактировать статью';
+        dateInp.value = art.date;
+        orderInp.value = art.order;
+        epochSel.value = art.epoch;
+        catSel.value = art.category;
+        titleInp.value = art.title;
+        bodyInp.value = art.body;
       } else {
-        document.getElementById('modalTitle').textContent = 'Новое событие';
-        document.getElementById('eventDate').value = '';
-        document.getElementById('eventOrder').value = events.length ? Math.max(...events.map(e=>e.order),0)+1 : 0;
-        document.getElementById('eventEpoch').value = epochs[0] || '';
-        document.getElementById('eventCategory').value = categories[0] || '';
-        document.getElementById('eventTitle').value = '';
-        document.getElementById('eventDesc').value = '';
+        titleEl.textContent = 'Новая статья';
+        dateInp.value = '';
+        orderInp.value = articles.length ? Math.max(...articles.map(a=>a.order),0)+1 : 0;
+        epochSel.value = epochs[0] || '';
+        catSel.value = categories[0] || '';
+        titleInp.value = '';
+        bodyInp.value = '';
       }
       modal.style.display = 'flex';
     }
 
-    function closeModal() {
-      modal.style.display = 'none';
-      editingId = null;
-    }
+    function closeModal() { modal.style.display = 'none'; }
 
-    document.getElementById('saveEventBtn').addEventListener('click', () => {
-      const date = document.getElementById('eventDate').value.trim();
-      const order = parseInt(document.getElementById('eventOrder').value) || 0;
-      const epoch = document.getElementById('eventEpoch').value;
-      const cat = document.getElementById('eventCategory').value;
-      const title = document.getElementById('eventTitle').value.trim();
-      const desc = document.getElementById('eventDesc').value.trim();
+    document.getElementById('saveEditBtn').addEventListener('click', () => {
+      const date = document.getElementById('editDate').value.trim();
+      const order = parseInt(document.getElementById('editOrder').value) || 0;
+      const epoch = document.getElementById('editEpoch').value;
+      const cat = document.getElementById('editCategory').value;
+      const title = document.getElementById('editTitle').value.trim();
+      const body = document.getElementById('editBody').value.trim();
       if (!date || !title) { alert('Дата и название обязательны'); return; }
-      if (editingId) {
-        const ev = events.find(e => e.id === editingId);
-        if (ev) { ev.dateString = date; ev.order = order; ev.epoch = epoch; ev.category = cat; ev.title = title; ev.desc = desc; }
+
+      const currentId = activeId; // ID статьи, которую редактируем (или null для новой)
+      if (currentId) {
+        const art = articles.find(a => a.id === currentId);
+        if (art) {
+          art.date = date; art.order = order; art.epoch = epoch;
+          art.category = cat; art.title = title; art.body = body;
+        }
       } else {
-        events.push({ id: Date.now(), dateString: date, order, epoch, category: cat, title, desc });
+        const newArt = {
+          id: Date.now(),
+          date, order, epoch, category: cat, title, body
+        };
+        articles.push(newArt);
+        activeId = newArt.id; // сразу открыть новую статью
       }
       saveData();
       closeModal();
-      renderTimeline();
-      renderFilters();
+      renderAll();
     });
 
-    document.getElementById('addEventBtn').addEventListener('click', () => openEditor(null));
-    document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.getElementById('addArticleBtn').addEventListener('click', () => openEditor(null));
+    document.getElementById('cancelEditBtn').addEventListener('click', closeModal);
+    window.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
     // Поиск
     document.getElementById('searchInput').addEventListener('input', e => {
       searchQuery = e.target.value;
-      renderTimeline();
-    });
-
-    // Добавление эпохи/категории
-    document.getElementById('addEpochBtn').addEventListener('click', () => {
-      const name = document.getElementById('newEpochName').value.trim();
-      if (!name) return;
-      if (epochs.includes(name)) { alert('Такая эпоха уже есть'); return; }
-      epochs.push(name);
-      epochColors.push(document.getElementById('newEpochColor').value);
-      saveData();
-      document.getElementById('newEpochName').value = '';
-      renderFilters();
-      updateModalSelects();
-    });
-    document.getElementById('addCategoryBtn').addEventListener('click', () => {
-      const name = document.getElementById('newCategoryName').value.trim();
-      if (!name) return;
-      if (categories.includes(name)) { alert('Такая категория уже есть'); return; }
-      categories.push(name);
-      saveData();
-      document.getElementById('newCategoryName').value = '';
-      renderFilters();
-      updateModalSelects();
+      renderAll();
     });
 
     // Экспорт/импорт
     document.getElementById('exportBtn').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify({ events, epochs, epochColors, categories }, null, 2)], {type:'application/json'});
+      const blob = new Blob([JSON.stringify({articles, epochs, epochColors, categories}, null, 2)], {type:'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `dyotonrei_${new Date().toISOString().slice(0,10)}.json`;
+      a.download = `dyotonrei_wiki_${new Date().toISOString().slice(0,10)}.json`;
       a.click();
       URL.revokeObjectURL(a.href);
     });
@@ -635,17 +546,13 @@
       reader.onload = ev => {
         try {
           const data = JSON.parse(ev.target.result);
-          if (data.events && data.epochs && data.categories) {
-            if (confirm('Импорт заменит все текущие данные. Продолжить?')) {
-              events = data.events;
-              epochs = data.epochs;
-              epochColors = data.epochColors || [];
-              categories = data.categories;
-              events.forEach((ev,i) => { if (!ev.id) ev.id = Date.now()+i; });
+          if (data.articles && data.epochs && data.categories) {
+            if (confirm('Импорт заменит все данные. Продолжить?')) {
+              articles = data.articles; epochs = data.epochs;
+              epochColors = data.epochColors || []; categories = data.categories;
+              activeId = null;
               saveData();
-              renderFilters();
-              renderTimeline();
-              updateModalSelects();
+              renderAll();
             }
           } else alert('Неверный формат файла.');
         } catch(ex) { alert('Ошибка чтения JSON.'); }
@@ -656,11 +563,15 @@
 
     document.addEventListener('keydown', e => { if (e.key==='Escape' && modal.style.display==='flex') closeModal(); });
 
+    // Утилита
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
     // Старт
     loadData();
-    renderFilters();
-    updateModalSelects();
-    renderTimeline();
+    if (articles.length && !activeId) activeId = articles[0].id; // открыть первую статью
+    renderAll();
   })();
 </script>
 </body>
